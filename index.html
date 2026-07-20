@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Active Autonomy Companion — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F2F0; --ink:#191C20; --sec:#646B76; --mut:#9CA2AB;
+  --line:#EBE6DC; --line2:#DFD9CD; --surface:#EFEAE0;
+  --slate:#3E4E5A; --slate-deep:#33414C; --slate-soft:#E3E8EC;
+  --blue:#2563C9; --blue-soft:#E9F0FD; --blue-deep:#1E4FA3;
+  --green:#1E9E6A; --green-soft:#E5F4ED;
+  --amber:#BC8418; --amber-soft:#FAF0D8;
+  --violet:#6B4FD0; --violet-soft:#EDEAFB;
+  --red:#DE463C; --red-soft:#FCEAE8; --red-ink:#B23329;
+  --sans:"Hanken Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --sh:0 1px 2px rgba(20,23,28,.04);
+  --sh-card:0 1px 2px rgba(20,23,28,.03), 0 5px 16px rgba(20,23,28,.045);
+  --sh-card-h:0 2px 4px rgba(20,23,28,.05), 0 12px 28px rgba(20,23,28,.09);
+  --sh-lg:0 2px 8px rgba(20,20,25,.06), 0 26px 56px rgba(20,20,25,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+[hidden]{display:none!important;}
+html{height:100%;}
+body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;flex-direction:column;align-items:center;min-height:100%;padding:186px 16px 256px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+.intro{max-width:393px;width:100%;margin-bottom:18px;}
+.intro h1{font-size:16px;font-weight:600;letter-spacing:-.01em;}
+.intro p{font-size:13px;color:#6f6a60;margin-top:3px;line-height:1.45;}
+.device{width:393px;height:852px;border-radius:56px;background:#0b0b0d;padding:10px;box-shadow:var(--sh-lg), inset 0 0 0 2px #2a2a2e;position:relative;flex:none;}
+.screen-host{position:relative;width:100%;height:100%;border-radius:47px;overflow:hidden;background:var(--bg);}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;background:#0b0b0d;border-radius:20px;z-index:60;}
+.statusbar{position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:18px 30px 0;z-index:55;font-size:14px;font-weight:600;pointer-events:none;}
+.statusbar .ic{display:flex;gap:6px;align-items:center;}
+.statusbar svg{width:17px;height:12px;}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .32s ease, transform .42s cubic-bezier(.2,.7,.3,1);}
+.screen.active{opacity:1;transform:none;pointer-events:auto;}
+.scroll{flex:1;overflow-y:auto;padding:64px 20px 116px;scroll-behavior:smooth;}
+.scroll::-webkit-scrollbar{display:none;}
+/* staggered entrance for content as a screen activates */
+.screen.active .scroll>*{animation:rise .52s cubic-bezier(.2,.7,.3,1) both;}
+.screen.active .scroll>*:nth-child(1){animation-delay:.01s}
+.screen.active .scroll>*:nth-child(2){animation-delay:.04s}
+.screen.active .scroll>*:nth-child(3){animation-delay:.07s}
+.screen.active .scroll>*:nth-child(4){animation-delay:.10s}
+.screen.active .scroll>*:nth-child(5){animation-delay:.13s}
+.screen.active .scroll>*:nth-child(6){animation-delay:.16s}
+.screen.active .scroll>*:nth-child(7){animation-delay:.19s}
+.screen.active .scroll>*:nth-child(8){animation-delay:.22s}
+.screen.active .scroll>*:nth-child(9){animation-delay:.25s}
+.screen.active .scroll>*:nth-child(n+10){animation-delay:.28s}
+@keyframes rise{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.screen.active .scroll>*{animation:none !important;}}
+.kicker{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);}
+.title{font-size:29px;font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:7px 0 5px;}
+.subt{font-size:14px;color:var(--sec);}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh-card);padding:18px 18px;}
+.card.flat{box-shadow:none;}
+.gap{height:12px;}.gap.lg{height:18px;}
+.row{display:flex;align-items:center;gap:14px;}
+.chip{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;}
+.chip svg{width:22px;height:22px;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.chip.blue{background:var(--blue-soft);} .chip.blue svg{stroke:var(--blue);}
+.chip.green{background:var(--green-soft);} .chip.green svg{stroke:var(--green);}
+.chip.amber{background:var(--amber-soft);} .chip.amber svg{stroke:var(--amber);}
+.chip.violet{background:var(--violet-soft);} .chip.violet svg{stroke:var(--violet);}
+.chip.red{background:var(--red-soft);} .chip.red svg{stroke:var(--red-ink);}
+.ttl{font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
+.sub{font-size:13px;color:var(--sec);margin-top:2px;}
+.chev{margin-left:auto;color:#C8CCD2;display:flex;transition:transform .18s ease, color .18s ease;}
+.chev svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:56px;border:none;border-radius:16px;background:var(--ink);color:#fff;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(21,23,28,.18);transition:transform .12s ease, box-shadow .2s ease;}
+.btn:hover{box-shadow:0 10px 26px rgba(21,23,28,.24);}
+.btn:active{transform:translateY(1px) scale(.99);box-shadow:0 4px 12px rgba(21,23,28,.18);}
+.btn svg{width:18px;height:18px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s ease;}
+.btn:hover svg{transform:translateX(2px);}
+.tappable{cursor:pointer;transition:transform .14s ease, box-shadow .2s ease, border-color .2s ease;}
+.tappable:hover{box-shadow:var(--sh-card-h);}
+.tappable:hover .chev{color:var(--blue);transform:translateX(2px);}
+.tappable:active{transform:scale(.985);}
+.foot-note{font-size:12.5px;color:var(--mut);line-height:1.55;margin-top:18px;padding:0 4px;}
+/* hero status */
+.hero .stat{display:flex;align-items:baseline;gap:8px;margin-top:10px;}
+.hero .num{font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.hero .of{font-size:16px;font-weight:500;color:var(--mut);}
+.statpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--amber);background:var(--amber-soft);padding:6px 12px;border-radius:20px;margin-left:auto;align-self:center;}
+.statpill .d{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 0 rgba(188,132,24,.5);animation:pulseDot 2.4s ease-out infinite;}
+@keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(188,132,24,.45)}70%{box-shadow:0 0 0 7px rgba(188,132,24,0)}100%{box-shadow:0 0 0 0 rgba(188,132,24,0)}}
+.cap{font-size:13.5px;color:var(--sec);line-height:1.5;margin-top:12px;}
+/* dark slate cards (new wait display) */
+.card.dark{background:var(--slate);border-color:var(--slate);color:#fff;box-shadow:0 2px 6px rgba(51,65,76,.14), 0 14px 32px rgba(51,65,76,.26);}
+.card.dark .kicker{color:rgba(255,255,255,.62);}
+.card.dark .cap{color:rgba(255,255,255,.78);}
+.card.dark .upnext{border-top-color:rgba(255,255,255,.16);}
+.card.dark .upnext .l{color:rgba(255,255,255,.58);}
+.card.dark .upnext .r{color:#fff;}
+.card.dark .segs i{background:rgba(255,255,255,.22);}
+.card.dark .segs i.on{background:#fff;}
+.card.dark .segs i.cur{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.24);}
+.wc-head{display:flex;align-items:center;gap:6px;}
+.wc-info{border:none;background:none;cursor:pointer;padding:0;display:inline-flex;align-items:center;}
+.wc-info svg{width:14px;height:14px;stroke:rgba(255,255,255,.62);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.wc-range{font-size:40px;font-weight:700;letter-spacing:-.025em;line-height:1;margin-top:10px;transition:opacity .3s ease;}
+.wc-range span{font-size:16px;font-weight:500;color:rgba(255,255,255,.7);margin-left:7px;letter-spacing:0;}
+.wc-expl{font-size:12px;color:rgba(255,255,255,.88);line-height:1.55;background:rgba(255,255,255,.13);border-radius:12px;padding:11px 13px;margin-top:14px;}
+/* triage level (ESI) in the wait card */
+.tri-panel{border-radius:15px;padding:4px 5px 5px;margin-top:15px;background:rgba(255,255,255,.12);}
+.tri-panel .tri-row{display:flex;align-items:center;gap:11px;cursor:pointer;background:none;border:none;width:100%;font-family:inherit;text-align:left;padding:9px 8px;}
+.tri-badge{flex:none;width:35px;height:35px;border-radius:11px;background:#fff;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(15,18,24,.22);}
+.tri-row .t1{font-size:13.5px;font-weight:700;color:#fff;letter-spacing:-.005em;}
+.tri-row .t2{font-size:11.5px;color:rgba(255,255,255,.68);margin-top:1px;}
+.tri-row .chev{margin-left:auto;transition:transform .2s ease;}
+.tri-row .chev svg{width:16px;height:16px;stroke:rgba(255,255,255,.62);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.tri-row.open .chev{transform:rotate(180deg);}
+.tri-expl{overflow:hidden;max-height:0;transition:max-height .3s ease;}
+.tri-expl .inner{font-size:12px;line-height:1.55;color:rgba(255,255,255,.92);background:rgba(255,255,255,.14);border-radius:11px;padding:11px 13px;margin:2px 5px 6px;}
+.tri-expl b{color:#fff;}
+.tri-expl .nm{display:block;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.2);}
+/* per-level card hues (darkened from tokens for white text); red reserved for level 1 */
+.v1c.c1{background:#93342B;border-color:#93342B;} .v1c.c1 .tri-badge{color:var(--red-ink);}
+.v1c.c2{background:#8A6414;border-color:#8A6414;} .v1c.c2 .tri-badge{color:var(--amber);}
+.v1c.c3{background:var(--slate);border-color:var(--slate);} .v1c.c3 .tri-badge{color:var(--slate);}
+.v1c.c4{background:#3F6249;border-color:#3F6249;} .v1c.c4 .tri-badge{color:#4A7757;}
+.v1c.c5{background:#1B7A54;border-color:#1B7A54;} .v1c.c5 .tri-badge{color:var(--green);}
+.pc-cond{display:flex;gap:6px;}
+.ht,.pp,.tp{border:1px solid var(--line2);background:#fff;border-radius:12px;padding:8px 12px;font-family:inherit;font-size:12px;font-weight:600;color:var(--sec);cursor:pointer;transition:all .15s ease;white-space:nowrap;}
+.ht.on,.pp.on,.tp.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.tp{min-width:34px;text-align:center;}
+.pc-pers{display:flex;gap:6px;flex-wrap:wrap;max-width:340px;}
+/* live activity condition color */
+.liveact .la-cond{width:7px;height:7px;border-radius:50%;flex:none;background:var(--lc,#9098a3);transition:background .3s ease;}
+.liveact .la-num{color:var(--lc,#fff);}
+.liveact.calm{--lc:#3FD18B;}.liveact.steady{--lc:#6AA6FF;}.liveact.busy{--lc:#F2A23C;}
+.segs{display:flex;gap:6px;margin:16px 0 0;}
+.segs i{height:6px;flex:1;border-radius:4px;background:var(--line2);transition:background .3s ease;}
+.segs i.on{background:var(--slate);}
+.segs i.cur{background:var(--slate);box-shadow:0 0 0 3px var(--slate-soft);}
+/* white journey panel nested inside the dark wait card */
+.wc-journey{background:#fff;border-radius:18px;padding:15px 17px 13px;margin-top:16px;color:var(--ink);box-shadow:0 6px 18px rgba(15,20,26,.18);}
+.card.dark .wc-journey .kicker{color:var(--mut);}
+.wc-journey .steps:before{background:#E4E6E9;}
+.wc-journey .step .lab{color:var(--ink);}
+.wc-journey .dot{background:#fff;}
+.wc-journey .dot.done i{background:#2B3640;}
+.wc-journey .dot.now i{background:#fff;border:2.5px solid #2B3640;box-shadow:none;animation:none;}
+.wc-journey .dot.future i{background:#fff;border:2px solid #DBDDE1;}
+.wc-journey .step.now .meta{color:var(--mut);font-weight:500;}
+.wc-journey .step.future .lab{color:var(--mut);}
+.wc-journey .step .t{color:var(--sec);}
+.upnext{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
+.upnext .l{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);}
+.upnext .r{font-size:14.5px;font-weight:600;}
+/* care team */
+.team{display:flex;gap:14px;overflow-x:auto;margin:14px -18px 0;padding:2px 18px 4px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;}
+.team::-webkit-scrollbar{display:none;}
+.member{flex:none;width:78px;text-align:center;scroll-snap-align:start;cursor:pointer;}
+.m-photo{position:relative;width:62px;height:62px;border-radius:50%;margin:0 auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:17px;box-shadow:0 2px 8px rgba(20,23,28,.14);transition:transform .16s ease;}
+.member:active .m-photo{transform:scale(.95);}
+.m-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.m-photo .on{position:absolute;right:2px;bottom:2px;width:13px;height:13px;border-radius:50%;background:var(--green);border:2.5px solid #fff;z-index:2;}
+.m-name{font-size:12.5px;font-weight:600;line-height:1.2;letter-spacing:-.01em;}
+.m-role{font-size:10.5px;color:var(--sec);margin-top:2px;line-height:1.25;}
+/* bio sheet */
+.sheet-backdrop{position:absolute;inset:0;z-index:80;display:flex;align-items:flex-end;background:rgba(20,23,28,.45);opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.sheet-backdrop.show{opacity:1;pointer-events:auto;}
+.sheet{position:relative;width:100%;background:#fff;border-radius:30px 30px 0 0;padding:12px 22px 30px;transform:translateY(100%);transition:transform .42s cubic-bezier(.2,.8,.25,1);box-shadow:0 -12px 44px rgba(20,20,25,.22);}
+.sheet-backdrop.show .sheet{transform:none;}
+.sheet-grip{width:38px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 14px;}
+.sheet-x{position:absolute;top:14px;right:18px;width:30px;height:30px;border:none;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.sheet-x svg{width:16px;height:16px;stroke:var(--sec);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.bio-head{display:flex;align-items:center;gap:15px;}
+.bio-photo{width:68px;height:68px;border-radius:50%;overflow:hidden;flex:none;background:var(--surface);box-shadow:0 2px 10px rgba(20,23,28,.16);}
+.bio-photo img{width:100%;height:100%;object-fit:cover;}
+.bio-name{font-size:19px;font-weight:700;letter-spacing:-.02em;}
+.bio-role{font-size:13.5px;color:var(--sec);margin-top:2px;}
+.bio-status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--green);margin-top:8px;}
+.bio-status .dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+.bio-status.off{color:var(--mut);}
+.bio-text{font-size:14px;color:var(--sec);line-height:1.6;margin:16px 0 22px;}
+.sheet .btn{height:50px;font-size:15px;}
+/* phases */
+.phase-block{display:none;}
+.phase-block.show{display:block;animation:rise .42s cubic-bezier(.2,.7,.3,1) both;}
+/* prototype journey control (top of screen, reads left → right) */
+.protoctl{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 34px rgba(20,23,28,.14);padding:12px 22px 14px;display:flex;align-items:flex-start;flex-wrap:wrap;justify-content:center;row-gap:12px;gap:22px;max-width:calc(100vw - 24px);}
+.pc-group{display:flex;flex-direction:column;gap:9px;}
+.pc-hide{position:absolute;top:7px;right:7px;width:22px;height:22px;border-radius:50%;border:none;background:var(--surface);color:var(--sec);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+.pc-hide:hover{background:var(--line);}
+.pc-hide svg{width:11px;height:11px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;}
+.protoctl.hidden{display:none;}
+.pc-pill{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;box-shadow:0 8px 24px rgba(20,23,28,.12);padding:8px 15px;font-family:inherit;font-size:12px;font-weight:600;color:var(--sec);cursor:pointer;display:none;align-items:center;gap:7px;}
+.pc-pill.show{display:flex;}
+.pc-pill svg{width:12px;height:12px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;}
+.scroll-lock{position:fixed;bottom:18px;right:18px;z-index:300;width:44px;height:44px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 8px 24px rgba(20,23,28,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:all .15s ease;}
+.scroll-lock:active{transform:scale(.92);}
+.scroll-lock svg{width:18px;height:18px;stroke:var(--sec);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.scroll-lock.on{background:var(--ink);border-color:var(--ink);}
+.scroll-lock.on svg{stroke:#fff;}
+.pc-cap{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);}
+.pc-journey{position:relative;width:280px;margin:0 16px;padding-top:5px;}
+.pc-rail{position:relative;height:6px;border-radius:6px;background:var(--line2);}
+.pc-fill{position:absolute;top:0;bottom:0;left:0;width:0;border-radius:6px;background:var(--ink);transition:width .32s cubic-bezier(.2,.8,.25,1);}
+.pc-tick{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--line2);padding:0;cursor:pointer;z-index:1;}
+.pc-tick.done{border-color:var(--ink);background:var(--ink);}
+.pc-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);left:0;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--ink);box-shadow:0 2px 8px rgba(20,23,28,.28);cursor:grab;transition:left .32s cubic-bezier(.2,.8,.25,1);z-index:2;touch-action:none;}
+.pc-thumb:active{cursor:grabbing;}
+.pc-stops{position:relative;height:15px;margin-top:9px;}
+.pc-stop{position:absolute;top:0;transform:translateX(-50%);border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--mut);cursor:pointer;padding:0;line-height:1;white-space:nowrap;transition:color .18s ease;}
+.pc-stop:hover{color:var(--sec);}
+.pc-stop.on{color:var(--ink);}
+.pc-sep{width:1px;align-self:stretch;background:var(--line);flex:none;}
+/* app tour (spotlight walkthrough) */
+.tour-spot{position:absolute;z-index:95;border-radius:18px;box-shadow:0 0 0 2000px rgba(15,18,24,.58);pointer-events:none;transition:top .38s cubic-bezier(.2,.8,.25,1), left .38s cubic-bezier(.2,.8,.25,1), width .38s cubic-bezier(.2,.8,.25,1), height .38s cubic-bezier(.2,.8,.25,1), border-radius .38s ease;}
+.tour-tip{position:absolute;z-index:96;width:272px;background:#fff;border-radius:18px;padding:15px 16px 13px;box-shadow:0 14px 40px rgba(15,18,24,.32);transition:top .38s cubic-bezier(.2,.8,.25,1), left .38s cubic-bezier(.2,.8,.25,1);}
+.tour-tip .tt-k{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:5px;}
+.tour-tip h4{font-size:15.5px;font-weight:700;letter-spacing:-.015em;line-height:1.2;}
+.tour-tip p{font-size:12.5px;color:var(--sec);line-height:1.5;margin-top:5px;}
+.tour-tip .tt-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.tt-skip{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--mut);cursor:pointer;padding:6px 2px;}
+.tt-skip:hover{color:var(--sec);}
+.tt-next{border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:#fff;background:var(--ink);border-radius:20px;padding:8px 16px;cursor:pointer;transition:transform .12s ease;}
+.tt-next:active{transform:scale(.96);}
+/* rating */
+.star{font-size:30px;line-height:1;color:var(--line2);cursor:pointer;transition:color .12s ease, transform .12s ease;}
+.star:hover{transform:scale(1.12);}
+.star.on{color:var(--amber);}
+/* vitals */
+.vitals-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.vital{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh-card);padding:15px 15px 13px;}
+.v-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.v-ic{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;}
+.v-ic svg{width:19px;height:19px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.v-ic.red{background:var(--red-soft);} .v-ic.red svg{stroke:var(--red-ink);}
+.v-ic.blue{background:var(--blue-soft);} .v-ic.blue svg{stroke:var(--blue);}
+.v-ic.amber{background:var(--amber-soft);} .v-ic.amber svg{stroke:var(--amber);}
+.v-ic.green{background:var(--green-soft);} .v-ic.green svg{stroke:var(--green);}
+.v-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
+.v-tag.ok{color:var(--green);background:var(--green-soft);}
+.v-tag.hi{color:var(--amber);background:var(--amber-soft);}
+.v-name{font-size:12.5px;color:var(--sec);font-weight:500;}
+.v-val{font-size:25px;font-weight:700;letter-spacing:-.02em;margin-top:3px;line-height:1;}
+.v-val span{font-size:12.5px;font-weight:600;color:var(--mut);margin-left:3px;letter-spacing:0;}
+.v-spark{margin-top:11px;width:100%;height:24px;display:block;}
+.v-spark polyline{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}
+.vhist{margin-top:8px;}
+.vrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line);}
+.vrow:first-child{border-top:none;padding-top:4px;}
+.vtime{flex:none;width:76px;}
+.vtime b{display:block;font-size:13px;font-weight:600;letter-spacing:-.01em;}
+.vtime span{font-size:10.5px;color:var(--mut);}
+.vvals{display:flex;flex-wrap:wrap;gap:4px 14px;flex:1;}
+.vv{font-size:12.5px;color:var(--ink);}
+.vv b{font-weight:600;}
+.vv span{color:var(--mut);font-weight:500;}
+/* journal — pain check-in */
+.painscale{display:flex;gap:5px;margin-top:13px;}
+.pain{flex:1;min-width:0;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line2);background:#fff;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--sec);cursor:pointer;padding:0;transition:all .15s ease;}
+.pain:hover{border-color:var(--slate);color:var(--ink);}
+.pain.on{color:#fff;border-color:transparent;transform:scale(1.14);}
+.pain.on.lo{background:var(--green);}
+.pain.on.mid{background:var(--amber);}
+.pain.on.hi{background:var(--red);}
+.painpill{margin-left:auto;flex:none;font-size:12px;font-weight:700;padding:4px 10px;border-radius:14px;}
+.painpill.lo{background:var(--green-soft);color:var(--green);}
+.painpill.mid{background:var(--amber-soft);color:var(--amber);}
+.painpill.hi{background:var(--red-soft);color:var(--red-ink);}
+/* journal — questions & notes */
+.q-item{border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-top:10px;animation:rise .4s cubic-bezier(.2,.7,.3,1) both;}
+.q-text{font-size:14.5px;font-weight:600;line-height:1.4;letter-spacing:-.01em;}
+.q-meta{font-size:11.5px;color:var(--mut);font-weight:500;margin-top:3px;}
+.q-ans{background:var(--green-soft);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:13.5px;line-height:1.5;}
+.q-btn{margin-top:10px;border:1.5px solid var(--line2);background:#fff;border-radius:12px;padding:8px 12px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--slate);cursor:pointer;transition:all .15s ease;}
+.q-btn:hover{border-color:var(--slate);}
+.q-btn:active{transform:scale(.97);}
+.addq{display:flex;align-items:center;gap:9px;border:1.5px dashed var(--line2);border-radius:16px;padding:12px 14px;margin-top:10px;color:var(--mut);font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s ease;}
+.addq:hover{border-color:var(--slate);color:var(--sec);}
+.q-quote{background:var(--surface);border-radius:12px;padding:11px 13px;font-size:13.5px;font-weight:600;line-height:1.45;margin-bottom:12px;}
+.qta{width:100%;min-height:100px;border:1.5px solid var(--line2);border-radius:16px;padding:13px 14px;font-family:inherit;font-size:14.5px;line-height:1.5;color:var(--ink);background:var(--bg);resize:none;outline:none;margin-bottom:13px;transition:border-color .15s ease;}
+.qta:focus{border-color:var(--slate);}
+.qta::placeholder{color:var(--mut);}
+/* guided meditation */
+.med{position:absolute;inset:0;z-index:95;background:linear-gradient(175deg,#2C3841 0%,#3E4E5A 58%,#546672 100%);color:#fff;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease;}
+.med.show{opacity:1;pointer-events:auto;}
+.med-x{position:absolute;top:64px;right:20px;width:34px;height:34px;border:none;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;}
+.med-x svg{width:15px;height:15px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;}
+.med-state{flex:1;display:flex;flex-direction:column;padding:108px 26px 40px;}
+.med-state h2{font-size:25px;font-weight:700;letter-spacing:-.022em;line-height:1.12;margin-top:8px;}
+.med-lede{font-size:13.5px;color:rgba(255,255,255,.72);line-height:1.55;margin-top:9px;}
+.medrows{margin-top:24px;display:flex;flex-direction:column;gap:11px;}
+.medrow{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:15px 16px;cursor:pointer;transition:background .18s ease, transform .14s ease;}
+.medrow:hover{background:rgba(255,255,255,.17);}
+.medrow:active{transform:scale(.98);}
+.medrow .mi2{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;flex:none;}
+.medrow .mi2 svg{width:20px;height:20px;stroke:#fff;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.medrow .tt{font-size:15px;font-weight:600;}
+.medrow .ts{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
+.med-note{font-size:11.5px;color:rgba(255,255,255,.5);text-align:center;line-height:1.55;margin-top:auto;}
+#medPlayer{align-items:center;text-align:center;}
+.med-name{font-size:13.5px;font-weight:600;letter-spacing:.03em;color:rgba(255,255,255,.75);}
+.med-orbwrap{position:relative;width:230px;height:230px;margin:40px 0 26px;display:flex;align-items:center;justify-content:center;}
+.med-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(255,255,255,.22);}
+.med-orb{width:192px;height:192px;border-radius:50%;background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.55), rgba(255,255,255,.10) 66%);box-shadow:0 0 60px rgba(255,255,255,.15);transform:scale(.7);}
+.med-cue{font-size:21px;font-weight:600;letter-spacing:-.01em;min-height:28px;}
+.med-timer{font-size:14px;font-weight:600;color:rgba(255,255,255,.6);margin-top:9px;font-variant-numeric:tabular-nums;}
+.med-ctl{display:flex;gap:11px;margin-top:auto;width:100%;}
+.med-btn{flex:1;height:52px;border:none;border-radius:16px;background:#fff;color:var(--slate-deep);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:transform .12s ease;}
+.med-btn:active{transform:scale(.98);}
+.med-btn.ghost{background:rgba(255,255,255,.13);color:#fff;font-weight:600;}
+/* live activity (dynamic island) */
+.liveact{position:absolute;top:11px;left:50%;transform:translateX(-50%);min-width:236px;height:37px;background:#0b0b0d;border-radius:20px;z-index:61;display:none;align-items:center;gap:9px;padding:0 13px 0 11px;cursor:pointer;}
+.screen-host.athome .liveact{display:flex;}
+.screen-host.athome .island{display:none;}
+.screen-host.athome .statusbar{color:#fff;}
+.screen-host.athome .navwrap{display:none;}
+.la-orb{width:23px;height:23px;flex:none;display:block;}
+.la-txt{font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap;}
+.la-num{font-size:13px;font-weight:700;color:#fff;margin-left:auto;white-space:nowrap;}
+.la-num span{font-size:11px;font-weight:600;opacity:.7;margin-left:2px;}
+/* expanded live activity (tap the island) */
+.laexp{position:absolute;top:8px;left:12px;right:12px;background:#0b0b0d;border-radius:30px;z-index:62;padding:16px 18px;color:#fff;display:none;opacity:0;transform:translateY(-14px) scale(.9);transform-origin:50% 0;transition:transform .4s cubic-bezier(.2,.8,.25,1), opacity .25s ease;box-shadow:0 18px 46px rgba(0,0,0,.45);pointer-events:none;}
+.screen-host.athome .laexp{display:block;}
+.screen-host.athome .laexp.show{opacity:1;transform:none;pointer-events:auto;}
+.lax-head{display:flex;align-items:center;gap:8px;}
+.lax-head .la-orb{width:20px;height:20px;}
+.lax-app{font-size:12px;font-weight:600;color:rgba(255,255,255,.75);}
+.lax-live{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.09em;color:#3FD18B;}
+.lax-live .d{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.lax-status{font-size:15.5px;font-weight:700;letter-spacing:-.012em;line-height:1.35;margin-top:12px;}
+.lax-row{display:flex;gap:28px;margin-top:12px;}
+.lax-cap{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.lax-num{font-size:19px;font-weight:700;margin-top:3px;letter-spacing:-.01em;}
+.laexp .segs{margin-top:14px;}
+.laexp .segs i{background:rgba(255,255,255,.22);}
+.laexp .segs i.on{background:#fff;}
+.laexp .segs i.cur{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.22);}
+.lax-open{margin-top:14px;width:100%;height:40px;border:none;border-radius:14px;background:rgba(255,255,255,.14);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s ease;}
+.lax-open:hover{background:rgba(255,255,255,.2);}
+/* iPhone home screen */
+#home{background:linear-gradient(165deg,#4a76a8 0%,#6f9ac4 45%,#aac4dc 100%);}
+.home-wrap{position:absolute;inset:0;display:flex;flex-direction:column;padding:104px 24px 0;}
+.grid-apps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px 16px;}
+.app{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.app .ico{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 12px rgba(0,0,0,.20);overflow:hidden;transition:transform .12s ease;}
+.app .ico svg{width:32px;height:32px;}
+.app .lbl{font-size:11px;color:#fff;font-weight:500;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.app:active .ico{transform:scale(.9);}
+.pagedots{display:flex;gap:7px;justify-content:center;margin-top:auto;margin-bottom:16px;}
+.pagedots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);}
+.pagedots i.on{background:#fff;}
+.dock{margin-bottom:24px;background:rgba(255,255,255,.24);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:32px;padding:14px 12px;display:flex;justify-content:space-around;}
+.dock .app .lbl{display:none;}
+.pc-home{align-self:center;border:1px solid var(--line2);background:#fff;border-radius:11px;padding:9px 12px;font-family:inherit;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;transition:background .15s ease;white-space:nowrap;}
+.pc-home:hover{background:var(--surface);}
+/* journey */
+.steps{position:relative;margin-top:14px;}
+.steps:before{content:"";position:absolute;left:11px;top:13px;bottom:15px;width:2px;background:var(--line2);}
+.step{position:relative;display:flex;align-items:flex-start;gap:16px;padding:7px 0;}
+.dot{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;z-index:2;background:#fff;}
+.dot i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.dot.done i{background:var(--slate);}
+.dot.done svg{width:12px;height:12px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.dot.now i{background:var(--slate);box-shadow:0 0 0 5px var(--slate-soft);animation:nowPulse 2.6s ease-out infinite;}
+@keyframes nowPulse{0%{box-shadow:0 0 0 4px var(--slate-soft)}55%{box-shadow:0 0 0 7px rgba(62,78,90,.06)}100%{box-shadow:0 0 0 4px var(--slate-soft)}}
+.dot.next i{background:#A9B8C3;}
+.dot.future i{background:#DDE0E5;}
+.step .lab{font-size:15px;font-weight:500;padding-top:1px;}
+.step.now .lab{font-weight:600;}
+.step.future .lab{color:var(--mut);font-weight:400;}
+.step .meta{display:block;font-size:12px;font-weight:600;margin-top:1px;}
+.step.now .meta{color:var(--slate);}
+.step.next .meta{color:var(--mut);}
+.step .lab{flex:1;}
+.step .t{margin-left:auto;flex:none;font-size:13px;font-weight:500;color:var(--sec);padding-top:3px;}
+.linkrow{display:flex;align-items:center;justify-content:space-between;}
+.linkrow b{font-size:15px;font-weight:600;color:var(--slate);}
+.ch{font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
+.body-sm{font-size:13.5px;color:var(--sec);line-height:1.55;margin-top:5px;}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:10px;}
+.bubble{max-width:85%;padding:13px 16px;font-size:14.5px;line-height:1.48;animation:rise .4s cubic-bezier(.2,.7,.3,1) both;}
+.bubble.ai{background:var(--surface);color:var(--ink);border-radius:20px 20px 20px 7px;align-self:flex-start;}
+.bubble.me{background:var(--slate);color:#fff;border-radius:20px 20px 7px 20px;align-self:flex-end;}
+.bubble.care{background:var(--green-soft);color:var(--ink);border-radius:20px 20px 20px 7px;align-self:flex-start;max-width:92%;}
+.care-head{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.care-head b{font-size:12.5px;font-weight:700;}
+.care-head .care-time{font-size:11.5px;color:var(--sec);margin-left:auto;}
+.care-faces{display:flex;flex:none;}
+.care-faces i{width:21px;height:21px;border-radius:50%;border:1.5px solid #fff;margin-left:-7px;overflow:hidden;display:block;}
+.care-faces i:first-child{margin-left:0;}
+.care-faces img{width:100%;height:100%;object-fit:cover;display:block;}
+.typing{display:flex;gap:4px;align-items:center;padding:15px 16px;}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:blink 1.3s infinite both;}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px;}
+.qchip{background:#fff;border:1px solid var(--line2);color:var(--slate);font-size:13px;font-weight:500;padding:9px 14px;border-radius:20px;cursor:pointer;transition:transform .12s ease, background .15s ease, border-color .15s ease;}
+.qchip:hover{background:var(--slate-soft);border-color:#C6D1DA;}
+.qchip:active{transform:scale(.95);}
+.inputbar{position:absolute;left:18px;right:18px;bottom:100px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line2);border-radius:26px;padding:7px 7px 7px 18px;box-shadow:var(--sh-card);}
+.inputbar input{flex:1;border:none;outline:none;font-family:inherit;font-size:14.5px;color:var(--ink);background:transparent;}
+.inputbar input::placeholder{color:var(--mut);}
+.send{width:38px;height:38px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer;transition:transform .12s ease;}
+.send:active{transform:scale(.92);}
+.send svg{width:18px;height:18px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+/* escalation */
+.worse{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:var(--sh-card);transition:transform .14s ease, box-shadow .2s ease, border-color .2s ease;}
+.worse:hover{border-color:var(--line2);box-shadow:0 2px 4px rgba(51,65,76,.05), 0 12px 26px rgba(51,65,76,.08);}
+.worse h4{font-size:15.5px;font-weight:600;color:var(--ink);}
+.worse p{font-size:12.5px;color:var(--sec);line-height:1.4;margin-top:2px;}
+/* feeling-worse / symptom-change sheet */
+.symgrid{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 18px;}
+.symchip{border:1.5px solid var(--line2);background:#fff;border-radius:20px;padding:9px 14px;font-family:inherit;font-size:13px;font-weight:600;color:var(--sec);cursor:pointer;transition:all .15s ease;}
+.symchip:hover{border-color:var(--slate);color:var(--ink);}
+.symchip.on{background:var(--red-soft);border-color:var(--red);color:var(--red-ink);}
+.btn[disabled]{opacity:.35;pointer-events:none;box-shadow:none;}
+/* persistent status in check-in card after reporting */
+.worse-status{display:flex;gap:10px;align-items:flex-start;background:var(--amber-soft);border-radius:14px;padding:12px 13px;margin-top:12px;font-size:12.5px;line-height:1.5;}
+.worse-status .d{flex:none;width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:5px;box-shadow:0 0 0 0 rgba(188,132,24,.5);animation:pulseDot 2.4s ease-out infinite;}
+.worse-status b{font-weight:700;}
+.worse-status .ws-sub{color:var(--sec);margin-top:2px;font-size:12px;}
+.bubble.ai a{color:var(--blue);font-weight:600;text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
+/* behind */
+.numbadge{width:34px;height:34px;border-radius:11px;background:var(--slate-soft);color:var(--slate);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;}
+.bh h3{font-size:16px;font-weight:600;letter-spacing:-.01em;}
+.bh p{font-size:13.5px;color:var(--sec);line-height:1.55;margin-top:8px;}
+.divider{height:1px;background:var(--line);margin:14px 0;}
+.kv{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;}
+.kv .k{color:var(--sec);}.kv .v{font-weight:600;}
+/* toast */
+.toast{position:absolute;left:18px;right:18px;bottom:104px;display:flex;align-items:center;gap:12px;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(20,20,25,.32);transform:translateY(160%);opacity:0;transition:transform .42s cubic-bezier(.2,.8,.25,1), opacity .3s ease;z-index:70;pointer-events:none;}
+.toast.show{transform:none;opacity:1;}
+.toast.alert{background:var(--red-ink);}
+.toast .ti{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;flex:none;}
+.toast .ti svg{width:17px;height:17px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.toast .tt{font-size:14px;font-weight:600;line-height:1.3;}
+.toast .ts{font-size:12px;opacity:.78;margin-top:1px;}
+.navwrap{position:absolute;left:16px;right:16px;bottom:22px;display:flex;align-items:stretch;gap:11px;z-index:50;}
+.tabbar{flex:1;display:flex;justify-content:space-around;align-items:center;background:#fff;border-radius:30px;padding:13px 8px;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);}
+.tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;color:#9CA2AB;font-size:11px;font-weight:500;cursor:pointer;flex:1;transition:color .18s ease;}
+.tab svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s ease;}
+.tab:active svg{transform:scale(.9);}
+.tab.active{color:var(--ink);font-weight:600;}
+.companion{flex:none;width:66px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:26px;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);cursor:pointer;transition:transform .14s ease;}
+.companion:active{transform:scale(.95);}
+.companion .orb{position:relative;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;}
+.companion .orb .burst{width:30px;height:30px;}
+.companion .orb:before{content:"";position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,rgba(62,78,90,.18),transparent 68%);animation:orbPulse 2.8s ease-out infinite;}
+.companion.active .orb:before{background:radial-gradient(circle,rgba(62,78,90,.32),transparent 66%);}
+@keyframes orbPulse{0%{transform:scale(.8);opacity:.7}70%{transform:scale(1.35);opacity:0}100%{opacity:0}}
+
+/* compass mark — Nav identity */
+.burst{width:100%;height:100%;display:block;transform-origin:50% 50%;color:var(--ink);}
+.la-orb .burst{color:#fff;}
+
+/* Nav AI (concierge) screen */
+.nav-scroll{display:flex;flex-direction:column;padding:62px 20px 150px;}
+.nav-head{flex:none;display:flex;justify-content:center;align-items:center;padding-bottom:4px;}
+.nav-wordmark{display:inline-flex;align-items:center;gap:9px;font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
+.nav-wordmark .nav-mark{width:23px;height:23px;display:block;}
+.nav-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 4px;}
+.nav-orb{width:88px;height:88px;display:block;margin-bottom:24px;filter:drop-shadow(0 10px 22px rgba(51,65,76,.26));}
+.nav-greet{font-size:26px;font-weight:700;letter-spacing:-.025em;line-height:1.12;}
+.nav-disclaim{font-size:13px;color:var(--mut);line-height:1.5;margin-top:13px;max-width:300px;}
+.nav-foot{flex:none;}
+.human-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;}
+.faces{display:flex;flex:none;}
+.faces i{width:31px;height:31px;border-radius:50%;border:2px solid #fff;margin-left:-11px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.faces i:first-child{margin-left:0;}
+.faces i img{width:100%;height:100%;object-fit:cover;}
+.faces i svg{width:16px;height:16px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.nav-cap{font-size:11.5px;color:var(--mut);text-align:center;line-height:1.45;margin-top:14px;padding:0 10px;}
+
+/* ===== stage (two devices) ===== */
+.stage{display:flex;align-items:flex-start;justify-content:center;gap:34px;flex-wrap:wrap;}
+.sarahwrap{display:none;flex:none;position:relative;}
+.adv-x{position:absolute;top:26px;right:-11px;width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:var(--sh-card);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6;transition:transform .12s ease;}
+.adv-x:active{transform:scale(.9);}
+.adv-x svg{width:14px;height:14px;stroke:var(--sec);stroke-width:2.4;fill:none;stroke-linecap:round;}
+.sarahwrap.show{display:block;animation:rise .6s cubic-bezier(.2,.7,.3,1) both;}
+.devlabel{text-align:center;font-size:12px;font-weight:600;color:#6f6a60;margin-bottom:10px;}
+.devlabel b{color:var(--ink);}
+.device.sarah{width:352px;height:764px;border-radius:50px;padding:9px;}
+.shost{position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:#fff;font-family:var(--sans);color:var(--ink);}
+.sview{position:absolute;inset:0;display:flex;flex-direction:column;}
+.s-statusbar{flex:none;display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:600;}
+.s-statusbar .r{color:var(--mut);font-weight:500;font-size:12px;}
+.sms-head{text-align:center;font-size:12px;font-weight:600;color:var(--mut);padding:16px 0 10px;border-bottom:1px solid #eee;}
+.sms-body{padding:20px 18px;}
+.sms-bubble{background:#E9E9EB;border-radius:20px 20px 20px 6px;padding:14px 16px;font-size:14.5px;line-height:1.55;color:#111;max-width:88%;}
+.sms-bubble a{color:var(--blue);font-weight:600;cursor:pointer;display:inline-block;margin-top:6px;}
+.sms-hint{font-size:11.5px;color:var(--mut);margin-top:10px;}
+.sbrowser{flex:none;display:flex;align-items:center;gap:7px;background:var(--surface);margin:8px 14px;border-radius:12px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--sec);}
+.sbrowser svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none;}
+.sscroll{flex:1;overflow-y:auto;padding:10px 18px 30px;background:var(--bg);border-radius:24px 24px 0 0;scrollbar-width:none;}
+.sscroll::-webkit-scrollbar{display:none;}
+.sfoot{font-size:11.5px;color:var(--mut);text-align:center;line-height:1.55;margin-top:16px;}
+.supsell{background:var(--blue-soft);border-radius:16px;padding:13px 15px;display:flex;align-items:center;gap:12px;}
+.supsell p{flex:1;font-size:12.5px;font-weight:600;color:var(--blue);line-height:1.4;}
+.supsell span{background:var(--blue);color:#fff;font-size:12px;font-weight:700;border-radius:16px;padding:7px 14px;cursor:pointer;flex:none;}
+
+/* ===== hamburger + menu drawer ===== */
+.headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.menubtn{width:37px;height:37px;border:none;border-radius:50%;background:#fff;box-shadow:var(--sh-card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);flex:none;margin-top:2px;}
+.menubtn svg{width:17px;height:17px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;}
+.mdrop{position:absolute;inset:0;background:rgba(20,23,28,.45);opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:88;}
+.mdrop.show{opacity:1;pointer-events:auto;}
+.mdrawer{position:absolute;top:0;right:0;bottom:0;width:81%;background:#fff;z-index:89;transform:translateX(103%);transition:transform .42s cubic-bezier(.2,.8,.25,1);padding:70px 22px 24px;border-radius:34px 0 0 34px;box-shadow:-14px 0 44px rgba(20,20,25,.2);}
+.mdrawer.show{transform:none;}
+.mprof{display:flex;align-items:center;gap:13px;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:6px;cursor:pointer;}
+.mav{width:48px;height:48px;border-radius:50%;background:var(--slate);color:#fff;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;}
+.mnm{font-size:16px;font-weight:700;letter-spacing:-.01em;}
+.mln{font-size:12px;color:var(--blue);font-weight:600;margin-top:2px;}
+.mrow{display:flex;align-items:center;gap:12px;padding:14px 2px;cursor:pointer;border-bottom:1px solid var(--line);}
+.mrow .mi{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;}
+.mrow .mi svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.mrow .mt{font-size:14px;font-weight:600;}
+.mrow .ms{font-size:11.5px;color:var(--mut);margin-top:2px;font-weight:500;}
+.mrow .chev{margin-left:auto;color:var(--mut);}
+.mrow .chev svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;}
+
+/* ===== share wizard ===== */
+.shs{display:none;}
+.shs.show{display:block;animation:rise .4s cubic-bezier(.2,.7,.3,1) both;}
+.sh-title{font-size:19px;font-weight:700;letter-spacing:-.02em;}
+.sh-sub{font-size:12.5px;color:var(--mut);margin-top:3px;margin-bottom:14px;}
+.crow{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:13px 14px;cursor:pointer;margin-bottom:10px;}
+.crow:active{transform:scale(.99);}
+.cav{width:40px;height:40px;border-radius:50%;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;}
+.crow .tt{font-size:14px;font-weight:600;}
+.crow .ts{font-size:11.5px;color:var(--mut);margin-top:1px;}
+.shf{display:block;width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff;outline:none;margin-bottom:10px;}
+.shf:focus{border-color:var(--slate);}
+.shf::placeholder{color:var(--mut);}
+.seg{display:flex;background:var(--surface);border-radius:13px;padding:3px;margin-bottom:11px;}
+.seg button{flex:1;border:none;background:transparent;border-radius:11px;padding:9px 4px;font-family:inherit;font-size:12px;font-weight:600;color:var(--sec);cursor:pointer;}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:var(--sh-card);font-weight:700;}
+.pvbox{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:13px 15px;}
+.pvcap{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin-bottom:4px;}
+.pvrow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600;transition:opacity .2s;}
+.pvrow:last-child{border-bottom:none;}
+.pvrow.off{opacity:.22;}
+.pvrow .pvi{width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;}
+.pvrow .pvi svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.sh-note{font-size:11.5px;color:var(--mut);text-align:center;line-height:1.5;margin-top:12px;}
+.sentring{width:56px;height:56px;border-radius:50%;background:var(--green-soft);color:var(--green);display:flex;align-items:center;justify-content:center;margin:6px auto 16px;}
+.sentring svg{width:26px;height:26px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.btn.subtle{background:var(--surface);color:var(--sec);box-shadow:none;}
+</style>
+</head>
+<body>
+<div class="intro">
+  <h1>Active Autonomy Companion</h1>
+  <p>Clickable prototype — tap buttons and the bottom tabs to navigate. Share the visit (menu ☰ on Status) to reveal the advocate view. On the phone home screen, tap the Dynamic Island for live wait &amp; status.</p>
+</div>
+<div class="stage">
+<div class="device">
+  <div class="screen-host" id="host">
+    <div class="island"></div>
+    <div class="liveact steady" data-cond="steady" onclick="laToggle();event.stopPropagation()" title="Show visit status">
+      <span class="la-orb burst-host"></span>
+      <span class="la-cond"></span>
+      <span class="la-txt" id="laTxt">ED wait</span>
+      <span class="la-num" id="laNum">30-60<span>min</span></span>
+    </div>
+    <div class="laexp" id="laExp" onclick="event.stopPropagation()">
+      <div class="lax-head">
+        <span class="la-orb burst-host"></span>
+        <span class="lax-app">Nav Health · Huntington ER</span>
+        <span class="lax-live"><span class="d"></span>LIVE</span>
+      </div>
+      <div class="lax-status" id="laxStatus">You're waiting. A nurse has reviewed you.</div>
+      <div class="lax-row">
+        <div><div class="lax-cap" id="laxC1c">Est. wait</div><div class="lax-num" id="laxC1v">30-60 min</div></div>
+        <div><div class="lax-cap" id="laxC2c">Up next</div><div class="lax-num" id="laxC2v">Clinician</div></div>
+      </div>
+      <div class="segs" id="laxSegs"><i class="on"></i><i class="on"></i><i class="cur"></i><i></i></div>
+      <button class="lax-open" onclick="laCollapse();go('status')">Open Nav Health</button>
+    </div>
+    <div class="statusbar">
+      <span id="sbClk">9:41</span>
+      <span class="ic">
+        <svg viewBox="0 0 18 12"><rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/><rect x="4.5" y="3.5" width="3" height="8.5" rx="1" fill="currentColor"/><rect x="9" y="1" width="3" height="11" rx="1" fill="currentColor"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="currentColor" opacity=".35"/></svg>
+        <svg viewBox="0 0 24 12"><rect x="1" y="1" width="19" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1"/><rect x="3" y="3" width="14" height="6" rx="1.5" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="1" fill="currentColor"/></svg>
+      </span>
+    </div>
+    <!-- 0 HOME (iPhone springboard) -->
+    <section class="screen" id="home" onclick="laCollapse()">
+      <div class="home-wrap">
+        <div class="grid-apps">
+          <div class="app" onclick="go('status')"><div class="ico" style="background:#fff;"><span class="burst-host" style="display:block;width:34px;height:34px;"></span></div><span class="lbl">Nav Health</span></div>
+          <div class="app"><div class="ico" style="background:#2BD158;"><svg viewBox="0 0 24 24"><path fill="#fff" d="M6 5h12a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-6l-4 3v-3H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z"/></svg></div><span class="lbl">Messages</span></div>
+          <div class="app"><div class="ico" style="background:#34C759;"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 3c1 0 1.6.7 2 2l.8 2.4a2 2 0 0 1-.5 2L8 12a12 12 0 0 0 4 4l.6-1.3a2 2 0 0 1 2-.5l2.4.8c1.3.4 2 1 2 2v2.5c0 1.2-1 2.2-2.3 2A17 17 0 0 1 3 6.3 2 2 0 0 1 5 4z"/></svg></div><span class="lbl">Phone</span></div>
+          <div class="app"><div class="ico" style="background:#3A3A3C;"><svg viewBox="0 0 24 24"><path fill="#fff" d="M9 4h6l1.4 2.5H20a1.5 1.5 0 0 1 1.5 1.5v9.5A1.5 1.5 0 0 1 20 19H4a1.5 1.5 0 0 1-1.5-1.5V8A1.5 1.5 0 0 1 4 6.5h3.6z"/><circle cx="12" cy="12.5" r="3.3" fill="#3A3A3C"/></svg></div><span class="lbl">Camera</span></div>
+          <div class="app"><div class="ico" style="background:#fff;"><svg viewBox="0 0 24 24"><path fill="#FF3B30" d="M12 20.6 4.3 12.9a4.6 4.6 0 0 1 6.5-6.5l1.2 1.2 1.2-1.2a4.6 4.6 0 0 1 6.5 6.5z"/></svg></div><span class="lbl">Health</span></div>
+          <div class="app"><div class="ico" style="background:#1c1c1e;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" stroke-width="1.8"/><path d="M12 7.2v5l3.2 2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="lbl">Clock</span></div>
+          <div class="app"><div class="ico" style="background:#3a8ee6;"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="3.4" fill="#FFD43B"/><path fill="#fff" d="M9 12.5h7.5a3.75 3.75 0 0 1 0 7.5H8a4.25 4.25 0 0 1-.6-8.46z"/></svg></div><span class="lbl">Weather</span></div>
+          <div class="app"><div class="ico" style="background:#5BC85B;"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 2.2A6.8 6.8 0 0 0 5.2 9c0 4.9 6.8 12.8 6.8 12.8S18.8 13.9 18.8 9A6.8 6.8 0 0 0 12 2.2z"/><circle cx="12" cy="9" r="2.6" fill="#5BC85B"/></svg></div><span class="lbl">Maps</span></div>
+        </div>
+        <div class="pagedots"><i class="on"></i><i></i></div>
+        <div class="dock">
+          <div class="app"><div class="ico" style="background:#1f8fff;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" stroke-width="1.8"/><path fill="#fff" d="m12 12 5-3-3 5-5 3z"/></svg></div></div>
+          <div class="app"><div class="ico" style="background:#2A7BE4;"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2.6" fill="#fff"/><path d="M4.5 8.5 12 13l7.5-4.5" fill="none" stroke="#2A7BE4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="app"><div class="ico" style="background:#FA3C4C;"><svg viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.8" d="M9 17.5V6.2l9-1.8v9.1"/><circle cx="7" cy="17.5" r="2.3" fill="#fff"/><circle cx="16" cy="13.5" r="2.3" fill="#fff"/></svg></div></div>
+          <div class="app" onclick="go('status')"><div class="ico" style="background:#fff;"><span class="burst-host" style="display:block;width:34px;height:34px;"></span></div></div>
+        </div>
+      </div>
+    </section>
+    <!-- STATUS (phased: waiting / incare / after) -->
+    <section class="screen" id="status">
+      <div class="scroll">
+        <div class="headrow">
+          <div>
+            <h2 class="title" id="stTitle">You're waiting</h2>
+            <div class="subt" id="stSub">Updated just now</div>
+          </div>
+          <button class="menubtn" onclick="openMenu()" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        </div>
+        <div class="gap lg"></div>
+
+        <!-- ===== WAITING ===== -->
+        <div class="phase-block show" data-phase="waiting">
+          <div class="card">
+            <div class="row">
+              <div class="chip green"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div>
+                <div class="ttl" style="font-size:16px;" id="revTitle">A nurse has reviewed your arrival</div>
+                <div class="sub" id="revSub">You're safe to wait here.</div>
+              </div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card dark v1c c3" id="hcard">
+            <div class="wc-head">
+              <span class="kicker">Estimated wait time</span>
+              <button class="wc-info" onclick="toggleHExpl()" title="How is this estimated?"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
+            </div>
+            <div class="wc-range" id="waitRange">30-60<span>mins</span></div>
+            <div class="wc-expl" id="hExpl" hidden>This range is a conservative estimate based on how busy the ER is right now and your triage priority.</div>
+            <div class="tri-panel">
+              <button class="tri-row" id="triRow" onclick="triToggle()">
+                <span class="tri-badge" id="triBadge">3</span>
+                <span><span class="t1" id="triT1">Triage level 3: stable, multiple steps expected</span>
+                <span class="t2" style="display:block;">What does this mean?</span></span>
+                <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="tri-expl" id="triExpl">
+                <div class="inner" id="triInner">
+                  <b>What it means:</b> You're stable, and your care will likely involve two or more steps, like bloodwork plus a scan. That makes yours a longer kind of visit.
+                  <span class="nm"><b>What it doesn't mean:</b> It's not a score of how sick you feel. It's an estimate of how many steps your care will take.</span>
+                  <span class="nm" style="color:rgba(255,255,255,.72);">Set at triage, 9:39 AM · Your level can change if you're reassessed. Tell staff right away if you feel worse.</span>
+                </div>
+              </div>
+            </div>
+            <div class="wc-journey">
+              <div class="kicker">Your journey</div>
+              <div class="steps">
+                <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
+                <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
+                <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seeing a clinician<span class="meta">Up next</span></div></div>
+                <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="kicker">Your check-in</div>
+            <div style="margin-top:12px;font-size:13px;color:var(--sec);">Reason for visit</div>
+            <div style="font-size:15px;font-weight:600;margin-top:3px;" id="reasonWaiting">Chest discomfort, started this morning</div>
+            <div class="worse-status" id="worseStatus" hidden>
+              <span class="d"></span>
+              <div><b>You've reported a symptom change.</b>
+              <div class="ws-sub" id="worseStatusSub">A nurse is coming to check on you.</div></div>
+            </div>
+            <div class="worse-status" id="humanStatus" hidden>
+              <span class="d"></span>
+              <div><b>Care team notified.</b>
+              <div class="ws-sub" id="humanStatusSub">A staff member is coming to find you where you're sitting.</div></div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card sm" id="uniqueCard" hidden>
+            <div class="ch" id="uniqueTitle"></div>
+            <p class="body-sm" id="uniqueBody"></p>
+          </div>
+          <div class="gap" id="uniqueGap" hidden></div>
+          <div class="card sm">
+            <div class="ch">What's happening now</div>
+            <p class="body-sm" id="nowWaiting">A clinician has reviewed you. The team is freeing up a treatment space and checks on waiting patients regularly.</p>
+          </div>
+          <div class="gap"></div>
+          <div class="card tappable linkrow" onclick="go('behind')" style="padding:16px 18px;">
+            <b>Why am I waiting?</b>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+          <div class="gap"></div>
+          <div class="card tappable linkrow" onclick="openShare()" style="padding:16px 18px;">
+            <b id="shareRowLabel">Let someone follow your visit</b>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
+          </div>
+        </div>
+
+        <!-- ===== IN CARE ===== -->
+        <div class="phase-block" data-phase="incare">
+          <div class="card dark hero">
+            <div class="kicker">Right now</div>
+            <div class="ttl" style="font-size:21px;margin-top:6px;" id="careTtl">You're in a care space</div>
+            <span class="statpill" style="color:var(--green);background:#fff;margin-left:0;margin-top:10px;" id="bayPill"><span class="d" style="background:var(--green);"></span>Bay 4</span>
+            <div class="cap" id="careCap">Dr. Aisha Khan is with you now and will explain the plan and any tests you may need.</div>
+            <div class="segs"><i class="on"></i><i class="on"></i><i class="cur"></i><i></i></div>
+            <div class="upnext"><span class="l">Up next</span><span class="r">Treatment &amp; next steps</span></div>
+          </div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="row" style="align-items:center;">
+              <div class="kicker">Your care team</div>
+              <span class="sub" style="margin:0 0 0 auto;">4 on shift</span>
+            </div>
+            <div class="team">
+              <div class="member" onclick="openBio(this)" data-bio="Aisha leads emergency assessments and decides the order of care by how urgent each case is. She's been an ED physician for 12 years and is overseeing your treatment today.">
+                <div class="m-photo" style="background:#5B7FE0"><span class="ini">AK</span><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-name">Dr. Aisha Khan</div>
+                <div class="m-role">Emergency physician</div>
+              </div>
+              <div class="member" onclick="openBio(this)" data-bio="Marcus did your initial assessment and set your priority level. He keeps watch over everyone in the waiting area and re-checks patients whose symptoms change.">
+                <div class="m-photo" style="background:#E0915B"><span class="ini">ML</span><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-name">Marcus Lee</div>
+                <div class="m-role">Triage nurse</div>
+              </div>
+              <div class="member" onclick="openBio(this)" data-bio="Sofia runs the floor, coordinating beds, staff and timing. When a care space opens or your status changes, it usually comes through her.">
+                <div class="m-photo" style="background:#5BB98C"><span class="ini">SR</span><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-name">Sofia Romero</div>
+                <div class="m-role">Charge nurse</div>
+              </div>
+              <div class="member" onclick="openBio(this)" data-bio="James helps with comfort and practical needs while you wait, like water and getting you settled. Flag him for anything that isn't urgent.">
+                <div class="m-photo" style="background:#9B7FE0"><span class="ini">JC</span><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-name">James Carter</div>
+                <div class="m-role">Care assistant</div>
+              </div>
+              <div class="member" onclick="openBio(this)" data-bio="Priya is a resident physician working alongside Dr. Khan. She may review your case and talk through next steps once you're seen.">
+                <div class="m-photo" style="background:#E07B9B"><span class="ini">PN</span><img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-name">Dr. Priya Nair</div>
+                <div class="m-role">Resident</div>
+              </div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="kicker">Your journey</div>
+            <div class="steps">
+              <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
+              <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
+              <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seeing a clinician<span class="meta">You are here</span></div></div>
+              <div class="step next"><div class="dot next"><i></i></div><div class="lab">Treatment &amp; next steps<span class="meta">Up next</span></div></div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card sm">
+            <div class="ch">What's happening now</div>
+            <p class="body-sm" id="nowIncare">You're being assessed in person. Ask Nav or your nurse if anything is unclear. There's no such thing as a silly question.</p>
+          </div>
+        </div>
+
+        <!-- ===== AFTER VISIT ===== -->
+        <div class="phase-block" data-phase="after">
+          <div class="card" style="background:var(--green-soft);border-color:transparent;">
+            <div class="row">
+              <div class="chip green" style="background:#fff;"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div><div class="ttl" style="font-size:16px;" id="dcTtl">Your visit is complete</div><div class="sub" id="dcSub">Discharged 1:12 PM · Today</div></div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="kicker">Visit summary</div>
+            <div style="margin-top:12px;font-size:13px;color:var(--sec);">Reason for visit</div>
+            <div style="font-size:15px;font-weight:600;margin-top:3px;" id="reasonAfter">Chest discomfort, started this morning</div>
+            <div class="divider"></div>
+            <div style="font-size:13px;color:var(--sec);">What we found</div>
+            <p class="body-sm" style="margin-top:4px;" id="foundText">Your heart tracing (ECG) and blood tests came back normal. The discomfort is most likely muscular, not coming from your heart.</p>
+          </div>
+          <div class="gap"></div>
+          <div class="card bh" id="nextSteps">
+            <div class="kicker" style="margin-bottom:4px;">What to do next</div>
+            <div class="row" style="align-items:center;margin-top:12px;"><div class="numbadge">1</div><h3>Rest and avoid heavy lifting</h3></div>
+            <p>For the next 2–3 days. Gentle movement is fine.</p>
+            <div class="row" style="align-items:center;margin-top:14px;"><div class="numbadge">2</div><h3>Take pain relief if needed</h3></div>
+            <p>Ibuprofen 400mg with food, up to 3× a day.</p>
+            <div class="row" style="align-items:center;margin-top:14px;"><div class="numbadge">3</div><h3>Come back if it worsens</h3></div>
+            <p>Come back to the ED right away if the pain is severe, spreads to your arm or jaw, or you feel breathless.</p>
+          </div>
+          <div class="gap"></div>
+          <div class="card sm tappable" onclick="confirmAction('Added to calendar','We will remind you the day before.')">
+            <div class="row">
+              <div class="chip violet"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+              <div><div class="ttl" id="gpTitle">Follow up with your GP</div><div class="sub" id="gpSub">Within 7 days · summary sent to them</div></div>
+              <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="kicker">Who looked after you</div>
+            <div class="team">
+              <div class="member" onclick="openBio(this)" data-bio="Aisha led your assessment and decided your care today. She's been an ED physician for 12 years.">
+                <div class="m-photo" style="background:#5B7FE0"><span class="ini">AK</span><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-name">Dr. Aisha Khan</div>
+                <div class="m-role">Emergency physician</div>
+              </div>
+              <div class="member" onclick="openBio(this)" data-bio="Marcus did your triage and kept watch over you in the waiting area.">
+                <div class="m-photo" style="background:#E0915B"><span class="ini">ML</span><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-name">Marcus Lee</div>
+                <div class="m-role">Triage nurse</div>
+              </div>
+              <div class="member" onclick="openBio(this)" data-bio="Priya reviewed your case alongside Dr. Khan and talked through your next steps.">
+                <div class="m-photo" style="background:#E07B9B"><span class="ini">PN</span><img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-name">Dr. Priya Nair</div>
+                <div class="m-role">Resident</div>
+              </div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="ch" style="text-align:center;">How was your visit?</div>
+            <div class="rate" style="display:flex;justify-content:center;gap:8px;margin-top:14px;">
+              <span class="star" onclick="rate(this)">★</span><span class="star" onclick="rate(this)">★</span><span class="star" onclick="rate(this)">★</span><span class="star" onclick="rate(this)">★</span><span class="star" onclick="rate(this)">★</span>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card tappable linkrow" onclick="confirmAction('Summary downloaded','Saved to your files.')" style="padding:16px 18px;">
+            <b style="color:var(--ink);">Download visit summary (PDF)</b>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <!-- 3 NAV (AI) -->
+    <section class="screen" id="navigator">
+      <div class="scroll nav-scroll">
+        <div class="nav-head">
+          <span class="nav-wordmark"><span class="nav-mark burst-host"></span>Nav Health</span>
+        </div>
+        <div class="nav-hero" id="navHero">
+          <span class="nav-orb burst-host"></span>
+          <h2 class="nav-greet" id="navGreet">Hi Claire, how can I help?</h2>
+          <p class="nav-disclaim">Nav is an AI guide to your visit, not a substitute for medical advice. If you feel severely unwell or your symptoms get worse, tell a staff member or nurse right away.</p>
+        </div>
+        <div class="chat" id="chat" hidden></div>
+        <div class="nav-foot">
+          <div class="card tappable human-card" onclick="chatHuman()">
+            <div>
+              <div class="ttl">Chat with a human?</div>
+              <div class="sub" id="humanCardSub">Message your care team</div>
+            </div>
+            <div class="faces">
+              <i style="background:#E0915B"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
+              <i style="background:#5BB98C"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=faces" alt=""></i>
+              <i style="background:#9B7FE0"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
+            </div>
+          </div>
+          <div class="kicker" style="margin-top:16px;">Suggested</div>
+          <div class="chips" id="chips">
+            <div class="qchip" onclick="ask(this)">Why isn't it first-come?</div>
+            <div class="qchip" onclick="ask(this)">Can I leave and come back?</div>
+            <div class="qchip" onclick="ask(this)">Who is looking after me?</div>
+          </div>
+          <p class="nav-cap">Nav can make mistakes and isn't monitored by staff. If it's an emergency, tell a staff member right away.</p>
+        </div>
+      </div>
+      <div class="inputbar">
+        <input placeholder="Ask Nav anything…" id="navInput" autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter')sendNav()">
+        <div class="send" onclick="sendNav()"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+      </div>
+    </section>
+    <!-- 4 COMFORT -->
+    <section class="screen" id="comfort">
+      <div class="scroll">
+        <h2 class="title">Care</h2>
+        <div class="subt">Small things you can do while you wait</div>
+        <div class="gap lg"></div>
+        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMed()">
+          <div class="row">
+            <div class="chip amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 0 1 8 0"/><path d="M12 8v-1.5M12 17.5V16"/></svg></div>
+            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won't miss you','Check back in when you return.')">
+          <div class="row">
+            <div class="chip green"><svg viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M14 16l4-4-4-4M18 12H9"/></svg></div>
+            <div><div class="ttl">Stepping outside?</div><div class="sub">Let us know so we don't miss you</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+        <div class="worse" onclick="openWorse()">
+          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
+          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+    </section>
+    <!-- 4b JOURNAL -->
+    <section class="screen" id="journal">
+      <div class="scroll">
+        <h2 class="title">Your journal</h2>
+        <div class="subt" id="jSub">Questions, pain and notes, all in one place</div>
+        <div class="gap lg"></div>
+
+        <!-- pain check-in -->
+        <div class="card">
+          <div class="kicker" id="ckKicker">Pain check-in</div>
+          <div class="ttl" style="margin-top:9px;" id="ckQ">How's your pain right now?</div>
+          <div class="painscale" id="painScale"></div>
+          <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--mut);margin-top:7px;"><span id="ckLo">No pain</span><span id="ckHi">Worst imaginable</span></div>
+          <div class="divider"></div>
+          <div class="kicker" id="ckEarlier">Earlier today</div>
+          <div class="vhist" id="painHist">
+            <div class="vrow"><div class="vtime"><b>11:15 AM</b><span>Nurse check</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Aching, a little better</div><span class="painpill mid">5/10</span></div>
+            <div class="vrow"><div class="vtime"><b>9:39 AM</b><span>Triage</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Sharp when breathing deeply</div><span class="painpill hi">7/10</span></div>
+          </div>
+        </div>
+        <div class="gap"></div>
+
+        <!-- questions for the doctor -->
+        <div class="card">
+          <div class="row" style="align-items:center;">
+            <div class="kicker">Questions for your doctor</div>
+            <span class="sub" style="margin:0 0 0 auto;" id="qCount">1 to ask</span>
+          </div>
+          <div id="qList">
+            <div class="q-item">
+              <div class="q-text">Do I need more tests, like a stress test?</div>
+              <div class="q-meta">Added 10:02 AM · not asked yet</div>
+              <button class="q-btn" onclick="openASheet(this)">✓ They answered · save what they said</button>
+            </div>
+            <div class="q-item answered">
+              <div class="q-text">Can I keep taking my blood-pressure pill today?</div>
+              <div class="q-meta">Asked at triage</div>
+              <div class="q-ans">“Yes, take it as usual, with food.”<div class="q-meta" style="margin-top:6px;">Answered by Dr. Khan · 11:20 AM</div></div>
+            </div>
+          </div>
+          <div class="addq" onclick="openQSheet()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a question…</div>
+          <div class="kicker" style="margin-top:14px;">Suggested</div>
+          <div class="chips" style="margin-top:9px;" id="qChips">
+            <div class="qchip" onclick="addQChip(this)">What do my ECG results mean?</div>
+            <div class="qchip" onclick="addQChip(this)">When should I come back?</div>
+          </div>
+        </div>
+        <div class="gap"></div>
+
+        <!-- notes -->
+        <div class="card">
+          <div class="kicker">Notes</div>
+          <div id="noteList">
+            <div class="q-item">
+              <div class="q-text" style="font-weight:500;">Dr. Khan said the ECG looks normal. Still waiting on blood results.</div>
+              <div class="q-meta">12:05 PM</div>
+            </div>
+          </div>
+          <div class="addq" onclick="addNote()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Jot something down…</div>
+        </div>
+        <div class="gap"></div>
+
+        <!-- vitals, folded in -->
+        <div class="card">
+          <div class="row" style="align-items:center;">
+            <div class="kicker">Your vitals</div>
+            <span class="sub" style="margin:0 0 0 auto;" id="vMeta">12:58 PM · Marcus Lee</span>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;" id="vSnap">
+            <div><div style="font-size:17px;font-weight:700;">76 <span style="font-size:11px;font-weight:600;color:var(--mut);">bpm</span></div><div class="subt" style="font-size:11.5px;">Heart rate</div></div>
+            <div><div style="font-size:17px;font-weight:700;">128/82</div><div class="subt" style="font-size:11.5px;">Blood pressure</div></div>
+            <div><div style="font-size:17px;font-weight:700;">36.9°</div><div class="subt" style="font-size:11.5px;">Temp</div></div>
+            <div><div style="font-size:17px;font-weight:700;">98<span style="font-size:11px;font-weight:600;color:var(--mut);">%</span></div><div class="subt" style="font-size:11.5px;">SpO₂</div></div>
+          </div>
+          <button class="q-btn" style="width:100%;margin-top:13px;" id="vToggle" onclick="toggleVitals()">See trends &amp; history</button>
+          <div id="vitalsFull" hidden>
+        <div class="gap"></div>
+        <div class="vitals-grid">
+          <div class="vital">
+            <div class="v-top"><span class="v-ic red"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></span><span class="v-tag ok">Normal</span></div>
+            <div class="v-name">Heart rate</div>
+            <div class="v-val" id="gHr">76<span>bpm</span></div>
+            <svg class="v-spark" viewBox="0 0 100 24" preserveAspectRatio="none"><polyline points="4,6 50,13 96,17" style="stroke:var(--red-ink)"/></svg>
+          </div>
+          <div class="vital">
+            <div class="v-top"><span class="v-ic blue"><svg viewBox="0 0 24 24"><path d="M5.5 19a9 9 0 1 1 13 0"/><path d="M12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M13.4 9.6 16 7"/></svg></span><span class="v-tag ok">Normal</span></div>
+            <div class="v-name">Blood pressure</div>
+            <div class="v-val" id="gBp">128/82<span>mmHg</span></div>
+            <svg class="v-spark" viewBox="0 0 100 24" preserveAspectRatio="none"><polyline points="4,5 50,12 96,16" style="stroke:var(--blue)"/></svg>
+          </div>
+          <div class="vital">
+            <div class="v-top"><span class="v-ic amber"><svg viewBox="0 0 24 24"><path d="M14 14.76V4a2 2 0 0 0-4 0v10.76a4 4 0 1 0 4 0z"/></svg></span><span class="v-tag ok">Normal</span></div>
+            <div class="v-name">Temperature</div>
+            <div class="v-val" id="gTemp">36.9<span>°C</span></div>
+            <svg class="v-spark" viewBox="0 0 100 24" preserveAspectRatio="none"><polyline points="4,9 50,11 96,13" style="stroke:var(--amber)"/></svg>
+          </div>
+          <div class="vital">
+            <div class="v-top"><span class="v-ic green"><svg viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1 1 11 8H2M12.59 19.41A2 2 0 1 0 14 16H2M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2"/></svg></span><span class="v-tag ok">Normal</span></div>
+            <div class="v-name">Oxygen · SpO₂</div>
+            <div class="v-val" id="gSpo2">98<span>%</span></div>
+            <svg class="v-spark" viewBox="0 0 100 24" preserveAspectRatio="none"><polyline points="4,15 50,9 96,8" style="stroke:var(--green)"/></svg>
+          </div>
+        </div>
+        <div class="gap"></div>
+        <div class="kicker">Reading history</div>
+        <div class="vhist" id="vHist">
+            <div class="vrow">
+              <div class="vtime"><b>12:58 PM</b><span>Latest</span></div>
+              <div class="vvals"><span class="vv"><b>76</b> <span>bpm</span></span><span class="vv"><b>128/82</b></span><span class="vv"><b>36.9°</b></span><span class="vv"><b>98%</b> <span>SpO₂</span></span></div>
+            </div>
+            <div class="vrow">
+              <div class="vtime"><b>11:15 AM</b><span>Nurse check</span></div>
+              <div class="vvals"><span class="vv"><b>80</b> <span>bpm</span></span><span class="vv"><b>132/84</b></span><span class="vv"><b>37.0°</b></span><span class="vv"><b>98%</b> <span>SpO₂</span></span></div>
+            </div>
+            <div class="vrow">
+              <div class="vtime"><b>9:38 AM</b><span>Triage</span></div>
+              <div class="vvals"><span class="vv"><b>88</b> <span>bpm</span></span><span class="vv"><b>138/86</b></span><span class="vv"><b>37.1°</b></span><span class="vv"><b>97%</b> <span>SpO₂</span></span></div>
+            </div>
+        </div>
+          </div>
+        </div>
+        <div class="gap"></div>
+        <!-- medications, from the health profile shared at check-in -->
+        <div class="card">
+          <div class="row" style="align-items:center;">
+            <div class="kicker">Medications · on file</div>
+            <span class="sub" style="margin:0 0 0 auto;">Shared at check-in</span>
+          </div>
+          <div id="medList"></div>
+          <p class="body-sm" style="margin-top:10px;">From your health profile. Spot something wrong or missing? Tell your nurse.</p>
+        </div>
+        <div class="gap"></div>
+        <div class="card flat" style="background:var(--surface);border-color:transparent;">
+          <p class="body-sm" style="margin-top:0;">Your journal is private to you. Vitals and medications on file come from your care team and health profile. Ask your nurse if you'd like anything explained.</p>
+        </div>
+      </div>
+    </section>
+    <!-- 5 BEHIND -->
+    <section class="screen" id="behind">
+      <div class="scroll">
+        <h2 class="title">Learn</h2>
+        <div class="subt">How the ER works, and how to get the most from this app.</div>
+        <div class="gap lg"></div>
+        <div class="card tappable" onclick="startTour()" style="display:flex;align-items:center;gap:13px;padding:15px 16px;margin-bottom:16px;">
+          <div class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5"/></svg></div>
+          <div style="flex:1;min-width:0;">
+            <b style="font-size:14.5px;letter-spacing:-.01em;">Take a quick tour</b>
+            <div style="font-size:12px;color:var(--sec);margin-top:2px;">See what each part of the app does, about a minute.</div>
+          </div>
+          <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </div>
+        <div class="kicker">Why waits happen</div>
+        <div style="font-size:13px;color:var(--sec);line-height:1.5;margin:4px 4px 12px;">The waiting room isn't a line. Here's how it really works.</div>
+        <div class="card bh" style="margin-bottom:12px;">
+          <div class="row" style="align-items:center;"><div class="numbadge">1</div><h3>Based on need, not arrival time</h3></div>
+          <p>Patients are seen by how urgent their condition is. Someone who arrives after you may be seen first if they're more critical, and the same protects you.</p>
+        </div>
+        <div class="card bh" style="margin-bottom:12px;">
+          <div class="row" style="align-items:center;"><div class="numbadge">2</div><h3>Your place can change</h3></div>
+          <p>If your priority is re-assessed, or a space opens, your status here updates automatically.</p>
+        </div>
+        <div class="card bh" style="margin-bottom:16px;">
+          <div class="row" style="align-items:center;"><div class="numbadge">3</div><h3>The team is working even when it's quiet</h3></div>
+          <p>Behind the doors, clinicians are treating patients, waiting on tests, and freeing up rooms.</p>
+        </div>
+        <div style="font-size:13.5px;color:var(--slate);line-height:1.55;padding:0 4px;">Our aim: make the system readable to you, not to overwhelm you with everything at once.</div>
+      </div>
+    </section>
+    <!-- toast -->
+    <div class="toast" id="toast">
+      <div class="ti"><svg id="toastIcon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div><div class="tt" id="toastTitle">Done</div><div class="ts" id="toastSub"></div></div>
+    </div>
+    <div class="navwrap" id="tabs">
+      <nav class="tabbar">
+        <div class="tab" data-screen="status" onclick="go('status')">
+          <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Status</div>
+        <div class="tab" data-screen="comfort" onclick="go('comfort')">
+          <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"/><path d="m18 15-2-2"/><path d="m15 18-2-2"/></svg>Care</div>
+        <div class="tab" data-screen="journal" onclick="go('journal')">
+          <svg viewBox="0 0 24 24"><path d="M13.5 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.5"/><path d="M2 7h4M2 11h4M2 15h4"/><path d="m21.3 5.3-6.9 6.9-2.9.7.7-2.9 6.9-6.9a1.6 1.6 0 0 1 2.2 2.2z"/></svg>Journal</div>
+        <div class="tab" data-screen="behind" onclick="go('behind')">
+          <svg viewBox="0 0 24 24"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>Learn</div>
+      </nav>
+      <div class="tab companion" data-screen="navigator" onclick="go('navigator')" aria-label="AI companion">
+        <span class="orb burst-host"></span>
+      </div>
+    </div>
+    <!-- care-team bio sheet -->
+    <div class="sheet-backdrop" id="bioBackdrop" onclick="closeBio()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="sheet-grip"></div>
+        <button class="sheet-x" onclick="closeBio()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <div class="bio-head">
+          <div class="bio-photo"><img id="bioPhoto" src="" alt=""></div>
+          <div>
+            <div class="bio-name" id="bioName"></div>
+            <div class="bio-role" id="bioRole"></div>
+            <div class="bio-status" id="bioStatus"><span class="dot"></span><span id="bioStatusText"></span></div>
+          </div>
+        </div>
+        <p class="bio-text" id="bioText"></p>
+        <button class="btn" onclick="confirmAction('Message sent','Your care team will reply when they can.');closeBio();">Message care team
+          <svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- feeling worse / symptom change sheet -->
+    <div class="sheet-backdrop" id="worseBackdrop" onclick="closeWorse()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="sheet-grip"></div>
+        <button class="sheet-x" onclick="closeWorse()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <div class="sh-title">What's changed?</div>
+        <div class="sh-sub">This goes straight to the triage nurse and keeps your assessment current.</div>
+        <div class="symgrid" id="symGrid">
+          <button class="symchip" onclick="symToggle(this)">Pain is worse</button>
+          <button class="symchip" onclick="symToggle(this)">Discomfort is spreading</button>
+          <button class="symchip" onclick="symToggle(this)">Trouble breathing</button>
+          <button class="symchip" onclick="symToggle(this)">Dizzy or lightheaded</button>
+          <button class="symchip" onclick="symToggle(this)">Nausea</button>
+          <button class="symchip" onclick="symToggle(this)">Something new</button>
+        </div>
+        <button class="btn" id="worseSend" disabled onclick="sendWorse()">Send to the triage nurse
+          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+        <p class="foot-note" style="text-align:center;margin-top:12px;">If this feels like an emergency, tell a staff member right away.</p>
+      </div>
+    </div>
+    <!-- menu drawer -->
+    <div class="mdrop" id="mdrop" onclick="closeMenu()"></div>
+    <aside class="mdrawer" id="mdrawer">
+      <div class="mprof" onclick="confirmAction('Health profile','Medications, allergies, insurance & emergency contacts. Powers your pre-filled check-in.')">
+        <div class="mav" id="mAv">CM</div>
+        <div><div class="mnm" id="mName">Claire Morgan</div><div class="mln">View health profile ›</div></div>
+      </div>
+      <div class="mrow" onclick="closeMenu();openShare()">
+        <div class="mi" style="background:var(--blue-soft);color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></div>
+        <div><div class="mt">My care circle</div><div class="ms" id="ccSub">Not sharing yet · invite someone</div></div>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="mrow" onclick="confirmAction('Settings','Language, text size and notifications. Prototype placeholder.')">
+        <div class="mi" style="background:var(--surface);color:var(--sec);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <div><div class="mt">Settings</div><div class="ms">Language · Text size · Notifications</div></div>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="mrow" style="border-bottom:none;" onclick="confirmAction('Help & about','FAQs, privacy and how Nav Health works. Prototype placeholder.')">
+        <div class="mi" style="background:var(--amber-soft);color:var(--amber);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg></div>
+        <div><div class="mt">Help &amp; about</div></div>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+      </div>
+    </aside>
+    <!-- share-my-visit wizard -->
+    <div class="sheet-backdrop" id="shareBackdrop" onclick="closeShare()">
+      <div class="sheet" id="shareSheet" onclick="event.stopPropagation()">
+        <div class="sheet-grip"></div>
+        <button class="sheet-x" onclick="closeShare()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+
+        <div class="shs show">
+          <div class="sh-title" id="shWhoTitle">Who should follow your visit?</div>
+          <div class="sh-sub">They'll get a text with a secure link, no app needed.</div>
+          <div class="crow" onclick="shPick(0)"><div class="cav" style="background:var(--amber);" id="shAvL">S</div><div><div class="tt" id="shCName">Sarah Morgan</div><div class="ts" id="shCRel">Daughter · emergency contact</div></div></div>
+          <div id="shExtraRows"></div>
+          <div class="crow" onclick="shAddForm()"><div class="cav" style="background:var(--surface);color:var(--sec);">+</div><div><div class="tt" style="color:var(--sec);">Add a phone number</div></div></div>
+        </div>
+
+        <div class="shs">
+          <div class="sh-title" id="shSeeTitle">What can Sarah see?</div>
+          <div class="sh-sub" id="shSeeSub">This is her actual screen. Dimmed items stay private.</div>
+          <div class="pvbox" id="shPreview">
+            <div class="pvcap" id="pvCap">Sarah's screen</div>
+            <div class="pvrow" data-tier="0"><span class="pvi" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><span id="pvYou">You're at Huntington ER, being cared for</span></div>
+            <div class="pvrow" data-tier="0"><span class="pvi" style="background:var(--slate-soft);color:var(--slate);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>Where you are in the process</div>
+            <div class="pvrow" data-tier="1"><span class="pvi" style="background:var(--blue-soft);color:var(--blue);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Wait estimate &amp; live updates</div>
+            <div class="pvrow" data-tier="1"><span class="pvi" style="background:var(--amber-soft);color:var(--amber);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg></span>Why you're here</div>
+            <div class="pvrow" data-tier="2"><span class="pvi" style="background:var(--red-soft);color:var(--red);"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>Your vitals as they're taken</div>
+          </div>
+          <div class="gap"></div>
+          <div class="seg" id="shSeg">
+            <button onclick="shTier(0)">Basics</button>
+            <button class="on" onclick="shTier(1)">Full visit</button>
+            <button onclick="shTier(2)">Everything</button>
+          </div>
+          <button class="btn" onclick="shSend()"><span id="shSendLabel">Send link to Sarah</span>
+            <svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+          <div class="sh-note">You can change or stop this anytime.</div>
+          <button class="btn subtle" id="shStopBtn" onclick="stopSharing()" hidden>Stop sharing</button>
+        </div>
+
+        <div class="shs">
+          <div class="sh-title">Add someone by phone</div>
+          <div class="sh-sub">They'll get a text with a secure link, no app needed.</div>
+          <input class="shf" id="acName" placeholder="Name" autocomplete="off">
+          <input class="shf" id="acRel" placeholder="Relationship · e.g. Mother" autocomplete="off">
+          <input class="shf" id="acPhone" type="tel" placeholder="Phone number" autocomplete="off">
+          <button class="btn" onclick="addContact()">Add &amp; choose what they see
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <div class="sh-note">They only see what you choose on the next step.</div>
+        </div>
+      </div>
+    </div>
+    <!-- journal composer (questions & answers) -->
+    <div class="sheet-backdrop" id="qBackdrop" onclick="closeQSheet()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="sheet-grip"></div>
+        <button class="sheet-x" onclick="closeQSheet()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <div class="sh-title" id="qSheetTitle">Add a question</div>
+        <div class="sh-sub" id="qSheetSub">You'll have it ready when the doctor comes by.</div>
+        <div class="q-quote" id="qSheetQ" hidden></div>
+        <textarea class="qta" id="qSheetTa" placeholder="Type your question…"></textarea>
+        <button class="btn" id="qSheetBtn" onclick="saveQSheet()">Save question</button>
+      </div>
+    </div>
+    <!-- guided meditation -->
+    <div class="med" id="med">
+      <button class="med-x" onclick="closeMed()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <div class="med-state" id="medChoose">
+        <div class="kicker" style="color:rgba(255,255,255,.55);">Guided meditation</div>
+        <h2>Take a few calm minutes</h2>
+        <p class="med-lede">Short sessions made for a waiting room. Eyes open or closed, sound on or off.</p>
+        <div class="medrows">
+          <div class="medrow" onclick="startMed('Settle your breath',3)">
+            <div class="mi2"><svg viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1 1 11 8H2M12.59 19.41A2 2 0 1 0 14 16H2M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2"/></svg></div>
+            <div><div class="tt">Settle your breath</div><div class="ts">3 min · slow guided breathing</div></div>
+          </div>
+          <div class="medrow" onclick="startMed('Ease the wait',4)">
+            <div class="mi2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+            <div><div class="tt">Ease the wait</div><div class="ts">4 min · for anxious moments</div></div>
+          </div>
+          <div class="medrow" onclick="startMed('Body scan',5)">
+            <div class="mi2"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><path d="M12 7.5v6M12 13.5 8.5 20M12 13.5l3.5 6.5M7 10.5h10"/></svg></div>
+            <div><div class="tt">Body scan</div><div class="ts">5 min · release tension, head to toe</div></div>
+          </div>
+        </div>
+        <p class="med-note">You'll keep getting visit updates. We'll interrupt only if your status changes.</p>
+      </div>
+      <div class="med-state" id="medPlayer" hidden>
+        <div class="med-name" id="medName">Settle your breath</div>
+        <div class="med-orbwrap"><div class="med-ring"></div><div class="med-orb" id="medOrb"></div></div>
+        <div class="med-cue" id="medCue">Breathe in…</div>
+        <div class="med-timer" id="medTimer">3:00</div>
+        <div class="med-ctl">
+          <button class="med-btn" id="medPause" onclick="pauseMed()">Pause</button>
+          <button class="med-btn ghost" onclick="endMed()">End session</button>
+        </div>
+      </div>
+    </div>
+    <!-- app tour (spotlight walkthrough) -->
+    <div class="tour-spot" id="tourSpot" hidden></div>
+    <div class="tour-tip" id="tourTip" hidden>
+      <div class="tt-k" id="tourStep">Tour · 1 of 5</div>
+      <h4 id="tourTitle"></h4>
+      <p id="tourTxt"></p>
+      <div class="tt-row">
+        <button class="tt-skip" onclick="endTour()">Skip tour</button>
+        <button class="tt-next" id="tourNext" onclick="nextTour()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sarah's phone (advocate view, appears when a link is sent) -->
+<div class="sarahwrap" id="sarahWrap">
+  <button class="adv-x" onclick="hideAdvPhone()" title="Hide this phone (sharing stays on)" aria-label="Hide phone"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="devlabel" id="advLabel"><b>Sarah's phone</b> · daughter &amp; advocate · no app, just a link</div>
+  <div class="device sarah">
+    <div class="shost">
+
+      <div class="sview" id="sSms">
+        <div class="s-statusbar"><span id="aClk1">9:47</span><span class="r">Messages</span></div>
+        <div class="sms-head">Huntington Hospital</div>
+        <div class="sms-body">
+          <div class="sms-bubble"><span id="smsTxt">Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:</span>
+            <a onclick="openSarahWeb()">nav.health/f/8kq2</a>
+          </div>
+          <div class="sms-hint">Tap the link ↑</div>
+        </div>
+      </div>
+
+      <div class="sview" id="sWeb" hidden>
+        <div class="s-statusbar"><span id="aClk2">9:48</span><span class="r">Safari</span></div>
+        <div class="sbrowser"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>nav.health · secure link</div>
+        <div class="sscroll">
+          <div class="kicker" style="margin-top:8px;">Following</div>
+          <h2 class="title" style="font-size:22px;margin-top:3px;" id="advTitle">Claire's visit</h2>
+          <div class="subt">Huntington Hospital ER · live</div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="row">
+              <div class="chip green"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div>
+                <div class="ttl" style="font-size:15.5px;" id="sPhaseTxt">She's been seen by a nurse and is safe</div>
+                <div class="sub" id="sPhaseSub">Waiting to see a clinician</div>
+              </div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card dark" data-stier="1" id="sWaitCard">
+            <span class="kicker">Estimated wait time</span>
+            <div class="wc-range" style="font-size:32px;" id="sWaitNum">30-60<span>mins</span></div>
+          </div>
+          <div class="gap"></div>
+          <div class="card">
+            <div class="kicker" id="advJourneyK">Her journey</div>
+            <div class="steps" id="sSteps">
+              <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
+              <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
+              <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seeing a clinician</div></div>
+              <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card" data-stier="1">
+            <div class="kicker" id="advWhyK">Why she's here</div>
+            <div style="font-size:15px;font-weight:600;margin-top:6px;" id="advReason">Chest discomfort, started this morning</div>
+            <div class="subt" style="margin-top:3px;" id="advSharedBy">Shared by Claire</div>
+          </div>
+          <div class="gap"></div>
+          <div class="card" data-stier="2">
+            <div class="kicker">Latest vitals</div>
+            <div style="display:flex;gap:18px;margin-top:10px;" id="aVitals">
+              <div><div style="font-size:18px;font-weight:700;">76</div><div class="subt">Heart rate</div></div>
+              <div><div style="font-size:18px;font-weight:700;">128/82</div><div class="subt">Blood pressure</div></div>
+              <div><div style="font-size:18px;font-weight:700;">98%</div><div class="subt">SpO₂</div></div>
+            </div>
+            <div class="subt" style="margin-top:8px;" id="aVT">Taken 9:52 AM</div>
+          </div>
+          <div class="gap"></div>
+          <div class="supsell">
+            <p>Get the Nav Health app for live notifications on the way over</p>
+            <span>Get</span>
+          </div>
+          <div class="sfoot" id="sFoot">Access ends when Claire's visit ends.<br>She can stop sharing at any time.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+<!-- prototype journey control (top of the screen, reads left → right) -->
+<div class="protoctl" id="phaseCtl">
+  <div class="pc-group">
+    <div class="pc-cap">Patient</div>
+    <div class="pc-pers">
+      <button class="pp on" data-p="claire">Claire</button>
+      <button class="pp" data-p="margaret">Margaret</button>
+      <button class="pp" data-p="elena">Elena</button>
+      <button class="pp" data-p="diana">Diana &amp; Lily</button>
+      <button class="pp" data-p="marcus">Marcus</button>
+      <button class="pp" data-p="yuki">Yuki</button>
+    </div>
+  </div>
+  <div class="pc-sep" id="triCtlSep"></div>
+  <div class="pc-group" id="triCtlGroup">
+    <div class="pc-cap">Triage level</div>
+    <div class="pc-cond">
+      <button class="tp" data-t="1">1</button>
+      <button class="tp" data-t="2">2</button>
+      <button class="tp on" data-t="3">3</button>
+      <button class="tp" data-t="4">4</button>
+      <button class="tp" data-t="5">5</button>
+    </div>
+  </div>
+  <div class="pc-sep"></div>
+  <div class="pc-group">
+    <div class="pc-cap">User journey</div>
+    <div class="pc-journey">
+      <div class="pc-rail" id="pcRail">
+        <div class="pc-fill" id="pcFill"></div>
+        <button class="pc-tick" data-i="0" style="left:0%"></button>
+        <button class="pc-tick" data-i="1" style="left:50%"></button>
+        <button class="pc-tick" data-i="2" style="left:100%"></button>
+        <div class="pc-thumb" id="pcThumb"></div>
+      </div>
+      <div class="pc-stops">
+        <button class="pc-stop" data-i="0" style="left:0%">Waiting</button>
+        <button class="pc-stop" data-i="1" style="left:50%">Care</button>
+        <button class="pc-stop" data-i="2" style="left:100%">After care</button>
+      </div>
+    </div>
+  </div>
+  <div class="pc-sep"></div>
+  <div class="pc-group">
+    <div class="pc-cap">ER conditions</div>
+    <div class="pc-cond">
+      <button class="ht" data-s="calm">Calm</button>
+      <button class="ht on" data-s="steady">Steady</button>
+      <button class="ht" data-s="busy">Busy</button>
+    </div>
+  </div>
+  <div class="pc-sep"></div>
+  <button class="pc-home" onclick="showHome()">Phone home screen</button>
+  <button class="pc-hide" onclick="ctlHide()" title="Hide controls" aria-label="Hide controls"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</div>
+<button class="scroll-lock" id="scrollLock" onclick="toggleScrollLock()" title="Lock page scroll">
+  <svg id="slIconOpen" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+  <svg id="slIconClosed" viewBox="0 0 24 24" style="display:none;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+</button>
+<button class="pc-pill" id="pcPill" onclick="ctlShow()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 5V3M12 21v-2M5 12H3M21 12h-2M6.3 6.3 4.9 4.9M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></svg>Controls</button>
+<script>
+let scrollLocked=false;
+function toggleScrollLock(){
+  scrollLocked=!scrollLocked;
+  const b=document.getElementById('scrollLock');
+  b.classList.toggle('on',scrollLocked);
+  document.documentElement.style.overflow=scrollLocked?'hidden':'';
+  document.getElementById('slIconOpen').style.display=scrollLocked?'none':'';
+  document.getElementById('slIconClosed').style.display=scrollLocked?'':'none';
+  b.title=scrollLocked?'Page scroll locked · tap to unlock':'Lock page scroll';
+}
+function ctlHide(){ document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); }
+function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); }
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id); el.classList.add('active');
+  const sc=el.querySelector('.scroll'); if(sc) sc.scrollTop=0;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.screen===id));
+  document.getElementById('host').classList.toggle('athome', id==='home');
+}
+function showHome(){go('home');}
+/* adaptive wait: ER conditions drive the estimated range + live activity */
+const H_COND={
+  calm:{range:'15-30', expl:'This range is a conservative estimate based on how busy the ER is right now and your triage priority. Things are calm at the moment.'},
+  steady:{range:'30-60', expl:'This range is a conservative estimate based on how busy the ER is right now and your triage priority.'},
+  busy:{range:'45-90', expl:'This range is a conservative estimate based on how busy the ER is right now and your triage priority. The ER is busier than usual at the moment.'}
+};
+function setCond(s){
+  document.querySelectorAll('[data-cond]').forEach(el=>{el.classList.remove('calm','steady','busy');el.classList.add(s);});
+  document.querySelectorAll('.ht').forEach(x=>x.classList.toggle('on',x.dataset.s===s));
+  const c=H_COND[s];
+  const r=document.getElementById('waitRange'); if(r) r.innerHTML=c.range+'<span>mins</span>';
+  const e=document.getElementById('hExpl'); if(e) e.textContent=c.expl;
+  curCond=s; syncSarah(); laSync();
+  /* keep a level 1/2 preview's range override alive across condition changes */
+  if(typeof curTri!=='undefined' && CUR==='claire' && (curTri===1||curTri===2)) setTri(curTri);
+}
+document.querySelectorAll('.ht').forEach(b=>b.addEventListener('click',()=>setCond(b.dataset.s)));
+function toggleHExpl(){const e=document.getElementById('hExpl'); if(e) e.hidden=!e.hidden;}
+function triToggle(){
+  const r=document.getElementById('triRow'), e=document.getElementById('triExpl');
+  const open=r.classList.toggle('open');
+  e.style.maxHeight=open?e.scrollHeight+'px':'0';
+}
+
+/* care-team bio sheet */
+function openBio(el){
+  document.getElementById('bioPhoto').src=el.querySelector('img').src;
+  document.getElementById('bioName').textContent=el.querySelector('.m-name').textContent;
+  document.getElementById('bioRole').textContent=el.querySelector('.m-role').textContent;
+  document.getElementById('bioText').textContent=el.dataset.bio||'';
+  const on=!!el.querySelector('.on');
+  document.getElementById('bioStatus').classList.toggle('off',!on);
+  document.getElementById('bioStatusText').textContent=on?'On shift now':'On call';
+  document.getElementById('bioBackdrop').classList.add('show');
+}
+function closeBio(){document.getElementById('bioBackdrop').classList.remove('show');}
+
+/* toast feedback */
+const checkPath='<path d="M20 6L9 17l-5-5"/>';
+const bellPath='<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>';
+let toastTimer;
+function showToast(title, sub, alert, icon){
+  const t=document.getElementById('toast');
+  document.getElementById('toastTitle').textContent=title;
+  document.getElementById('toastSub').textContent=sub||'';
+  document.getElementById('toastIcon').innerHTML=icon||checkPath;
+  t.classList.toggle('alert', !!alert);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function confirmAction(title, sub){ showToast(title, sub, false, checkPath); }
+/* feeling worse / symptom change */
+function openWorse(){document.getElementById('worseBackdrop').classList.add('show');}
+function closeWorse(){document.getElementById('worseBackdrop').classList.remove('show');}
+function symToggle(b){
+  b.classList.toggle('on');
+  document.getElementById('worseSend').disabled=!document.querySelector('#symGrid .symchip.on');
+}
+function sendWorse(){
+  const sel=[...document.querySelectorAll('#symGrid .symchip.on')].map(b=>b.textContent.toLowerCase());
+  document.getElementById('worseStatusSub').textContent='Reported: '+sel.join(', ')+' · A nurse is coming to check on you.';
+  document.getElementById('worseStatus').hidden=false;
+  document.getElementById('worseSub').textContent='Reported just now. A nurse is on the way. Tap to add more.';
+  closeWorse();
+  showToast('A nurse has been alerted','Your update went straight to the triage team.',true,bellPath);
+}
+
+/* navigator suggested questions */
+const answers={
+  "Why isn't it first-come?":"Care is ordered by medical urgency, not arrival. The sickest are seen first, and that same rule protects you if your condition changes.",
+  "Can I leave and come back?":"Yes. Just tap “Stepping outside?” in Comfort first, so we don’t call your name while you’re away.",
+  "Who is looking after me?":"Right now the triage team is monitoring everyone in the waiting area. You’ll be assigned a clinician once a care space opens."
+};
+/* typed questions: exact persona answers first, then keyword intents, then an honestly scoped fallback */
+function navReply(q){
+  const p=PERSONAS[CUR].nav.ans;
+  if(p[q]) return p[q];
+  if(answers[q]) return answers[q];
+  const s=q.toLowerCase();
+  if(/(heart|chest|cardiac|palpitat|flutter|attack)/.test(s)&&p['Is my heart okay?']) return p['Is my heart okay?'];
+  if(/(anxi|scared|afraid|panic|calm|nervous)/.test(s)&&p['Can I do anything about the anxiety?']) return p['Can I do anything about the anxiety?'];
+  if(/(how long|wait|when.*(seen|turn)|eta)/.test(s)) return "Your current estimate is on the Status screen. It's a conservative range based on how busy the ER is right now and your triage priority, and it updates as conditions change.";
+  if(/(first.?come|before me|skip|queue|line|order)/.test(s)) return answers["Why isn't it first-come?"];
+  if(/(leave|outside|step out|bathroom|toilet|come back|car)/.test(s)) return answers["Can I leave and come back?"];
+  if(/(who|doctor|nurse|looking after|care team|staff)/.test(s)) return answers["Who is looking after me?"];
+  if(/(water|blanket|food|eat|drink|hungry|thirsty|cold)/.test(s)) return "You can ask any staff member for water or a blanket. One note: check with your nurse before eating or drinking, since some tests need an empty stomach.";
+  if(/(pain|hurt|worse|dizzy|faint|sick)/.test(s)) return "If anything feels new or worse, tap “Report a symptom change” in Care. It goes straight to the triage nurse, and a re-check is never a bother.";
+  if(/(result|test|blood|ecg|x.?ray|scan)/.test(s)) return "Results go to your clinician as they come in, and your Status screen updates the moment something changes. Your care team will explain what results mean.";
+  return "I can help with questions about this visit: the wait, your status, who's looking after you, and what happens next. For medical questions, your care team is the right place. Tap “Chat with a human?” below and they'll come find you.";
+}
+function navSay(q){
+  const hero=document.getElementById('navHero'); if(hero) hero.style.display='none';
+  const chat=document.getElementById('chat'); chat.hidden=false;
+  const me=document.createElement('div'); me.className='bubble me'; me.textContent=q; chat.appendChild(me);
+  const typing=document.createElement('div'); typing.className='bubble ai typing';
+  typing.innerHTML='<span></span><span></span><span></span>'; chat.appendChild(typing);
+  const sc=chat.closest('.scroll'); sc.scrollTop=sc.scrollHeight;
+  setTimeout(()=>{
+    typing.classList.remove('typing'); typing.innerHTML=navReply(q);
+    sc.scrollTop=sc.scrollHeight;
+  },900);
+}
+function ask(chip){
+  const q=chip.textContent.trim();
+  chip.remove();
+  navSay(q);
+}
+function sendNav(){
+  const inp=document.getElementById('navInput');
+  const q=inp.value.trim(); if(!q) return;
+  inp.value='';
+  navSay(q);
+}
+
+/* chat with a human */
+const HUMAN_FOLLOWUP_MS = 25*1000; /* demo pacing — real app: ~5 minutes */
+const CARE_FACES = '<span class="care-faces">'
+  +'<i style="background:#E0915B"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=100&h=100&fit=crop&crop=faces" alt=""></i>'
+  +'<i style="background:#5BB98C"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop&crop=faces" alt=""></i>'
+  +'<i style="background:#9B7FE0"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop&crop=faces" alt=""></i>'
+  +'</span>';
+let humanNotified=false;
+function careMsg(txt){
+  const chat=document.getElementById('chat'); chat.hidden=false;
+  const hero=document.getElementById('navHero'); if(hero) hero.style.display='none';
+  const now=new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  const b=document.createElement('div'); b.className='bubble care';
+  b.innerHTML='<div class="care-head">'+CARE_FACES+'<b>Care team</b><span class="care-time">'+now+'</span></div>'+txt;
+  chat.appendChild(b);
+  const sc=chat.closest('.scroll'); if(sc) sc.scrollTop=sc.scrollHeight;
+}
+function chatHuman(){
+  showToast('Care team notified','A staff member will come find you.',false,bellPath);
+  document.getElementById('humanStatus').hidden=false;
+  document.getElementById('humanCardSub').innerHTML='<span style="color:var(--amber);">\u25cf</span> Care team notified \u00b7 someone is coming to you';
+  if(humanNotified){
+    document.getElementById('humanStatusSub').textContent="Notified again just now. They'll be with you as soon as they can.";
+    careMsg("We've let your care team know again. They'll be with you as soon as they can."); return;
+  }
+  humanNotified=true;
+  document.getElementById('humanStatusSub').textContent="A staff member is coming to find you where you're sitting.";
+  careMsg("Your care team has been notified and a staff member will come find you where you're sitting. They may be attending to other patients' emergencies right now, so it can take a few minutes. You haven't been missed. They'll be with you as soon as they can.");
+  setTimeout(()=>{
+    careMsg("You're not forgotten. We've notified your care team again. They're still attending to emergencies around the department and will be with you as soon as possible.");
+    showToast("You're not forgotten",'Your care team has been notified again.',false,bellPath);
+  }, HUMAN_FOLLOWUP_MS);
+}
+
+function burstSVG(){
+  /* Nav compass rose — brand mark (navicon.svg), inlined so it scales/recolors via currentColor */
+  const paths=[
+    'M14.7372 7.34625C14.0833 6.65142 8.97427 3.74951 8.97427 3.74951C8.97427 3.74951 11.9171 8.77677 12.4893 9.38985C13.0615 10.0029 16.6173 11.3517 16.6173 11.3517C16.6173 11.3517 15.3912 8.04107 14.7372 7.34625Z',
+    'M20.8681 7.34625C21.522 6.65142 26.631 3.74951 26.631 3.74951C26.631 3.74951 23.6882 8.77677 23.116 9.38985C22.5438 10.0029 18.9879 11.3517 18.9879 11.3517C18.9879 11.3517 20.2141 8.04107 20.8681 7.34625Z',
+    'M20.8681 17.7277C21.522 18.4226 26.631 21.3245 26.631 21.3245C26.631 21.3245 23.6882 16.2972 23.116 15.6841C22.5438 15.071 18.9879 13.7223 18.9879 13.7223C18.9879 13.7223 20.2141 17.0329 20.8681 17.7277Z',
+    'M14.6964 17.7277C14.0424 18.4226 8.93344 21.3245 8.93344 21.3245C8.93344 21.3245 11.8762 16.2972 12.4484 15.6841C13.0206 15.071 16.5765 13.7223 16.5765 13.7223C16.5765 13.7223 15.3503 17.0329 14.6964 17.7277Z',
+    'M6.35849 14.785C5.33669 14.7032 0.105072 12.5779 0.105072 12.5779C0.105072 12.5779 5.1237 10.3784 6.35849 10.3299C7.59328 10.2815 16.0285 12.5447 16.0285 12.5447C16.0285 12.5447 7.38029 14.8667 6.35849 14.785Z',
+    'M29.2302 14.813C30.252 14.7313 35.4836 12.6059 35.4836 12.6059C35.4836 12.6059 30.465 10.4064 29.2302 10.358C27.9954 10.3095 19.5602 12.5728 19.5602 12.5728C19.5602 12.5728 28.2084 14.8948 29.2302 14.813Z',
+    'M15.5138 23.9393C15.584 24.9619 17.8026 30.1528 17.8026 30.1528C17.8026 30.1528 19.9473 25.1734 20.0097 23.9393C20.0721 22.7051 17.8015 14.2951 17.8015 14.2951C17.8015 14.2951 15.4436 22.9166 15.5138 23.9393Z',
+    'M19.3149 6.48794C19.247 5.46512 17.7863 0.152771 17.7863 0.152771C17.7863 0.152771 16.3556 5.25392 16.2904 6.48794C16.2252 7.72196 17.7863 10.8606 17.7863 10.8606C17.7863 10.8606 19.3828 7.51075 19.3149 6.48794Z'
+  ];
+  const s=paths.map(d=>`<path d="${d}"/>`).join('');
+  return `<svg viewBox="0 0 36 31" class="burst" fill="currentColor">${s}</svg>`;
+}
+document.querySelectorAll('.burst-host').forEach(el=>el.innerHTML=burstSVG());
+
+/* ---- phases ---- */
+const PHASES=[
+  {key:'waiting',title:"Welcome Claire",sub:"You're checked in"},
+  {key:'incare',title:"You're being seen",sub:'In a care space now'},
+  {key:'after',title:'Your visit summary',sub:'Discharged 1:12 PM · Today'}
+];
+let phaseIdx=0;
+function setPhase(i){
+  phaseIdx=Math.max(0,Math.min(PHASES.length-1,i));
+  const p=PHASES[phaseIdx];
+  document.querySelectorAll('#status .phase-block').forEach(b=>b.classList.toggle('show',b.dataset.phase===p.key));
+  document.getElementById('stTitle').textContent=p.title;
+  document.getElementById('stSub').textContent=p.sub;
+  const pct=phaseIdx/(PHASES.length-1)*100;
+  document.getElementById('pcThumb').style.left=pct+'%';
+  document.getElementById('pcFill').style.width=pct+'%';
+  document.querySelectorAll('.pc-stop').forEach((s,si)=>s.classList.toggle('on',si===phaseIdx));
+  document.querySelectorAll('.pc-tick').forEach((t,ti)=>t.classList.toggle('done',ti<=phaseIdx));
+  const sc=document.querySelector('#status .scroll'); if(sc) sc.scrollTop=0;
+  syncSarah(); laSync();
+}
+function gotoPhase(i){ setPhase(i); go('status'); }
+document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('click',()=>gotoPhase(+b.dataset.i)));
+(function(){
+  const rail=document.getElementById('pcRail'), thumb=document.getElementById('pcThumb');
+  let drag=false;
+  function fromX(x){const r=rail.getBoundingClientRect();let f=(x-r.left)/r.width;f=Math.max(0,Math.min(1,f));setPhase(Math.round(f*(PHASES.length-1)));}
+  thumb.addEventListener('pointerdown',e=>{drag=true;gotoPhase(phaseIdx);thumb.setPointerCapture(e.pointerId);e.preventDefault();});
+  thumb.addEventListener('pointermove',e=>{if(drag)fromX(e.clientX);});
+  window.addEventListener('pointerup',()=>drag=false);
+  rail.addEventListener('click',e=>{if(e.target!==thumb){const r=rail.getBoundingClientRect();let f=(e.clientX-r.left)/r.width;gotoPhase(Math.round(Math.max(0,Math.min(1,f))*(PHASES.length-1)));}});
+})();
+
+/* ---- app tour (spotlight walkthrough, launched from Learn) ---- */
+const TOUR=[
+  {screen:'status',   sel:'.tab[data-screen="status"]',   title:'Your status, live',      txt:'Where you are in your visit, your current wait estimate, and who’s caring for you, updated as things change.'},
+  {screen:'status',   sel:'#status .menubtn',             title:'Menu & care circle',     txt:'Your health profile, settings, and “Share my visit”. Send a loved one a live link, no app needed.'},
+  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Take a guided breathing session or reach out to your care team, without leaving your seat.'},
+  {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'Jot down symptoms and questions for the doctor, and see the vitals your care team has recorded.'},
+  {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Plain-language explanations of how the ER really works, and why waits happen.'},
+  {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav isn’t a substitute for medical advice; in an emergency, tell a staff member.'}
+];
+let tourIdx=-1;
+function startTour(){ tourIdx=-1; nextTour(); }
+function nextTour(){
+  tourIdx++;
+  if(tourIdx>=TOUR.length){ endTour(true); return; }
+  const s=TOUR[tourIdx];
+  go(s.screen);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>placeTour(s)));
+}
+function placeTour(s){
+  const host=document.getElementById('host'), spot=document.getElementById('tourSpot'), tip=document.getElementById('tourTip');
+  const t=document.querySelector(s.sel); if(!t){ endTour(); return; }
+  const hr=host.getBoundingClientRect(), r=t.getBoundingClientRect(), pad=6;
+  spot.hidden=false; tip.hidden=false;
+  spot.style.top=(r.top-hr.top-pad)+'px';
+  spot.style.left=(r.left-hr.left-pad)+'px';
+  spot.style.width=(r.width+pad*2)+'px';
+  spot.style.height=(r.height+pad*2)+'px';
+  spot.style.borderRadius=Math.min(24,(r.height+pad*2)/2)+'px';
+  document.getElementById('tourStep').textContent='Tour · '+(tourIdx+1)+' of '+TOUR.length;
+  document.getElementById('tourTitle').textContent=s.title;
+  document.getElementById('tourTxt').textContent=s.txt;
+  document.getElementById('tourNext').textContent=tourIdx===TOUR.length-1?'Done':'Next';
+  const tw=tip.offsetWidth, th=tip.offsetHeight;
+  let left=r.left-hr.left+r.width/2-tw/2;
+  left=Math.max(12,Math.min(hr.width-tw-12,left));
+  let top=r.top-hr.top-pad-th-14;
+  if(top<12) top=r.bottom-hr.top+pad+14;
+  tip.style.left=left+'px'; tip.style.top=top+'px';
+}
+function endTour(done){
+  document.getElementById('tourSpot').hidden=true;
+  document.getElementById('tourTip').hidden=true;
+  tourIdx=-1;
+  go('behind');
+  if(done) showToast('Tour complete','Nav is one tap away whenever you need it.');
+}
+
+/* ---- visit rating ---- */
+function rate(el){const s=[...el.parentNode.children];const i=s.indexOf(el);s.forEach((x,xi)=>x.classList.toggle('on',xi<=i));confirmAction('Thanks for your feedback','It helps us improve care for everyone.');}
+
+/* ---- menu drawer ---- */
+function openMenu(){document.getElementById('mdrop').classList.add('show');document.getElementById('mdrawer').classList.add('show');}
+function closeMenu(){document.getElementById('mdrop').classList.remove('show');document.getElementById('mdrawer').classList.remove('show');}
+
+/* ---- share my visit (multiple followers; contact 0 = primary advocate with live phone) ---- */
+let addedContacts=[]; /* patient-entered contacts (name+relationship+phone) */
+const share={f:[{on:false,tier:1}],pending:0};
+const TIER_NAMES=['The basics','Full visit','Everything'];
+function shContacts(){return [PERSONAS[CUR].adv].concat(addedContacts);}
+function shEnsure(){while(share.f.length<shContacts().length)share.f.push({on:false,tier:1});}
+function openShare(){shRows();document.getElementById('shareBackdrop').classList.add('show');shGo(0);}
+function closeShare(){document.getElementById('shareBackdrop').classList.remove('show');}
+function shGo(i){document.querySelectorAll('#shareSheet .shs').forEach((s,si)=>s.classList.toggle('show',si===i));}
+function shRows(){
+  shEnsure();
+  const cs=shContacts();
+  const c0=cs[0], f0=share.f[0];
+  setTxt('shCName',c0.full); setTxt('shAvL',c0.letter);
+  document.getElementById('shCRel').innerHTML=f0.on?'<span style="color:var(--green);">●</span> Following · '+TIER_NAMES[f0.tier]:c0.rel;
+  document.getElementById('shExtraRows').innerHTML=cs.slice(1).map((c,k)=>{
+    const i=k+1, f=share.f[i];
+    const sub=f.on?'<span style="color:var(--green);">●</span> Following · '+TIER_NAMES[f.tier]:c.rel;
+    return '<div class="crow" onclick="shPick('+i+')"><div class="cav" style="background:#9B7FE0;">'+c.letter+'</div><div><div class="tt">'+c.full+'</div><div class="ts">'+sub+'</div></div></div>';
+  }).join('');
+}
+function shAddForm(){
+  ['acName','acRel','acPhone'].forEach(id=>document.getElementById(id).value='');
+  shGo(2);
+}
+function addContact(){
+  const name=document.getElementById('acName').value.trim();
+  const rel=document.getElementById('acRel').value.trim();
+  const phone=document.getElementById('acPhone').value.trim();
+  if(!name||!phone){ showToast('Almost there','A name and phone number are needed to send the link.', false, bellPath); return; }
+  addedContacts.push({name:name.split(' ')[0], full:name, rel:(rel||'Contact')+' · '+phone, letter:name[0].toUpperCase(), pn:'They', pos:'their'});
+  share.f.push({on:false,tier:1});
+  shRows();
+  shPick(shContacts().length-1);
+}
+function shPick(i){
+  share.pending=i;
+  const c=shContacts()[i], f=share.f[i];
+  setTxt('shSeeTitle','What can '+c.name+' see?');
+  setTxt('shSeeSub','This is '+c.pos+' actual screen. Dimmed items stay private.');
+  setTxt('pvCap',c.name+"'s screen");
+  setTxt('shSendLabel',(f.on?'Update sharing for ':'Send link to ')+c.name);
+  document.getElementById('shStopBtn').hidden=!f.on;
+  shTier(f.tier);
+  shGo(1);
+}
+function shTier(n){
+  const f=share.f[share.pending];
+  f.tier=n;
+  document.querySelectorAll('#shSeg button').forEach((b,bi)=>b.classList.toggle('on',bi===n));
+  document.querySelectorAll('#shPreview .pvrow').forEach(r=>r.classList.toggle('off',+r.dataset.tier>n));
+  if(share.pending===0&&f.on) syncSarah();
+}
+function shSend(){
+  const i=share.pending, c=shContacts()[i], f=share.f[i];
+  const already=f.on;
+  f.on=true;
+  updateShareUI(); shRows();
+  closeShare();
+  if(already){
+    confirmAction('Sharing updated', c.name+' now sees: '+TIER_NAMES[f.tier].toLowerCase()+'.');
+    if(i===0){ document.getElementById('sarahWrap').classList.add('show'); syncSarah(); }
+    return;
+  }
+  confirmAction('Link sent to '+c.name, c.pn+' can follow '+vLabel()+' until it ends.');
+  if(i===0){
+    setTimeout(()=>{
+      const w=document.getElementById('sarahWrap');
+      w.classList.add('show');
+      syncSarah();
+      w.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});
+    },700);
+  }
+}
+function stopSharing(){
+  const i=share.pending, c=shContacts()[i];
+  share.f[i].on=false;
+  updateShareUI(); shRows();
+  closeShare();
+  if(i===0){
+    document.getElementById('sarahWrap').classList.remove('show');
+    document.getElementById('sSms').hidden=false;
+    document.getElementById('sWeb').hidden=true;
+  }
+  confirmAction('Sharing stopped', c.name+' no longer sees '+vLabel()+'.');
+}
+function vLabel(){const p=PERSONAS[CUR];return p.user===p.patient?'your visit':p.patient+"'s visit";}
+function updateShareUI(){
+  const cc=document.getElementById('ccSub');
+  const row=document.getElementById('shareRowLabel');
+  const names=shContacts().filter((c,i)=>share.f[i].on).map(c=>c.name);
+  if(names.length===0){
+    cc.textContent='Not sharing yet · invite someone';
+    if(row) row.textContent='Let someone follow '+vLabel();
+  }else if(names.length===1){
+    const i=share.f.findIndex(f=>f.on);
+    cc.innerHTML='<span style="color:var(--green);">●</span> '+names[0]+' is following · '+TIER_NAMES[share.f[i].tier];
+    if(row) row.textContent=names[0]+' is following '+vLabel();
+  }else{
+    cc.innerHTML='<span style="color:var(--green);">●</span> '+names.join(' & ')+' are following';
+    if(row) row.textContent=names.join(' & ')+' are following '+vLabel();
+  }
+}
+function hideAdvPhone(){ document.getElementById('sarahWrap').classList.remove('show'); }
+function openSarahWeb(){document.getElementById('sSms').hidden=true;document.getElementById('sWeb').hidden=false;syncSarah();}
+let curCond='steady';
+const S_PHASES=[
+  {txt:"She's been seen by a nurse and is safe",sub:'Waiting to see a clinician',wait:true,steps:['done','done','now','future']},
+  {txt:"She's in a care space being seen now",sub:'With the care team · Bay 4',wait:false,steps:['done','done','done','now']},
+  {txt:'Her visit is complete',sub:'Discharged 1:12 PM today',wait:false,steps:['done','done','done','done']}
+];
+function syncSarah(){
+  const f0=share.f[0];
+  if(!f0.on) return;
+  document.querySelectorAll('#sWeb [data-stier]').forEach(el=>{el.hidden=+el.dataset.stier>f0.tier;});
+  const p=S_PHASES[phaseIdx];
+  document.getElementById('sPhaseTxt').textContent=p.txt;
+  document.getElementById('sPhaseSub').textContent=p.sub;
+  const wc=document.getElementById('sWaitCard');
+  if(+wc.dataset.stier<=share.f[0].tier) wc.hidden=!p.wait;
+  document.getElementById('sWaitNum').innerHTML=H_COND[curCond].range+'<span>mins</span>';
+  document.querySelectorAll('#sSteps .step').forEach((s,si)=>{
+    s.className='step '+p.steps[si];
+    const d=s.querySelector('.dot'); d.className='dot '+p.steps[si];
+    d.innerHTML=p.steps[si]==='done'?'<i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i>':'<i></i>';
+  });
+}
+
+/* ---- journal: pain check-in ---- */
+(function(){
+  const scale=document.getElementById('painScale');
+  for(let n=0;n<=10;n++){
+    const b=document.createElement('button');
+    b.className='pain'; b.textContent=n;
+    b.addEventListener('click',()=>logPain(n,b));
+    scale.appendChild(b);
+  }
+})();
+function painCls(n){return n<=3?'lo':n<=6?'mid':'hi';}
+function logPain(n,btn){
+  document.querySelectorAll('#painScale .pain').forEach(b=>b.classList.remove('on','lo','mid','hi'));
+  btn.classList.add('on',painCls(n));
+  const row=document.createElement('div'); row.className='vrow';
+  row.innerHTML=`<div class="vtime"><b>Just now</b><span>Self check</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Rated by you</div><span class="painpill ${painCls(n)}">${n}/10</span>`;
+  document.getElementById('painHist').prepend(row);
+  if(n>=7){ showToast(PERSONAS[CUR].j.word+' logged · '+n+'/10','That’s high. If it’s getting worse, tap “Report a symptom change” in Care.', true, bellPath); }
+  else{ confirmAction(PERSONAS[CUR].j.word+' logged · '+n+'/10','Your journal keeps the trend over time.'); }
+}
+
+/* ---- journal: questions & notes ---- */
+function updateQCount(){
+  const n=document.querySelectorAll('#qList .q-item:not(.answered)').length;
+  document.getElementById('qCount').textContent=n===0?'All answered':n+' to ask';
+}
+function makeQ(text){
+  const d=document.createElement('div'); d.className='q-item';
+  d.innerHTML=`<div class="q-text"></div><div class="q-meta">Added just now · not asked yet</div><button class="q-btn" onclick="openASheet(this)">✓ They answered · save what they said</button>`;
+  d.querySelector('.q-text').textContent=text;
+  return d;
+}
+function addQChip(chip){
+  const q=chip.textContent.trim();
+  document.getElementById('qList').appendChild(makeQ(q));
+  chip.remove();
+  updateQCount();
+  confirmAction('Question saved','Have it ready when the doctor comes by.');
+}
+/* composer sheet — type a question, capture the answer in their words, or jot a note */
+let qMode='question', qTarget=null;
+function openNSheet(){
+  qMode='note'; qTarget=null;
+  document.getElementById('qSheetTitle').textContent='Jot something down';
+  document.getElementById('qSheetSub').textContent='Little details are easy to forget. Notes stay private to you.';
+  document.getElementById('qSheetQ').hidden=true;
+  const ta=document.getElementById('qSheetTa');
+  ta.value=''; ta.placeholder='Type your note…';
+  document.getElementById('qSheetBtn').textContent='Save note';
+  document.getElementById('qBackdrop').classList.add('show');
+  setTimeout(()=>ta.focus(),350);
+}
+function openQSheet(){
+  qMode='question'; qTarget=null;
+  document.getElementById('qSheetTitle').textContent='Add a question';
+  document.getElementById('qSheetSub').textContent="You'll have it ready when the doctor comes by.";
+  document.getElementById('qSheetQ').hidden=true;
+  const ta=document.getElementById('qSheetTa');
+  ta.value=''; ta.placeholder='Type your question…';
+  document.getElementById('qSheetBtn').textContent='Save question';
+  document.getElementById('qBackdrop').classList.add('show');
+  setTimeout(()=>ta.focus(),350);
+}
+function openASheet(btn){
+  qMode='answer'; qTarget=btn.closest('.q-item');
+  document.getElementById('qSheetTitle').textContent='What did they say?';
+  document.getElementById('qSheetSub').textContent='Save it in their words, easy to look back on later.';
+  const q=document.getElementById('qSheetQ');
+  q.textContent=qTarget.querySelector('.q-text').textContent; q.hidden=false;
+  const ta=document.getElementById('qSheetTa');
+  ta.value=''; ta.placeholder='e.g. “Your ECG was normal, no more tests today…”';
+  document.getElementById('qSheetBtn').textContent='Save answer';
+  document.getElementById('qBackdrop').classList.add('show');
+  setTimeout(()=>ta.focus(),350);
+}
+function closeQSheet(){ document.getElementById('qBackdrop').classList.remove('show'); }
+function saveQSheet(){
+  const ta=document.getElementById('qSheetTa');
+  const v=ta.value.trim();
+  if(!v){ ta.focus(); return; }
+  if(qMode==='question'){
+    document.getElementById('qList').appendChild(makeQ(v));
+    confirmAction('Question saved','Have it ready when the doctor comes by.');
+  }else if(qMode==='note'){
+    const d=document.createElement('div'); d.className='q-item';
+    const t=document.createElement('div'); t.className='q-text'; t.style.fontWeight='500'; t.textContent=v;
+    const m=document.createElement('div'); m.className='q-meta'; m.textContent='Added just now';
+    d.appendChild(t); d.appendChild(m);
+    document.getElementById('noteList').appendChild(d);
+    confirmAction('Note saved','Little details are easy to forget. Good catch.');
+  }else if(qTarget){
+    const d=document.createElement('div'); d.className='q-ans';
+    const t=document.createElement('div'); t.textContent='“'+v+'”';
+    const m=document.createElement('div'); m.className='q-meta'; m.style.marginTop='6px'; m.textContent='Saved just now';
+    d.appendChild(t); d.appendChild(m);
+    qTarget.querySelector('.q-btn').replaceWith(d);
+    qTarget.classList.add('answered');
+    confirmAction('Answer saved','It’ll appear in your visit summary too.');
+  }
+  updateQCount();
+  closeQSheet();
+}
+function addNote(){ openNSheet(); }
+function toggleVitals(){
+  const f=document.getElementById('vitalsFull');
+  f.hidden=!f.hidden;
+  document.getElementById('vToggle').textContent=f.hidden?'See trends & history':'Hide trends & history';
+}
+
+/* ---- guided meditation ---- */
+let medLeft=0,medTick=null,medPh=null,medPaused=false,medStepI=0;
+const MED_STEPS=[['Breathe in…',4000,1],['Hold…',3000,1],['Breathe out…',6000,.7]];
+function openMed(){
+  stopMedTimers();
+  document.getElementById('medChoose').hidden=false;
+  document.getElementById('medPlayer').hidden=true;
+  document.getElementById('med').classList.add('show');
+}
+function closeMed(){ stopMedTimers(); document.getElementById('med').classList.remove('show'); }
+function stopMedTimers(){ clearInterval(medTick); clearTimeout(medPh); medTick=medPh=null; }
+function startMed(name,mins){
+  document.getElementById('medName').textContent=name.toUpperCase();
+  document.getElementById('medChoose').hidden=true;
+  document.getElementById('medPlayer').hidden=false;
+  document.getElementById('medPause').textContent='Pause';
+  medLeft=mins*60; medPaused=false; medStepI=0;
+  updateMedTimer(); medStep();
+  medTick=setInterval(()=>{ if(medPaused) return; medLeft--; updateMedTimer(); if(medLeft<=0) finishMed(); },1000);
+}
+function updateMedTimer(){
+  const m=Math.floor(Math.max(0,medLeft)/60), s=Math.max(0,medLeft)%60;
+  document.getElementById('medTimer').textContent=m+':'+String(s).padStart(2,'0');
+}
+function medStep(){
+  const [cue,dur,scale]=MED_STEPS[medStepI%MED_STEPS.length];
+  document.getElementById('medCue').textContent=cue;
+  const orb=document.getElementById('medOrb');
+  orb.style.transition='transform '+dur+'ms cubic-bezier(.45,0,.4,1)';
+  orb.style.transform='scale('+scale+')';
+  medStepI++;
+  medPh=setTimeout(medStep,dur);
+}
+function pauseMed(){
+  medPaused=!medPaused;
+  const b=document.getElementById('medPause');
+  if(medPaused){ clearTimeout(medPh); document.getElementById('medCue').textContent='Paused'; b.textContent='Resume'; }
+  else{ b.textContent='Pause'; medStep(); }
+}
+function endMed(){ closeMed(); confirmAction('Session ended','Come back whenever you like.'); }
+function finishMed(){
+  stopMedTimers();
+  document.getElementById('medCue').textContent='Well done';
+  document.getElementById('medTimer').textContent='0:00';
+  setTimeout(()=>{ closeMed(); confirmAction('Meditation complete','Hope the wait feels a little lighter.'); },1600);
+}
+
+/* ---- live activity (island) ---- */
+const LA_PHASES=[
+  {txt:'ED wait', num:()=>H_COND[curCond].range+'<span>min</span>', st:()=>PERSONAS[CUR].laWait, c1:['Est. wait',()=>H_COND[curCond].range+' min'], c2:['Up next','Clinician'], segs:['on','on','cur','']},
+  {txt:'In care', num:()=>PERSONAS[CUR].bay, st:()=>PERSONAS[CUR].laCare, c1:['Where',()=>PERSONAS[CUR].bay], c2:['Up next','Treatment'], segs:['on','on','on','cur']},
+  {txt:'Visit done', num:()=>'✓', st:()=>'Your visit is complete. Discharged '+PERSONAS[CUR].dc+'.', c1:['Discharged',()=>PERSONAS[CUR].dc], c2:['Summary','Ready'], segs:['on','on','on','on']}
+];
+function laSync(){
+  const p=LA_PHASES[phaseIdx]; if(!p) return;
+  document.getElementById('laTxt').textContent=p.txt;
+  document.getElementById('laNum').innerHTML=p.num();
+  document.getElementById('laxStatus').textContent=typeof p.st==='function'?p.st():p.st;
+  document.getElementById('laxC1c').textContent=p.c1[0];
+  document.getElementById('laxC1v').textContent=typeof p.c1[1]==='function'?p.c1[1]():p.c1[1];
+  document.getElementById('laxC2c').textContent=p.c2[0];
+  document.getElementById('laxC2v').textContent=p.c2[1];
+  document.querySelectorAll('#laxSegs i').forEach((s,i)=>s.className=p.segs[i]);
+}
+function laToggle(){document.getElementById('laExp').classList.toggle('show');}
+function laCollapse(){document.getElementById('laExp').classList.remove('show');}
+
+/* ---- personas: same design, six different nights in the ER ---- */
+const ANS_FIRSTCOME="Care is ordered by medical urgency, not arrival. The sickest are seen first, and that same rule protects you if your condition changes.";
+const ANS_LEAVE="Yes. Just tap “Stepping outside?” in Care first, so we don’t call your name while you’re away.";
+const ANS_WHO="Right now the triage team is monitoring everyone in the waiting area. You’ll be assigned a clinician once a care space opens.";
+const NOW_WAIT_DEFAULT="A clinician has reviewed you. The team is freeing up a treatment space and checks on waiting patients regularly.";
+const CARE_CAP_DEFAULT="Dr. Aisha Khan is with you now and will explain the plan and any tests you may need.";
+const NOW_CARE_DEFAULT="You're being assessed in person. Ask Nav or your nurse if anything is unclear. There's no such thing as a silly question.";
+
+const PERSONAS={
+claire:{
+  chipLabel:'Claire', tag:'Chest discomfort · a daytime visit', user:'Claire', patient:'Claire', full:'Claire Morgan', ini:'CM',
+  pn:'She', pos:'her', posCap:'Her', clk:'9:41', ck:'9:31 AM', tr:'9:39 AM',
+  reason:'Chest discomfort, started this morning',
+  rev:['A nurse has reviewed your arrival',"You're safe to wait here."],
+  tri:{n:3,t1:'Triage level 3: stable, multiple steps expected',
+    means:"You're stable, and your care will likely involve two or more steps, like bloodwork plus a scan. That makes yours a longer kind of visit.",
+    not:"It's not a score of how sick you feel. It's an estimate of how many steps your care will take.",
+    set:"Set at triage, 9:39 AM · Your level can change if you're reassessed. Tell staff right away if you feel worse."},
+  unique:null, nowWait:NOW_WAIT_DEFAULT,
+  careTtl:"You're in a care space", bay:'Bay 4', careCap:CARE_CAP_DEFAULT, nowCare:NOW_CARE_DEFAULT,
+  dcTtl:'Your visit is complete', dc:'1:12 PM',
+  found:'Your heart tracing (ECG) and blood tests came back normal. The discomfort is most likely muscular, not coming from your heart.',
+  next:[['Rest and avoid heavy lifting','For the next 2–3 days. Gentle movement is fine.'],['Take pain relief if needed','Ibuprofen 400mg with food, up to 3× a day.'],['Come back if it worsens','Come back to the ED right away if the pain is severe, spreads to your arm or jaw, or you feel breathless.']],
+  gp:['Follow up with your GP','Within 7 days · summary sent to them'],
+  laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
+  laCare:"You're in a care space. Dr. Khan is with you now.",
+  nav:{greet:'Hi Claire, how can I help?',
+    chips:["Why isn't it first-come?",'Can I leave and come back?','Who is looking after me?'],
+    ans:{"Why isn't it first-come?":ANS_FIRSTCOME,'Can I leave and come back?':ANS_LEAVE,'Who is looking after me?':ANS_WHO}},
+  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier today',
+    hist:[['11:15 AM','Nurse check','Aching, a little better',5],['9:39 AM','Triage','Sharp when breathing deeply',7]],
+    qs:[{q:'Do I need more tests, like a stress test?',meta:'Added 10:02 AM · not asked yet'},{q:'Can I keep taking my blood-pressure pill today?',meta:'Asked at triage',ans:'Yes, take it as usual, with food.',ansMeta:'Answered by Dr. Khan · 11:20 AM'}],
+    sugg:['What do my ECG results mean?','When should I come back?'],
+    notes:[['Dr. Khan said the ECG looks normal. Still waiting on blood results.','12:05 PM']]},
+  vit:{meta:'12:58 PM · Marcus Lee',hr:'76',bp:'128/82',temp:'36.9',spo2:'98',aTaken:'9:52 AM',
+    hist:[['12:58 PM','Latest','76','128/82','36.9','98'],['11:15 AM','Nurse check','80','132/84','37.0','98'],['9:38 AM','Triage','88','138/86','37.1','97']]},
+  sym:['Pain is worse','Discomfort is spreading','Trouble breathing','Dizzy or lightheaded','Nausea','Something new'],
+  meds:[['Lisinopril 10 mg','Once daily · blood pressure']],
+  adv:{name:'Sarah',full:'Sarah Morgan',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['9:47','9:48'],
+    label:"<b>Sarah's phone</b> · daughter &amp; advocate · no app, just a link",
+    sms:'Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:'}
+},
+margaret:{
+  chipLabel:'Margaret', tag:'Margaret, 74 · a fall at home · evening', user:'Margaret', patient:'Margaret', full:'Margaret Hale', ini:'MH',
+  pn:'She', pos:'her', posCap:'Her', clk:'8:23', ck:'7:52 PM', tr:'8:04 PM',
+  reason:'Fell at home, right hip pain',
+  rev:['A nurse has reviewed your arrival',"You're safe to wait here. Please don't walk unaided; ask for help moving."],
+  tri:{n:3,t1:'Triage level 3: stable, imaging expected',
+    means:"You're stable, and your care will likely involve an X-ray plus a doctor's exam, a longer kind of visit.",
+    not:"It's not a score of how much it hurts. It's an estimate of how many steps your care will take.",
+    set:"Set at triage, 8:04 PM · Your level can change if you're reassessed. Tell staff right away if you feel worse."},
+  unique:{t:'Your medications are already with the team',b:'Your saved health profile (medications, allergies and your GP) was shared automatically at check-in. No clipboard, no memory test.'},
+  nowWait:NOW_WAIT_DEFAULT,
+  careTtl:"You're in a care space", bay:'Bay 2', careCap:CARE_CAP_DEFAULT, nowCare:NOW_CARE_DEFAULT,
+  dcTtl:'Your visit is complete', dc:'11:45 PM',
+  found:'Your X-ray shows no fracture, a deep bruise to the hip. Painful, but it heals on its own.',
+  next:[['Move gently, with support','Use a walking aid for a few days if it helps steady you.'],['Pain relief','Paracetamol 500mg, up to 4× a day.'],['Come back if it worsens',"Return if you can't put weight on the leg, or the pain sharply increases."]],
+  gp:['Follow up with your GP','Within 7 days · summary sent to them'],
+  laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
+  laCare:"You're in a care space. Dr. Khan is with you now.",
+  nav:{greet:'Hi Margaret, how can I help?',
+    chips:["Will someone tell Sarah how I'm doing?",'Who is looking after me?','Can someone help me move around?'],
+    ans:{"Will someone tell Sarah how I'm doing?":"If you share your visit from the menu (☰ → My care circle), Sarah gets a live link and sees each step as it happens, no calls needed. I can't send it for you, but it takes two taps.",
+      'Who is looking after me?':ANS_WHO,
+      'Can someone help me move around?':"Yes. Flag James, the care assistant, or ask at the desk. With a hip injury please don't walk unaided; someone will come to you."}},
+  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+    hist:[['9:10 PM','Nurse check','Aching when still',5],['8:04 PM','Triage','Sharp when standing',7]],
+    qs:[{q:'Will I need a hip X-ray?',meta:'Added 8:20 PM · not asked yet'},{q:'Can I take my arthritis pill tonight?',meta:'Asked at triage',ans:'Yes, your usual dose, with food.',ansMeta:'Answered by Marcus Lee · 8:10 PM'}],
+    sugg:['How long until X-ray results?','Will I go home tonight?'],
+    notes:[['Nurse says a wheelchair will take me to X-ray.','9:05 PM']]},
+  vit:{meta:'9:40 PM · Marcus Lee',hr:'82',bp:'142/88',temp:'36.8',spo2:'97',aTaken:'8:05 PM',
+    hist:[['9:40 PM','Latest','82','142/88','36.8','97'],['8:04 PM','Triage','90','150/92','36.9','96']]},
+  sym:['Pain is worse','New numbness in the leg','Dizzy or lightheaded','Trouble breathing','Nausea','Something new'],
+  meds:[['Meloxicam 7.5 mg','Once daily · arthritis'],['Amlodipine 5 mg','Once daily · blood pressure'],['Vitamin D 1000 IU','Once daily']],
+  adv:{name:'Sarah',full:'Sarah Hale',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['8:12','8:13'],
+    label:"<b>Sarah's phone</b> · daughter · no app, just a link",
+    sms:'Huntington Hospital: Margaret Hale is in our ER and being cared for. She invited you to follow her visit live:'}
+},
+elena:{
+  chipLabel:'Elena', tag:'Elena, 38 · racing heart · 11 PM on a Thursday', user:'Elena', patient:'Elena', full:'Elena Vasquez', ini:'EV',
+  pn:'She', pos:'her', posCap:'Her', clk:'11:26', ck:'11:04 PM', tr:'11:12 PM',
+  reason:'Racing, fluttering heartbeat, started around 9 PM',
+  rev:['A nurse has reviewed your arrival',"Your heart rate has been measured and seen by a clinician. You're safe to wait here."],
+  tri:{n:3,t1:'Triage level 3: urgent, not immediately life-threatening',
+    means:"A doctor needs to see you tonight (an ECG and likely bloodwork), but nothing in your triage check points to immediate danger.",
+    not:"It's not a verdict on what you're feeling. Your heart rate was measured at 96 and has been reviewed by a clinician.",
+    set:"Set at triage, 11:12 PM · Your level can change if you're reassessed. Report it right away if the fluttering gets worse."},
+  unique:null,
+  nowWait:'A clinician has reviewed you. The team is freeing up a treatment space and checks on waiting patients regularly, including overnight.',
+  careTtl:"You're in a care space", bay:'Bay 6', careCap:"Dr. Aisha Khan is with you now. The ECG happens right here, and she'll explain what it shows.", nowCare:NOW_CARE_DEFAULT,
+  dcTtl:'Your visit is complete', dc:'2:05 AM',
+  found:'Your ECG shows a normal rhythm and your blood tests are clear. The palpitations are real, but your heart is structurally sound. Stress and exhaustion are the likely drivers.',
+  next:[['If it returns, note the time','Log when it starts and stops. Patterns help your GP far more than memory.'],['Ease what feeds it','Caffeine, poor sleep and stress all fuel palpitations.'],['Come back if it changes',"Return right away if you faint, get chest pain, or the racing won't settle."]],
+  gp:['Follow up with your GP',"Within 2 weeks · tonight's ECG sent to them"],
+  laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
+  laCare:"You're in a care space. Dr. Khan is with you now.",
+  nav:{greet:'Hi Elena, how can I help?',
+    chips:['Can I do anything about the anxiety?',"Why isn't it first-come?",'Can I leave and come back?'],
+    ans:{'Is my heart okay?':"I can't assess your heart. That's for your care team. What I can tell you: your heart rate was measured at 96 bpm at triage and a clinician has reviewed it, and an ECG is planned. If the fluttering changes or gets worse, tap 'Report a symptom change' in Care. It goes straight to the triage nurse. And while you wait, many people find the <a onclick=\"go('comfort');openMed()\">guided breathing in Care</a> helps quiet the loop of fear feeding the racing.",
+      'Can I do anything about the anxiety?':"Many people find the <a onclick=\"go('comfort');openMed()\">guided breathing in Care</a> interrupts the loop: fear feeding the racing, racing feeding the fear. It won't cost you your place in the queue, and you'll still get every update.",
+      "Why isn't it first-come?":ANS_FIRSTCOME}},
+  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+    hist:[['11:40 PM','Self check','Tightness when it races',2],['11:12 PM','Triage','No real pain, some pressure',1]],
+    qs:[{q:'Do I need a heart monitor after tonight?',meta:'Added 11:32 PM · not asked yet'},{q:"Is it bad that it's been racing for two hours?",meta:'Asked at triage',ans:'Your rate is elevated but steady. The ECG will tell us more.',ansMeta:'Answered by Marcus Lee · 11:14 PM'}],
+    sugg:['Could this be anxiety, my heart, or both?','What if it happens again at home?'],
+    notes:[['Fluttering eased a little during the breathing exercise.','11:48 PM']]},
+  vit:{meta:'11:52 PM · Marcus Lee',hr:'91',bp:'134/86',temp:'36.8',spo2:'98',aTaken:'11:12 PM',
+    hist:[['11:52 PM','Latest','91','134/86','36.8','98'],['11:12 PM','Triage','96','138/88','37.0','98']]},
+  sym:['Heart racing faster','New chest pain','Trouble breathing','Dizzy or faint','Tingling or numbness','Something new'],
+  meds:[],
+  adv:{name:'Daniel',full:'Daniel Vasquez',rel:'Husband · emergency contact',letter:'D',pn:'He',pos:'his',clk:['8:29','8:30'],
+    label:"<b>Daniel's phone</b> · husband · no app, just a link",
+    sms:'Huntington Hospital: Elena Vasquez is in our ER and being cared for. She invited you to follow her visit live:'}
+},
+diana:{
+  chipLabel:'Diana & Lily', tag:'Diana & Lily (7 mo) · crying since 9 PM · 2 AM', user:'Diana', patient:'Lily', full:'Diana Okafor', ini:'DO',
+  pn:'She', pos:'her', posCap:'Her', clk:'2:58', ck:'2:31 AM', tr:'2:40 AM',
+  reason:"Lily won't stop crying, pulling her legs up, arching her back",
+  rev:['A nurse has reviewed Lily',"Inconsolable crying in an infant is always taken seriously. She'll get a full exam."],
+  tri:{n:3,t1:'Triage level 3: full exam expected for Lily',
+    means:'Lily is stable, and inconsolable infants get a thorough workup: a full exam and possibly labs. That makes it a longer kind of visit.',
+    not:"It's not a sign something terrible is happening. It means the team won't cut corners with a baby.",
+    set:"Set at triage, 2:40 AM · Her level can change if she's reassessed. Tell staff right away if she gets worse."},
+  unique:{t:'Your tracker data is working for you',b:'From your baby-tracker sync: new food (pear) 6:00 PM → unusual stools → crying from 9:15 PM. This timeline is ready to show the doctor.'},
+  nowWait:"A clinician has reviewed Lily's triage. The team is freeing up a space for a full exam and checks on waiting families regularly.",
+  careTtl:'Lily is in a care space', bay:'Peds Bay 1', careCap:'Dr. Aisha Khan is with Lily now and will explain the exam and any tests she may need.', nowCare:"Lily is being examined. Ask Nav or your nurse if anything is unclear. There's no such thing as a silly question.",
+  dcTtl:"Lily's visit is complete", dc:'5:40 AM',
+  found:"Lily's exam is reassuring: no infection, no obstruction. The likely story is a food sensitivity: pear was new at 6 PM, and 7 months is exactly when solids start.",
+  next:[['Pause the pear','Keep it off the menu, and reintroduce new foods one at a time.'],['Call Dr. Reyes Monday',"The visit summary is already in Lily's record."],['Come back if it changes','Return for blood in stool, vomiting, fever, or if she stops feeding.']],
+  gp:['Follow up with Dr. Reyes','Monday · summary already sent'],
+  laWait:"You're waiting. A nurse has reviewed Lily and it's safe to wait.",
+  laCare:'Lily is in a care space. Dr. Khan is with her now.',
+  nav:{greet:'Hi Diana, how can I help?',
+    chips:['Is this my fault?','Can I feed Lily while we wait?','What will they do for a crying baby?'],
+    ans:{'Is this my fault?':"No. Trying a new food is exactly what you're supposed to do at 7 months, and bringing her in tonight was the right call. Reactions like this are common and usually mild.",
+      'Can I feed Lily while we wait?':"Check with the triage nurse first. If Lily needs tests, they'll say whether feeding now is okay. Tap 'Chat with a human' and someone will come to you.",
+      'What will they do for a crying baby?':"A full head-to-toe exam, and sometimes simple tests. Inconsolable crying in an infant is always taken seriously. It doesn't mean something terrible is happening."}},
+  j:{sub:"Lily's symptoms, your questions and notes, all in one place",kicker:'Lily check-in',q:"How is Lily's crying right now?",lo:'Settled',hi:'Inconsolable',word:"Lily's crying",earlier:'Earlier tonight',
+    hist:[['3:15 AM','Self check','Settled briefly after rocking',6],['2:40 AM','Triage','Crying in cycles, legs pulled up',8]],
+    qs:[{q:'Could the new food (pear) have caused this?',meta:'Added 3:00 AM · not asked yet'},{q:'Should I stop solids for now?',meta:'Asked at triage',ans:'Hold off until the doctor has seen her.',ansMeta:'Answered by Marcus Lee · 2:44 AM'}],
+    sugg:['What should we rule out tonight?','What do we watch for at home?'],
+    notes:[['Crying comes in waves, settles ~10 min, then starts again.','3:05 AM']]},
+  vit:{meta:'3:20 AM · Marcus Lee',hr:'142',bp:'92/58',temp:'37.4',spo2:'99',aTaken:'2:41 AM',
+    hist:[['3:20 AM','Latest','142','92/58','37.4','99'],['2:40 AM','Triage','152','94/60','37.5','99']]},
+  sym:['Crying is worse','Vomiting','Fever feels higher','Refusing feeds','New rash','Something new'],
+  meds:[['Vitamin D drops 400 IU','Once daily · infant supplement']],
+  adv:{name:'Ben',full:'Ben Okafor',rel:"Lily's dad · emergency contact",letter:'B',pn:'He',pos:'his',clk:['3:02','3:03'],
+    label:"<b>Ben's phone</b> · Lily's dad · no app, just a link",
+    sms:'Huntington Hospital: Lily Okafor is in our ER and being cared for. Diana invited you to follow her visit live:'}
+},
+marcus:{
+  chipLabel:'Marcus', tag:'Marcus, 25 · minor car accident · first ER visit', user:'Marcus', patient:'Marcus', full:'Marcus Webb', ini:'MW',
+  pn:'He', pos:'his', posCap:'His', clk:'6:47', ck:'6:12 PM', tr:'6:25 PM',
+  reason:'Minor car accident: wrist injury and swelling',
+  rev:['A nurse has reviewed your arrival',"You're safe to wait here."],
+  tri:{n:4,t1:'Triage level 4: stable, one step expected',
+    means:"You're stable, and your care will likely need just one step, an X-ray of your wrist. One-step visits are often seen in a fast track area while critical cases go first.",
+    not:"It doesn't mean your injury isn't real or isn't taken seriously. Simpler visits just follow a different track.",
+    set:"Set at triage, 6:25 PM · Your level can change if you're reassessed. Tell staff right away if you feel worse."},
+  unique:{t:'New to the ER?',b:"No one teaches this. 'Triage' decided two things about you: stable, and one care step expected. The Learn tab explains the room's logic in about a minute."},
+  nowWait:NOW_WAIT_DEFAULT,
+  careTtl:"You're in a care space", bay:'Bay 3', careCap:CARE_CAP_DEFAULT, nowCare:NOW_CARE_DEFAULT,
+  dcTtl:'Your visit is complete', dc:'10:38 PM',
+  found:'Your X-ray confirms a wrist (distal radius) fracture, set and splinted tonight.',
+  next:[['Keep the splint on and dry','Your cast follow-up is booked with the fracture clinic.'],['Pain relief','Ibuprofen 400mg with food, up to 3× a day.'],['Watch the splint','Return if you get numbness or tingling, cold or pale fingers, or pain that keeps climbing.']],
+  gp:['Fracture clinic follow-up','Within 5 days · referral sent for you'],
+  laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
+  laCare:"You're in a care space. Dr. Khan is with you now.",
+  nav:{greet:'Hi Marcus, how can I help?',
+    chips:['Why do people who came after me go first?','What does "triage" actually mean?','Do I need to do anything right now?'],
+    ans:{'Why do people who came after me go first?':"The ER runs on urgency and resources, not arrival order. Your visit likely needs just one step, an X-ray, so you're queued for a fast track space. Sicker patients and multi-step visits get pulled first, and the same rule protects you if you get worse.",
+      'What does "triage" actually mean?':"It's the sorting decision made when you arrived: how urgent you are, and how many steps your care will take. Yours: stable, one step expected.",
+      'Do I need to do anything right now?':"No. You're in the queue and the team knows where you are. If your wrist pain gets worse or you feel new numbness, report it in Care right away."}},
+  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+    hist:[['7:10 PM','Self check','Wrist throbbing and swollen',6],['6:25 PM','Triage','Wrist pain sharp with movement',6]],
+    qs:[{q:'Will I need a cast tonight?',meta:'Added 6:40 PM · not asked yet'},{q:'Was the ER the right place to come?',meta:'Asked at triage',ans:'Yes. Your wrist needs an X-ray tonight, and this is the right place for that.',ansMeta:'Answered by Marcus Lee · 6:28 PM'}],
+    sugg:['How long do X-ray results take?','What paperwork do I need for insurance?'],
+    notes:[['Car is at the Fifth St tow lot, deal with it tomorrow.','7:02 PM']]},
+  vit:{meta:'7:15 PM · Marcus Lee',hr:'84',bp:'126/78',temp:'37.0',spo2:'99',aTaken:'6:26 PM',
+    hist:[['7:15 PM','Latest','84','126/78','37.0','99'],['6:25 PM','Triage','92','130/80','37.0','99']]},
+  sym:['Wrist pain is worse','New numbness or tingling','Fingers feel cold or look pale','Swelling is spreading','Feeling faint','Something new'],
+  meds:[],
+  adv:{name:'Angela',full:'Angela Webb',rel:'Mom · emergency contact',letter:'A',pn:'She',pos:'her',clk:['6:58','6:59'],
+    label:"<b>Angela's phone</b> · Marcus's mom · no app, just a link",
+    sms:'Huntington Hospital: Marcus Webb is in our ER and being cared for. He invited you to follow his visit live:'}
+},
+yuki:{
+  chipLabel:'Yuki', tag:'Yuki, 43 · stomach pain · interpreter on the way', user:'Yuki', patient:'Yuki', full:'Yuki Tanaka', ini:'YT',
+  pn:'She', pos:'her', posCap:'Her', clk:'9:12', ck:'8:41 PM', tr:'8:52 PM',
+  reason:'Severe upper stomach pain · 激しい上腹部の痛み',
+  rev:['A nurse has reviewed your arrival · 確認済み',"You're safe to wait here. · ここで安全にお待ちいただけます"],
+  tri:{n:3,t1:'Triage level 3: stable, tests expected · レベル3',
+    means:"You're stable, and your care will likely involve bloodwork and a doctor's exam. · 容態は安定しています。血液検査と診察が予定されています。",
+    not:"It's not a score of how much it hurts. It's an estimate of how many steps your care will take.",
+    set:"Set at triage, 8:52 PM · Your level can change if you're reassessed. Tell staff right away if you feel worse."},
+  unique:{t:'Interpreter requested · 通訳を手配中',b:'A Japanese phone interpreter joins for the doctor conversation. Meanwhile, your medication (omeprazole 20mg) and allergies are already translated for the team.'},
+  nowWait:NOW_WAIT_DEFAULT,
+  careTtl:"You're in a care space", bay:'Bay 5', careCap:'Dr. Aisha Khan is with you now. The Japanese interpreter is connected by phone for this conversation.', nowCare:"You're being assessed with the interpreter on the line. Nothing important happens without them.",
+  dcTtl:'Your visit is complete', dc:'12:50 AM',
+  found:"Your tests point to gastritis (inflammation of the stomach lining), not your gallbladder or heart. It's treatable with medication. (Explained with your interpreter on the line.)",
+  next:[['A stronger acid reducer','Prescription given. Take it before breakfast.'],['Gentle food for 48 hours','Avoid alcohol, coffee and spicy meals while it settles.'],['Come back if it worsens','Return for black stools, vomiting blood, or pain spreading to your chest.']],
+  gp:['A copy for your doctor in Japan','English + Japanese summary · ready to download'],
+  laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
+  laCare:"You're in a care space. Dr. Khan is with you now.",
+  nav:{greet:'Hi Yuki, how can I help? · こんにちは',
+    chips:['通訳はいつ来ますか？ (When will the interpreter come?)','Can I show where it hurts without words?',"Why isn't it first-come?"],
+    ans:{'通訳はいつ来ますか？ (When will the interpreter come?)':"A Japanese interpreter joins by phone before the doctor speaks with you. For Japanese there can be a wait. Your medications and allergies are already translated for the team. · 医師の診察には必ず通訳が入ります。お薬とアレルギーは翻訳済みです。",
+      'Can I show where it hurts without words?':"Yes. The journal check-in and the body map at triage let you point and rate, no translation needed. The nurse sees it in English instantly.",
+      "Why isn't it first-come?":ANS_FIRSTCOME}},
+  j:{sub:'Questions, pain and notes, all in one place · 記録',kicker:'Pain check-in · 痛みの記録',q:"How's your pain right now? · 今の痛みは？",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+    hist:[['9:30 PM','Self check','Burning, steady · 灼熱感',7],['8:52 PM','Triage','Upper abdomen, severe · 上腹部',8]],
+    qs:[{q:'Could this be my reflux medicine? · 薬と関係がありますか？',meta:'Added 9:05 PM · not asked yet'},{q:'Can I drink water? · 水を飲んでもいいですか？',meta:'Asked at triage',ans:'Small sips only, until the doctor confirms.',ansMeta:'Answered by Marcus Lee · 9:00 PM'}],
+    sugg:['Will my travel insurance be billed?','How do I send records to my doctor in Japan?'],
+    notes:[['Pain started after dinner, worse lying down. · 夕食後から、横になると悪化。','9:15 PM']]},
+  vit:{meta:'9:35 PM · Marcus Lee',hr:'90',bp:'132/84',temp:'37.2',spo2:'98',aTaken:'8:53 PM',
+    hist:[['9:35 PM','Latest','90','132/84','37.2','98'],['8:52 PM','Triage','95','136/86','37.3','98']]},
+  sym:['Pain is worse · 痛みが強い','Vomiting · 嘔吐','Fever · 発熱','Dizzy · めまい','Chest pain · 胸の痛み','Something new · その他'],
+  meds:[['Omeprazole 20 mg · オメプラゾール','Once daily · 1日1回 · translated for the team']],
+  adv:{name:'Kenji',full:'Kenji Tanaka',rel:'Husband · emergency contact',letter:'K',pn:'He',pos:'his',clk:['1:12','1:13'],
+    label:"<b>Kenji's phone</b> · husband · no app, just a link",
+    sms:'Huntington Hospital: Yuki Tanaka is in our ER and being cared for. She invited you to follow her visit live:'}
+}
+};
+
+let CUR='claire';
+function setTxt(id,txt){const e=document.getElementById(id); if(e) e.textContent=txt;}
+function applyPersona(key){
+  CUR=key; const p=PERSONAS[key];
+  document.querySelectorAll('.pp').forEach(b=>b.classList.toggle('on',b.dataset.p===key));
+  /* identity & clock */
+  setTxt('sbClk',p.clk); setTxt('mName',p.full); setTxt('mAv',p.ini);
+  /* waiting phase */
+  setTxt('revTitle',p.rev[0]); setTxt('revSub',p.rev[1]);
+  setTxt('triBadge',p.tri.n); setTxt('triT1',p.tri.t1);
+  const hcEl=document.getElementById('hcard');
+  if(hcEl){['c1','c2','c3','c4','c5'].forEach(c=>hcEl.classList.remove(c)); hcEl.classList.add('c'+p.tri.n);}
+  /* triage preview: only Claire gets the level switcher; reset any preview on switch */
+  const tg=document.getElementById('triCtlGroup'), tgs=document.getElementById('triCtlSep');
+  if(tg){const isC=(key==='claire'); tg.hidden=!isC; if(tgs) tgs.hidden=!isC;}
+  if(typeof curTri!=='undefined'){curTri=p.tri.n; document.querySelectorAll('.tp').forEach(b=>b.classList.toggle('on',+b.dataset.t===p.tri.n));}
+  const wrEl=document.getElementById('waitRange'); if(wrEl) wrEl.innerHTML=H_COND[curCond].range+'<span>mins</span>';
+  const heEl=document.getElementById('hExpl'); if(heEl) heEl.textContent=H_COND[curCond].expl;
+  document.getElementById('triInner').innerHTML='<b>What it means:</b> '+p.tri.means+'<span class="nm"><b>What it doesn\'t mean:</b> '+p.tri.not+'</span><span class="nm" style="color:rgba(255,255,255,.72);">'+p.tri.set+'</span>';
+  const tR=document.getElementById('triRow'), tE=document.getElementById('triExpl');
+  if(tR){tR.classList.remove('open'); tE.style.maxHeight='0';}
+  setTxt('reasonWaiting',p.reason); setTxt('reasonAfter',p.reason);
+  document.querySelectorAll('.js-ck').forEach(e=>e.textContent=p.ck);
+  document.querySelectorAll('.js-tr').forEach(e=>e.textContent=p.tr);
+  const uc=document.getElementById('uniqueCard'), ug=document.getElementById('uniqueGap');
+  if(p.unique){uc.hidden=false; ug.hidden=false; setTxt('uniqueTitle',p.unique.t); setTxt('uniqueBody',p.unique.b);}
+  else{uc.hidden=true; ug.hidden=true;}
+  setTxt('nowWaiting',p.nowWait);
+  /* in-care phase */
+  setTxt('careTtl',p.careTtl);
+  document.getElementById('bayPill').innerHTML='<span class="d" style="background:var(--green);"></span>'+p.bay;
+  setTxt('careCap',p.careCap); setTxt('nowIncare',p.nowCare);
+  /* after phase */
+  setTxt('dcTtl',p.dcTtl); setTxt('dcSub','Discharged '+p.dc+' · Today');
+  setTxt('foundText',p.found);
+  document.getElementById('nextSteps').innerHTML='<div class="kicker" style="margin-bottom:4px;">What to do next</div>'+p.next.map((s,i)=>'<div class="row" style="align-items:center;margin-top:'+(i?14:12)+'px;"><div class="numbadge">'+(i+1)+'</div><h3>'+s[0]+'</h3></div><p>'+s[1]+'</p>').join('');
+  setTxt('gpTitle',p.gp[0]); setTxt('gpSub',p.gp[1]);
+  /* nav */
+  setTxt('navGreet',p.nav.greet);
+  const chat=document.getElementById('chat'); chat.innerHTML=''; chat.hidden=true;
+  document.getElementById('navHero').style.display='';
+  humanNotified=false;
+  document.getElementById('humanStatus').hidden=true;
+  setTxt('humanCardSub','Message your care team');
+  document.getElementById('chips').innerHTML=p.nav.chips.map(q=>'<div class="qchip" onclick="ask(this)">'+q+'</div>').join('');
+  /* journal */
+  setTxt('jSub',p.j.sub); setTxt('ckKicker',p.j.kicker); setTxt('ckQ',p.j.q);
+  setTxt('ckLo',p.j.lo); setTxt('ckHi',p.j.hi); setTxt('ckEarlier',p.j.earlier);
+  document.querySelectorAll('#painScale .pain').forEach(b=>b.classList.remove('on','lo','mid','hi'));
+  document.getElementById('painHist').innerHTML=p.j.hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">'+h[2]+'</div><span class="painpill '+painCls(h[3])+'">'+h[3]+'/10</span></div>').join('');
+  document.getElementById('qList').innerHTML=p.j.qs.map(q=>q.ans
+    ?'<div class="q-item answered"><div class="q-text">'+q.q+'</div><div class="q-meta">'+q.meta+'</div><div class="q-ans">“'+q.ans+'”<div class="q-meta" style="margin-top:6px;">'+q.ansMeta+'</div></div></div>'
+    :'<div class="q-item"><div class="q-text">'+q.q+'</div><div class="q-meta">'+q.meta+'</div><button class="q-btn" onclick="openASheet(this)">✓ They answered · save what they said</button></div>').join('');
+  document.getElementById('qChips').innerHTML=p.j.sugg.map(q=>'<div class="qchip" onclick="addQChip(this)">'+q+'</div>').join('');
+  updateQCount();
+  document.getElementById('noteList').innerHTML=p.j.notes.map(n=>'<div class="q-item"><div class="q-text" style="font-weight:500;">'+n[0]+'</div><div class="q-meta">'+n[1]+'</div></div>').join('');
+  /* vitals */
+  setTxt('vMeta',p.vit.meta);
+  document.getElementById('vSnap').innerHTML='<div><div style="font-size:17px;font-weight:700;">'+p.vit.hr+' <span style="font-size:11px;font-weight:600;color:var(--mut);">bpm</span></div><div class="subt" style="font-size:11.5px;">Heart rate</div></div><div><div style="font-size:17px;font-weight:700;">'+p.vit.bp+'</div><div class="subt" style="font-size:11.5px;">Blood pressure</div></div><div><div style="font-size:17px;font-weight:700;">'+p.vit.temp+'°</div><div class="subt" style="font-size:11.5px;">Temp</div></div><div><div style="font-size:17px;font-weight:700;">'+p.vit.spo2+'<span style="font-size:11px;font-weight:600;color:var(--mut);">%</span></div><div class="subt" style="font-size:11.5px;">SpO₂</div></div>';
+  document.getElementById('gHr').innerHTML=p.vit.hr+'<span>bpm</span>';
+  document.getElementById('gBp').innerHTML=p.vit.bp+'<span>mmHg</span>';
+  document.getElementById('gTemp').innerHTML=p.vit.temp+'<span>°C</span>';
+  document.getElementById('gSpo2').innerHTML=p.vit.spo2+'<span>%</span>';
+  document.getElementById('medList').innerHTML=(p.meds&&p.meds.length)?p.meds.map(m=>'<div class="q-item"><div class="q-text" style="font-weight:600;">'+m[0]+'</div><div class="q-meta">'+m[1]+'</div></div>').join(''):'<div class="q-item"><div class="q-text" style="font-weight:500;">None on file</div><div class="q-meta">You can add medications in your health profile</div></div>';
+  document.getElementById('vHist').innerHTML=p.vit.hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals"><span class="vv"><b>'+h[2]+'</b> <span>bpm</span></span><span class="vv"><b>'+h[3]+'</b></span><span class="vv"><b>'+h[4]+'°</b></span><span class="vv"><b>'+h[5]+'%</b> <span>SpO₂</span></span></div></div>').join('');
+  /* symptom-change sheet */
+  document.getElementById('worseStatus').hidden=true;
+  document.getElementById('worseSub').textContent='Anything new or different. A nurse will re-check you. Use any time.';
+  document.getElementById('symGrid').innerHTML=p.sym.map(s=>'<button class="symchip" onclick="symToggle(this)">'+s+'</button>').join('');
+  document.getElementById('worseSend').disabled=true;
+  /* sharing & advocate device */
+  if(share.f.some(f=>f.on)){
+    document.getElementById('sarahWrap').classList.remove('show');
+    document.getElementById('sSms').hidden=false;
+    document.getElementById('sWeb').hidden=true;
+  }
+  addedContacts=[]; share.f=[{on:false,tier:1}]; share.pending=0;
+  updateShareUI(); shRows();
+  setTxt('shWhoTitle','Who should follow '+vLabel()+'?');
+  setTxt('pvYou',(p.user===p.patient?"You're":p.patient+' is')+' at Huntington ER, being cared for');
+  document.getElementById('advLabel').innerHTML=p.adv.label;
+  setTxt('aClk1',p.adv.clk[0]); setTxt('aClk2',p.adv.clk[1]);
+  setTxt('smsTxt',p.adv.sms);
+  setTxt('advTitle',p.patient+"'s visit");
+  setTxt('advJourneyK',p.posCap+' journey');
+  setTxt('advWhyK','Why '+p.pn.toLowerCase()+"'s here");
+  setTxt('advReason',p.reason); setTxt('advSharedBy','Shared by '+p.user);
+  document.getElementById('aVitals').innerHTML='<div><div style="font-size:18px;font-weight:700;">'+p.vit.hr+'</div><div class="subt">Heart rate</div></div><div><div style="font-size:18px;font-weight:700;">'+p.vit.bp+'</div><div class="subt">Blood pressure</div></div><div><div style="font-size:18px;font-weight:700;">'+p.vit.spo2+'%</div><div class="subt">SpO₂</div></div>';
+  setTxt('aVT','Taken '+p.vit.aTaken);
+  document.getElementById('sFoot').innerHTML='Access ends when '+p.patient+"'s visit ends.<br>"+p.pn+' can stop sharing at any time.';
+  /* phase copy */
+  PHASES[0].title='Welcome '+p.user;
+  PHASES[2].sub='Discharged '+p.dc+' · Today';
+  S_PHASES[0].txt=p.pn+"'s been seen by a nurse and is safe";
+  S_PHASES[1].txt=p.pn+"'s in a care space being seen now";
+  S_PHASES[1].sub='With the care team · '+p.bay;
+  S_PHASES[2].txt=p.posCap+' visit is complete';
+  S_PHASES[2].sub='Discharged '+p.dc+' today';
+  setPhase(0);
+}
+document.querySelectorAll('.pp').forEach(b=>b.addEventListener('click',()=>{
+  applyPersona(b.dataset.p);
+  go('status');
+  showToast('Now viewing: '+PERSONAS[b.dataset.p].chipLabel, PERSONAS[b.dataset.p].tag);
+}));
+
+/* ---- triage state preview (Claire is the default patient; levels 1-5 previewable) ---- */
+const TRI_PREVIEW={
+ 1:{n:1,t1:'Triage level 1: immediate care, right now',
+    means:"Care starts before paperwork. A full team is with the patient right now, and everything else in the ER waits.",
+    not:"A patient at level 1 won't be reading this screen. This state is written for their care circle: Claire is receiving immediate care from a full team right now. Someone will update you as soon as they can.",
+    set:"Assigned at arrival · The team is with the patient now.",
+    range:'Now', unit:'', expl:'Care has already started. At level 1 this screen is shown to the care circle, not the patient.'},
+ 2:{n:2,t1:'Triage level 2: high priority, seen very soon',
+    means:"Your condition could change quickly, so the team wants eyes on you fast. You're ahead of most of the queue.",
+    not:"A 2 doesn't mean the worst is happening. It means the team isn't taking chances.",
+    set:"Set at triage, 9:39 AM · You'll be checked on regularly while you wait.",
+    range:'Under 15', unit:'mins', expl:"You're ahead of most of the queue and will be checked on regularly while you wait."},
+ 4:{n:4,t1:'Triage level 4: stable, one step expected',
+    means:"You're stable, and your care will likely need just one step, like an X-ray or stitches. One-step visits are often seen in a fast track area while critical cases go first.",
+    not:"It doesn't mean your problem isn't real or isn't taken seriously. Simpler visits just follow a different track.",
+    set:"Set at triage, 9:39 AM · Your level can change if you're reassessed. Tell staff right away if you feel worse."},
+ 5:{n:5,t1:'Triage level 5: stable, exam and advice',
+    means:"The team expects an exam and possibly a prescription, with no tests needed. It's the simplest path through the ER.",
+    not:"It doesn't mean your visit doesn't belong here. Simple visits are still real visits.",
+    set:"Set at triage, 9:39 AM · Your level can change if you're reassessed. Tell staff right away if you feel worse."}
+};
+let curTri=3;
+function setTri(n){
+  curTri=n;
+  document.querySelectorAll('.tp').forEach(b=>b.classList.toggle('on',+b.dataset.t===n));
+  const p=PERSONAS[CUR];
+  const t=(n===p.tri.n)?p.tri:TRI_PREVIEW[n];
+  setTxt('triBadge',t.n); setTxt('triT1',t.t1);
+  document.getElementById('triInner').innerHTML='<b>What it means:</b> '+t.means+'<span class="nm"><b>What it doesn\'t mean:</b> '+t.not+'</span><span class="nm" style="color:rgba(255,255,255,.72);">'+t.set+'</span>';
+  const hcEl=document.getElementById('hcard');
+  if(hcEl){['c1','c2','c3','c4','c5'].forEach(c=>hcEl.classList.remove(c)); hcEl.classList.add('c'+t.n);}
+  const r=document.getElementById('waitRange'), e=document.getElementById('hExpl');
+  if(t.range!==undefined){ if(r) r.innerHTML=t.range+(t.unit?'<span>'+t.unit+'</span>':''); if(e) e.textContent=t.expl; }
+  else { if(r) r.innerHTML=H_COND[curCond].range+'<span>mins</span>'; if(e) e.textContent=H_COND[curCond].expl; }
+  const tR=document.getElementById('triRow'), tE=document.getElementById('triExpl');
+  if(tR){tR.classList.remove('open'); tE.style.maxHeight='0';}
+}
+document.querySelectorAll('.tp').forEach(b=>b.addEventListener('click',()=>setTri(+b.dataset.t)));
+applyPersona('claire');
+updateQCount();
+go('status');
+</script>
+</body>
+</html>
