@@ -53,7 +53,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .screen.active .scroll>*:nth-child(9){animation-delay:.25s}
 .screen.active .scroll>*:nth-child(n+10){animation-delay:.28s}
 @keyframes rise{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion: reduce){.screen.active .scroll>*{animation:none !important;}.tabbar.ready .tab-pill{transition:opacity .22s ease !important;}}
+@media (prefers-reduced-motion: reduce){.screen.active .scroll>*{animation:none !important;}.tabbar.ready .tab-pill{transition:opacity .22s ease !important;}.dot.now i{animation:none !important;}}
 .kicker{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);}
 .title{font-size:29px;font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:7px 0 5px;}
 .subt{font-size:14px;color:var(--sec);}
@@ -145,7 +145,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .wc-journey .step .lab{color:var(--ink);}
 .wc-journey .dot{background:#fff;}
 .wc-journey .dot.done i{background:#2B3640;}
-.wc-journey .dot.now i{background:#fff;border:2.5px solid #2B3640;box-shadow:none;animation:none;}
+.wc-journey .dot.now i{background:#fff;border:2.5px solid #2B3640;animation:nowPulse 3s ease-in-out infinite;}
 .wc-journey .dot.future i{background:#fff;border:2px solid #DBDDE1;}
 .wc-journey .step.now .meta{color:var(--mut);font-weight:500;}
 .wc-journey .step.future .lab{color:var(--mut);}
@@ -282,7 +282,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .qta:focus{border-color:var(--slate);}
 .qta::placeholder{color:var(--mut);}
 /* guided meditation */
-.med{position:absolute;inset:0;z-index:95;background:linear-gradient(175deg,#2C3841 0%,#3E4E5A 58%,#546672 100%);color:#fff;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease;}
+.med{position:absolute;inset:0;z-index:95;background:radial-gradient(120% 90% at 50% 40%,#1d302b 0%,#16261f 46%,#0d1714 100%);color:#fff;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .45s ease;}
 .med.show{opacity:1;pointer-events:auto;}
 .med-x{position:absolute;top:64px;right:20px;width:34px;height:34px;border:none;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;}
 .med-x svg{width:15px;height:15px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;}
@@ -302,7 +302,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .med-name{font-size:13.5px;font-weight:600;letter-spacing:.03em;color:rgba(255,255,255,.75);}
 .med-orbwrap{position:relative;width:230px;height:230px;margin:40px 0 26px;display:flex;align-items:center;justify-content:center;}
 .med-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(255,255,255,.22);}
-.med-orb{width:192px;height:192px;border-radius:50%;background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.55), rgba(255,255,255,.10) 66%);box-shadow:0 0 60px rgba(255,255,255,.15);transform:scale(.7);}
+.med-orb{position:relative;width:216px;height:216px;border-radius:50%;display:flex;align-items:center;justify-content:center;transform:scale(.72);}.med-orbwrap:before{content:"";position:absolute;width:150%;height:150%;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(127,184,163,.16),transparent 60%);filter:blur(28px);animation:medHalo 12s ease-in-out infinite;}.med-cluster{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:medDrift 70s linear infinite;}.med-petalwrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}.med-petal{width:54%;height:54%;border-radius:50%;mix-blend-mode:screen;filter:blur(.6px);background:radial-gradient(circle at 50% 50%,rgba(206,236,224,.22) 0%,rgba(178,222,206,.22) 55%,rgba(150,205,188,.12) 66%,rgba(120,180,163,.03) 71%,transparent 73%);transform:translateY(-52%);animation:medShimmer 9s ease-in-out infinite;}.med-mp1{transform:rotate(0deg);}.med-mp1 .med-petal{animation-delay:0s;}.med-mp2{transform:rotate(60deg);}.med-mp2 .med-petal{animation-delay:.9s;}.med-mp3{transform:rotate(120deg);}.med-mp3 .med-petal{animation-delay:1.8s;}.med-mp4{transform:rotate(180deg);}.med-mp4 .med-petal{animation-delay:2.7s;}.med-mp5{transform:rotate(240deg);}.med-mp5 .med-petal{animation-delay:3.6s;}.med-mp6{transform:rotate(300deg);}.med-mp6 .med-petal{animation-delay:4.5s;}.med-core{position:absolute;width:20%;height:20%;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(233,247,241,.42),rgba(175,216,201,.16) 55%,transparent 72%);filter:blur(3px);mix-blend-mode:screen;animation:medCore 9s ease-in-out infinite;}@keyframes medDrift{to{transform:rotate(360deg);}}@keyframes medShimmer{0%,100%{opacity:.62;}45%{opacity:1;}}@keyframes medCore{0%,100%{opacity:.45;}50%{opacity:.8;}}@keyframes medHalo{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:.9;transform:scale(1.06);}}@media (prefers-reduced-motion:reduce){.med-cluster,.med-petal,.med-core,.med-orbwrap:before{animation:none!important;}}
 .med-cue{font-size:21px;font-weight:600;letter-spacing:-.01em;min-height:28px;}
 .med-timer{font-size:14px;font-weight:600;color:rgba(255,255,255,.6);margin-top:9px;font-variant-numeric:tabular-nums;}
 .med-ctl{display:flex;gap:11px;margin-top:auto;width:100%;}
@@ -362,8 +362,9 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .dot i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .dot.done i{background:var(--slate);}
 .dot.done svg{width:12px;height:12px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
-.dot.now i{background:var(--slate);box-shadow:0 0 0 5px var(--slate-soft);animation:nowPulse 2.6s ease-out infinite;}
-@keyframes nowPulse{0%{box-shadow:0 0 0 4px var(--slate-soft)}55%{box-shadow:0 0 0 7px rgba(62,78,90,.06)}100%{box-shadow:0 0 0 4px var(--slate-soft)}}
+.dot.now i{background:var(--slate);animation:nowPulse 3s ease-in-out infinite;}
+/* outward-only pulse: expands out then holds at fully-transparent so the loop restart is invisible (no inward collapse) */
+@keyframes nowPulse{0%{box-shadow:0 0 0 0 rgba(62,78,90,.18);}70%{box-shadow:0 0 0 8px rgba(62,78,90,0);}100%{box-shadow:0 0 0 8px rgba(62,78,90,0);}}
 .dot.next i{background:#A9B8C3;}
 .dot.future i{background:#DDE0E5;}
 .step .lab{font-size:15px;font-weight:500;padding-top:1px;}
@@ -820,12 +821,13 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           <span class="nav-wordmark"><span class="nav-mark burst-host"></span>Nav Health</span>
         </div>
         <div class="nav-hero" id="navHero">
+          <span class="nav-orb burst-host"></span>
           <h2 class="nav-greet" id="navGreet">Hi Claire, how can I help?</h2>
           <p class="nav-disclaim">Nav is an AI guide to your visit, not a substitute for medical advice. If you feel severely unwell or your symptoms get worse, tell a staff member or nurse right away.</p>
         </div>
         <div class="chat" id="chat" hidden></div>
         <div class="nav-foot">
-          <div class="card tappable human-card" id="humanCard" onclick="chatHuman()">
+          <div class="card tappable human-card" onclick="chatHuman()">
             <div>
               <div class="ttl">Chat with a human?</div>
               <div class="sub" id="humanCardSub">Message your care team</div>
@@ -858,7 +860,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <div class="gap lg"></div>
         <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMed()">
           <div class="row">
-            <div class="chip amber"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 0 1 8 0"/><path d="M12 8v-1.5M12 17.5V16"/></svg></div>
+            <div class="chip amber"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
             <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
             <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
@@ -1217,7 +1219,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       </div>
       <div class="med-state" id="medPlayer" hidden>
         <div class="med-name" id="medName">Settle your breath</div>
-        <div class="med-orbwrap"><div class="med-ring"></div><div class="med-orb" id="medOrb"></div></div>
+        <div class="med-orbwrap"><div class="med-ring"></div><div class="med-orb" id="medOrb"><div class="med-cluster"><div class="med-petalwrap med-mp1"><div class="med-petal"></div></div><div class="med-petalwrap med-mp2"><div class="med-petal"></div></div><div class="med-petalwrap med-mp3"><div class="med-petal"></div></div><div class="med-petalwrap med-mp4"><div class="med-petal"></div></div><div class="med-petalwrap med-mp5"><div class="med-petal"></div></div><div class="med-petalwrap med-mp6"><div class="med-petal"></div></div></div><div class="med-core"></div></div></div>
         <div class="med-cue" id="medCue">Breathe in…</div>
         <div class="med-timer" id="medTimer">3:00</div>
         <div class="med-ctl">
@@ -1591,7 +1593,6 @@ function setPhase(i){
   phaseIdx=Math.max(0,Math.min(PHASES.length-1,i));
   const p=PHASES[phaseIdx];
   document.querySelectorAll('#status .phase-block').forEach(b=>b.classList.toggle('show',b.dataset.phase===p.key));
-  var hc=document.getElementById('humanCard'); if(hc) hc.style.display = (phaseIdx===0 ? 'none' : '');
   document.getElementById('stTitle').textContent=p.title;
   document.getElementById('stSub').textContent=p.sub;
   const pct=phaseIdx/(PHASES.length-1)*100;
