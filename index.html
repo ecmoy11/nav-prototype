@@ -821,13 +821,12 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           <span class="nav-wordmark"><span class="nav-mark burst-host"></span>Nav Health</span>
         </div>
         <div class="nav-hero" id="navHero">
-          <span class="nav-orb burst-host"></span>
           <h2 class="nav-greet" id="navGreet">Hi Claire, how can I help?</h2>
           <p class="nav-disclaim">Nav is an AI guide to your visit, not a substitute for medical advice. If you feel severely unwell or your symptoms get worse, tell a staff member or nurse right away.</p>
         </div>
         <div class="chat" id="chat" hidden></div>
         <div class="nav-foot">
-          <div class="card tappable human-card" onclick="chatHuman()">
+          <div class="card tappable human-card" id="humanCard" onclick="chatHuman()">
             <div>
               <div class="ttl">Chat with a human?</div>
               <div class="sub" id="humanCardSub">Message your care team</div>
@@ -1601,6 +1600,7 @@ function setPhase(i){
   document.querySelectorAll('.pc-stop').forEach((s,si)=>s.classList.toggle('on',si===phaseIdx));
   document.querySelectorAll('.pc-tick').forEach((t,ti)=>t.classList.toggle('done',ti<=phaseIdx));
   const sc=document.querySelector('#status .scroll'); if(sc) sc.scrollTop=0;
+  var hc=document.getElementById('humanCard'); if(hc) hc.style.display = (phaseIdx===0 ? 'none' : '');
   syncSarah(); laSync();
 }
 function gotoPhase(i){ setPhase(i); go('status'); }
