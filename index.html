@@ -53,7 +53,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .screen.active .scroll>*:nth-child(9){animation-delay:.25s}
 .screen.active .scroll>*:nth-child(n+10){animation-delay:.28s}
 @keyframes rise{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion: reduce){.screen.active .scroll>*{animation:none !important;}}
+@media (prefers-reduced-motion: reduce){.screen.active .scroll>*{animation:none !important;}.tabbar.ready .tab-pill{transition:opacity .22s ease !important;}}
 .kicker{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);}
 .title{font-size:29px;font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:7px 0 5px;}
 .subt{font-size:14px;color:var(--sec);}
@@ -141,7 +141,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 /* white journey panel nested inside the dark wait card */
 .wc-journey{background:#fff;border-radius:18px;padding:15px 17px 13px;margin-top:16px;color:var(--ink);box-shadow:0 6px 18px rgba(15,20,26,.18);}
 .card.dark .wc-journey .kicker{color:var(--mut);}
-.wc-journey .steps:before{background:#E4E6E9;}
+.wc-journey .steps:before{background:linear-gradient(180deg, var(--slate) 0%, var(--slate) 58%, #C9CDD3 72%, #E1E3E7 100%);}
 .wc-journey .step .lab{color:var(--ink);}
 .wc-journey .dot{background:#fff;}
 .wc-journey .dot.done i{background:#2B3640;}
@@ -438,12 +438,15 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .toast .tt{font-size:14px;font-weight:600;line-height:1.3;}
 .toast .ts{font-size:12px;opacity:.78;margin-top:1px;}
 .navwrap{position:absolute;left:16px;right:16px;bottom:22px;display:flex;align-items:stretch;gap:11px;z-index:50;}
-.tabbar{flex:1;display:flex;justify-content:space-around;align-items:center;background:#fff;border-radius:30px;padding:13px 8px;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);}
-.tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;color:#9CA2AB;font-size:11px;font-weight:500;cursor:pointer;flex:1;transition:color .18s ease;}
+.tabbar{position:relative;flex:1;display:flex;justify-content:space-around;align-items:center;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:34px;padding:13px 8px;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);}
+/* gliding active pill — slides between tabs ("glide for transitions") */
+.tab-pill{position:absolute;top:50%;left:0;width:0;height:52px;transform:translateY(-50%);background:var(--ink);border-radius:26px;opacity:0;z-index:0;pointer-events:none;}
+.tabbar.ready .tab-pill{transition:left .4s cubic-bezier(.34,.02,.16,1), width .4s cubic-bezier(.34,.02,.16,1), opacity .22s ease;}
+.tab{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:#9CA2AB;font-size:11px;font-weight:500;cursor:pointer;flex:1;transition:color .28s ease;}
 .tab svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s ease;}
 .tab:active svg{transform:scale(.9);}
-.tab.active{color:var(--ink);font-weight:600;}
-.companion{flex:none;width:66px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:26px;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);cursor:pointer;transition:transform .14s ease;}
+.tab.active{color:#fff;font-weight:600;}
+.companion{flex:none;align-self:center;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:50%;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);cursor:pointer;transition:transform .14s ease;}
 .companion:active{transform:scale(.95);}
 .companion .orb{position:relative;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;}
 .companion .orb .burst{width:30px;height:30px;}
@@ -618,20 +621,10 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           </div>
           <button class="menubtn" onclick="openMenu()" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
         </div>
-        <div class="gap lg"></div>
+        <div class="gap"></div>
 
         <!-- ===== WAITING ===== -->
         <div class="phase-block show" data-phase="waiting">
-          <div class="card">
-            <div class="row">
-              <div class="chip green"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
-              <div>
-                <div class="ttl" style="font-size:16px;" id="revTitle">A nurse has reviewed your arrival</div>
-                <div class="sub" id="revSub">You're safe to wait here.</div>
-              </div>
-            </div>
-          </div>
-          <div class="gap"></div>
           <div class="card dark v1c c3" id="hcard">
             <div class="wc-head">
               <span class="kicker">Estimated wait time</span>
@@ -664,36 +657,21 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
               </div>
             </div>
           </div>
-          <div class="gap"></div>
-          <div class="card">
-            <div class="kicker">Your check-in</div>
-            <div style="margin-top:12px;font-size:13px;color:var(--sec);">Reason for visit</div>
-            <div style="font-size:15px;font-weight:600;margin-top:3px;" id="reasonWaiting">Chest discomfort, started this morning</div>
-            <div class="worse-status" id="worseStatus" hidden>
-              <span class="d"></span>
-              <div><b>You've reported a symptom change.</b>
-              <div class="ws-sub" id="worseStatusSub">A nurse is coming to check on you.</div></div>
-            </div>
-            <div class="worse-status" id="humanStatus" hidden>
-              <span class="d"></span>
-              <div><b>Care team notified.</b>
-              <div class="ws-sub" id="humanStatusSub">A staff member is coming to find you where you're sitting.</div></div>
-            </div>
+          <!-- action feedback: stays hidden until the user reports a change or calls a human -->
+          <div class="worse-status" id="worseStatus" hidden>
+            <span class="d"></span>
+            <div><b>You've reported a symptom change.</b>
+            <div class="ws-sub" id="worseStatusSub">A nurse is coming to check on you.</div></div>
           </div>
-          <div class="gap"></div>
+          <div class="worse-status" id="humanStatus" hidden>
+            <span class="d"></span>
+            <div><b>Care team notified.</b>
+            <div class="ws-sub" id="humanStatusSub">A staff member is coming to find you where you're sitting.</div></div>
+          </div>
+          <div class="gap" id="uniqueGap" hidden></div>
           <div class="card sm" id="uniqueCard" hidden>
             <div class="ch" id="uniqueTitle"></div>
             <p class="body-sm" id="uniqueBody"></p>
-          </div>
-          <div class="gap" id="uniqueGap" hidden></div>
-          <div class="card sm">
-            <div class="ch">What's happening now</div>
-            <p class="body-sm" id="nowWaiting">A clinician has reviewed you. The team is freeing up a treatment space and checks on waiting patients regularly.</p>
-          </div>
-          <div class="gap"></div>
-          <div class="card tappable linkrow" onclick="go('behind')" style="padding:16px 18px;">
-            <b>Why am I waiting?</b>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
           <div class="gap"></div>
           <div class="card tappable linkrow" onclick="openShare()" style="padding:16px 18px;">
@@ -842,13 +820,12 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           <span class="nav-wordmark"><span class="nav-mark burst-host"></span>Nav Health</span>
         </div>
         <div class="nav-hero" id="navHero">
-          <span class="nav-orb burst-host"></span>
           <h2 class="nav-greet" id="navGreet">Hi Claire, how can I help?</h2>
           <p class="nav-disclaim">Nav is an AI guide to your visit, not a substitute for medical advice. If you feel severely unwell or your symptoms get worse, tell a staff member or nurse right away.</p>
         </div>
         <div class="chat" id="chat" hidden></div>
         <div class="nav-foot">
-          <div class="card tappable human-card" onclick="chatHuman()">
+          <div class="card tappable human-card" id="humanCard" onclick="chatHuman()">
             <div>
               <div class="ttl">Chat with a human?</div>
               <div class="sub" id="humanCardSub">Message your care team</div>
@@ -1075,14 +1052,15 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     </div>
     <div class="navwrap" id="tabs">
       <nav class="tabbar">
+        <div class="tab-pill" id="tabPill" aria-hidden="true"></div>
         <div class="tab" data-screen="status" onclick="go('status')">
           <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Status</div>
         <div class="tab" data-screen="comfort" onclick="go('comfort')">
-          <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"/><path d="m18 15-2-2"/><path d="m15 18-2-2"/></svg>Care</div>
+          <svg viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762"/></svg>Care</div>
         <div class="tab" data-screen="journal" onclick="go('journal')">
           <svg viewBox="0 0 24 24"><path d="M13.5 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.5"/><path d="M2 7h4M2 11h4M2 15h4"/><path d="m21.3 5.3-6.9 6.9-2.9.7.7-2.9 6.9-6.9a1.6 1.6 0 0 1 2.2 2.2z"/></svg>Journal</div>
         <div class="tab" data-screen="behind" onclick="go('behind')">
-          <svg viewBox="0 0 24 24"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>Learn</div>
+          <svg viewBox="0 0 24 24"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>Learn</div>
       </nav>
       <div class="tab companion" data-screen="navigator" onclick="go('navigator')" aria-label="AI companion">
         <span class="orb burst-host"></span>
@@ -1420,7 +1398,21 @@ function go(id){
   const sc=el.querySelector('.scroll'); if(sc) sc.scrollTop=0;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.screen===id));
   document.getElementById('host').classList.toggle('athome', id==='home');
+  positionPill();
 }
+/* slide the active-tab pill to the current tab ("glide for transitions") */
+function positionPill(){
+  const bar=document.querySelector('.tabbar');
+  const pill=document.getElementById('tabPill');
+  if(!bar||!pill) return;
+  const act=bar.querySelector('.tab.active');
+  if(!act){ pill.style.opacity='0'; return; }
+  pill.style.opacity='1';
+  pill.style.left=act.offsetLeft+'px';
+  pill.style.width=act.offsetWidth+'px';
+  if(!bar.classList.contains('ready')) requestAnimationFrame(()=>bar.classList.add('ready'));
+}
+window.addEventListener('resize', positionPill);
 function showHome(){go('home');}
 /* adaptive wait: ER conditions drive the estimated range + live activity */
 const H_COND={
@@ -1599,6 +1591,7 @@ function setPhase(i){
   phaseIdx=Math.max(0,Math.min(PHASES.length-1,i));
   const p=PHASES[phaseIdx];
   document.querySelectorAll('#status .phase-block').forEach(b=>b.classList.toggle('show',b.dataset.phase===p.key));
+  var hc=document.getElementById('humanCard'); if(hc) hc.style.display = (phaseIdx===0 ? 'none' : '');
   document.getElementById('stTitle').textContent=p.title;
   document.getElementById('stSub').textContent=p.sub;
   const pct=phaseIdx/(PHASES.length-1)*100;
