@@ -267,15 +267,42 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .painpill.lo{background:var(--green-soft);color:var(--green);}
 .painpill.mid{background:var(--amber-soft);color:var(--amber);}
 .painpill.hi{background:var(--red-soft);color:var(--red-ink);}
+.painslider{margin-top:16px;}
+.pain-readout{text-align:center;font-size:32px;font-weight:800;line-height:1;color:var(--mut);margin-bottom:14px;letter-spacing:-.02em;transition:color .15s ease;}
+.pain-readout.lo{color:var(--green);} .pain-readout.mid{color:var(--amber);} .pain-readout.hi{color:var(--red);}
+.painrange{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--green) 0%,var(--amber) 55%,var(--red) 100%);outline:none;cursor:pointer;}
+.painrange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--line2);box-shadow:0 2px 7px rgba(20,23,28,.22);cursor:grab;transition:transform .1s ease;}
+.painrange::-webkit-slider-thumb:active{transform:scale(1.12);cursor:grabbing;}
+.painrange::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--line2);box-shadow:0 2px 7px rgba(20,23,28,.22);cursor:grab;}
+.painrange::-moz-range-track{background:transparent;border:none;}
+.pain-ticks{display:flex;justify-content:space-between;margin-top:11px;padding:0 1px;}
+.pain-ticks span{font-size:11px;font-weight:600;color:var(--mut);flex:1;text-align:center;}
 /* journal — questions & notes */
 .q-item{border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-top:10px;animation:rise .4s cubic-bezier(.2,.7,.3,1) both;}
 .q-text{font-size:14.5px;font-weight:600;line-height:1.4;letter-spacing:-.01em;}
 .q-meta{font-size:11.5px;color:var(--mut);font-weight:500;margin-top:3px;}
 .q-ans{background:var(--green-soft);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:13.5px;line-height:1.5;}
 .q-btn{margin-top:10px;border:1.5px solid var(--line2);background:#fff;border-radius:12px;padding:8px 12px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--slate);cursor:pointer;transition:all .15s ease;}
+.qlist{margin-top:8px;}
+.qrow{display:flex;align-items:flex-start;gap:12px;padding:14px 2px;cursor:pointer;border-bottom:1px solid var(--line2);transition:background .12s ease;}
+.qlist .qrow:last-child{border-bottom:none;}
+.qrow:active{background:rgba(20,23,28,.02);}
+.qcheck{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background .15s ease,border-color .15s ease;}
+.qcheck svg{width:13px;height:13px;stroke:#9C9C9C;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .15s ease;}
+.qrow.answered .qcheck{background:#F3F3F3;border-color:#F3F3F3;}
+.qrow.answered .qcheck svg{opacity:1;}
+.qtxt{font-size:15px;font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.01em;}
+.qrow.answered .qtxt{color:var(--sec);}
+.note-item{padding:2px 2px 0;}
+.note-item + .note-item{border-top:1px solid var(--line2);margin-top:12px;padding-top:12px;}
+.note-txt{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.5;}
+.note-time{font-size:11.5px;color:var(--mut);font-weight:500;margin-top:6px;}
+.pain-submit{width:100%;margin-top:14px;border:none;background:var(--ink);color:#fff;border-radius:14px;padding:12px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s ease, background .18s ease;}
+.pain-submit:disabled{background:var(--line2);color:var(--mut);cursor:not-allowed;}
+.pain-submit:not(:disabled):active{transform:scale(.985);}
 .q-btn:hover{border-color:var(--slate);}
 .q-btn:active{transform:scale(.97);}
-.addq{display:flex;align-items:center;gap:9px;border:1.5px dashed var(--line2);border-radius:16px;padding:12px 14px;margin-top:10px;color:var(--mut);font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s ease;}
+.addq{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line2);border-radius:14px;padding:15px 16px;margin-top:12px;color:var(--mut);font-size:15px;font-weight:500;cursor:pointer;transition:all .15s ease;}
 .addq:hover{border-color:var(--slate);color:var(--sec);}
 .q-quote{background:var(--surface);border-radius:12px;padding:11px 13px;font-size:13.5px;font-weight:600;line-height:1.45;margin-bottom:12px;}
 .qta{width:100%;min-height:100px;border:1.5px solid var(--line2);border-radius:16px;padding:13px 14px;font-family:inherit;font-size:14.5px;line-height:1.5;color:var(--ink);background:var(--bg);resize:none;outline:none;margin-bottom:13px;transition:border-color .15s ease;}
@@ -377,6 +404,22 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .step .t{margin-left:auto;flex:none;font-size:13px;font-weight:500;color:var(--sec);padding-top:3px;}
 .linkrow{display:flex;align-items:center;justify-content:space-between;}
 .linkrow b{font-size:15px;font-weight:600;color:var(--slate);}
+.navrow{justify-content:flex-start;gap:13px;}
+.navrow .nr-ic{flex:none;width:24px;height:24px;color:var(--slate);display:flex;align-items:center;justify-content:center;}
+.navrow .nr-ic svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.navrow b{color:var(--ink);}
+.rowlist{margin:6px -20px 0;}
+.listrow{display:flex;align-items:center;gap:13px;padding:16px 20px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .14s ease;}
+.rowlist .listrow:last-child{border-bottom:none;}
+.listrow:hover{background:rgba(20,23,28,.02);}
+.listrow:active{background:rgba(20,23,28,.045);}
+.listrow .nr-ic{flex:none;width:24px;height:24px;color:var(--slate);display:flex;align-items:center;justify-content:center;}
+.listrow .nr-ic svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.listrow b{flex:1;color:var(--ink);font-size:15px;font-weight:600;}
+.listrow .chev{margin-left:auto;color:#C8CCD2;}
+.backbtn{width:37px;height:37px;border:none;border-radius:50%;background:#fff;box-shadow:var(--sh-card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);flex:none;}
+.backbtn svg{width:19px;height:19px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.backbtn:active{transform:scale(.94);}
 .ch{font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
 .body-sm{font-size:13.5px;color:var(--sec);line-height:1.55;margin-top:5px;}
 /* chat */
@@ -415,7 +458,10 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .symgrid{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 18px;}
 .symchip{border:1.5px solid var(--line2);background:#fff;border-radius:20px;padding:9px 14px;font-family:inherit;font-size:13px;font-weight:600;color:var(--sec);cursor:pointer;transition:all .15s ease;}
 .symchip:hover{border-color:var(--slate);color:var(--ink);}
-.symchip.on{background:var(--red-soft);border-color:var(--red);color:var(--red-ink);}
+.symchip.on{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-deep);}
+.symnote{width:100%;box-sizing:border-box;border:1.5px solid var(--line2);border-radius:16px;padding:12px 14px;font-family:inherit;font-size:14px;line-height:1.5;color:var(--ink);background:#fff;resize:none;min-height:74px;margin:0 0 16px;transition:border-color .15s ease;}
+.symnote:focus{outline:none;border-color:var(--blue);}
+.symnote::placeholder{color:var(--mut);}
 .btn[disabled]{opacity:.35;pointer-events:none;box-shadow:none;}
 /* persistent status in check-in card after reporting */
 .worse-status{display:flex;gap:10px;align-items:flex-start;background:var(--amber-soft);border-radius:14px;padding:12px 13px;margin-top:12px;font-size:12.5px;line-height:1.5;}
@@ -436,6 +482,19 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .toast.alert{background:var(--red-ink);}
 .toast .ti{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;flex:none;}
 .toast .ti svg{width:17px;height:17px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.toast-undo{margin-left:auto;flex:none;background:rgba(255,255,255,.18);border:none;color:#fff;font-family:inherit;font-weight:700;font-size:13px;padding:7px 14px;border-radius:10px;cursor:pointer;transition:background .15s ease;}
+.toast-undo:active{background:rgba(255,255,255,.32);}
+.pc-name{margin-top:9px;width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink);background:#fff;outline:none;transition:border-color .15s ease;}
+.pc-name::placeholder{color:var(--mut);font-weight:400;}
+.pc-name:focus{border-color:var(--slate);}
+.wait-alert{display:none;align-items:flex-start;gap:11px;background:var(--amber-soft);border:1px solid rgba(188,132,24,.30);border-radius:16px;padding:13px 14px;margin-bottom:12px;}
+.wait-alert.show{display:flex;animation:rise .42s cubic-bezier(.2,.7,.3,1) both;}
+.wait-alert .wa-ic{flex:none;width:28px;height:28px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;}
+.wait-alert .wa-ic svg{width:16px;height:16px;stroke:var(--amber);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.wait-alert .wa-body b{font-size:14px;color:var(--ink);font-weight:700;}
+.wait-alert .wa-sub{font-size:12.5px;color:var(--sec);line-height:1.45;margin-top:3px;}
+.wait-alert .wa-x{flex:none;margin-left:6px;background:none;border:none;cursor:pointer;color:var(--mut);padding:2px;}
+.wait-alert .wa-x svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;}
 .toast .tt{font-size:14px;font-weight:600;line-height:1.3;}
 .toast .ts{font-size:12px;opacity:.78;margin-top:1px;}
 .navwrap{position:absolute;left:16px;right:16px;bottom:22px;display:flex;align-items:stretch;gap:11px;z-index:50;}
@@ -447,12 +506,16 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .tab svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s ease;}
 .tab:active svg{transform:scale(.9);}
 .tab.active{color:#fff;font-weight:600;}
-.companion{flex:none;align-self:center;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:50%;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);cursor:pointer;transition:transform .14s ease;}
+.companion{flex:none;align-self:center;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:50%;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);cursor:pointer;transition:transform .14s ease, background .22s ease, border-color .22s ease;}
 .companion:active{transform:scale(.95);}
 .companion .orb{position:relative;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;}
-.companion .orb .burst{width:30px;height:30px;}
+.companion .orb .burst{width:34px;height:34px;}
 .companion .orb:before{content:"";position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,rgba(62,78,90,.18),transparent 68%);animation:orbPulse 2.8s ease-out infinite;}
-.companion.active .orb:before{background:radial-gradient(circle,rgba(62,78,90,.32),transparent 66%);}
+.companion.active .orb:before{background:radial-gradient(circle,rgba(62,78,90,.42),transparent 66%);}
+/* Nav screen active — orb inverts to a filled dark disc with a white compass (matches Figma "Nav" frame) */
+.companion.active{background:var(--ink);border-color:var(--ink);}
+.companion.active .orb{background:var(--ink);}
+.companion.active .orb .burst{color:#fff;}
 @keyframes orbPulse{0%{transform:scale(.8);opacity:.7}70%{transform:scale(1.35);opacity:0}100%{opacity:0}}
 
 /* compass mark — Nav identity */
@@ -460,11 +523,11 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .la-orb .burst{color:#fff;}
 
 /* Nav AI (concierge) screen */
-.nav-scroll{display:flex;flex-direction:column;padding:62px 20px 150px;}
+.nav-scroll{display:flex;flex-direction:column;padding:62px 20px 188px;}
 .nav-head{flex:none;display:flex;justify-content:center;align-items:center;padding-bottom:4px;}
 .nav-wordmark{display:inline-flex;align-items:center;gap:9px;font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
-.nav-wordmark .nav-mark{width:23px;height:23px;display:block;}
-.nav-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 4px;}
+.nav-wordmark .nav-mark{width:26px;height:26px;display:block;}
+.nav-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:36px 4px 20px;}
 .nav-orb{width:88px;height:88px;display:block;margin-bottom:24px;filter:drop-shadow(0 10px 22px rgba(51,65,76,.26));}
 .nav-greet{font-size:26px;font-weight:700;letter-spacing:-.025em;line-height:1.12;}
 .nav-disclaim{font-size:13px;color:var(--mut);line-height:1.5;margin-top:13px;max-width:300px;}
@@ -496,6 +559,15 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .sms-bubble{background:#E9E9EB;border-radius:20px 20px 20px 6px;padding:14px 16px;font-size:14.5px;line-height:1.55;color:#111;max-width:88%;}
 .sms-bubble a{color:var(--blue);font-weight:600;cursor:pointer;display:inline-block;margin-top:6px;}
 .sms-hint{font-size:11.5px;color:var(--mut);margin-top:10px;}
+.linkprev{display:block;width:100%;max-width:88%;margin-top:10px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 1px 2px rgba(51,65,76,.05),0 8px 20px rgba(51,65,76,.08);cursor:pointer;text-align:left;transition:transform .12s ease;}
+.linkprev:active{transform:scale(.98);}
+.linkprev .lp-top{display:flex;align-items:center;gap:12px;padding:14px 15px;}
+.linkprev .lp-ic{flex:none;width:44px;height:44px;border-radius:13px;background:var(--slate);color:#fff;display:flex;align-items:center;justify-content:center;}
+.linkprev .lp-ic .burst{width:25px;height:25px;}
+.linkprev .lp-tt{font-size:15px;font-weight:700;color:var(--ink);line-height:1.2;}
+.linkprev .lp-sb{font-size:12.5px;color:var(--sec);margin-top:3px;line-height:1.35;}
+.linkprev .lp-dom{display:flex;align-items:center;gap:6px;padding:9px 15px;border-top:1px solid var(--line);font-size:11.5px;font-weight:600;color:var(--mut);background:var(--surface);}
+.linkprev .lp-dom svg{width:11px;height:11px;stroke:currentColor;stroke-width:2;fill:none;}
 .sbrowser{flex:none;display:flex;align-items:center;gap:7px;background:var(--surface);margin:8px 14px;border-radius:12px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--sec);}
 .sbrowser svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none;}
 .sscroll{flex:1;overflow-y:auto;padding:10px 18px 30px;background:var(--bg);border-radius:24px 24px 0 0;scrollbar-width:none;}
@@ -504,6 +576,12 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .supsell{background:var(--blue-soft);border-radius:16px;padding:13px 15px;display:flex;align-items:center;gap:12px;}
 .supsell p{flex:1;font-size:12.5px;font-weight:600;color:var(--blue);line-height:1.4;}
 .supsell span{background:var(--blue);color:#fff;font-size:12px;font-weight:700;border-radius:16px;padding:7px 14px;cursor:pointer;flex:none;}
+.sweb-brand{display:flex;align-items:center;gap:9px;padding:11px 13px;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-card);}
+.sweb-brand .swb-mark{width:26px;height:26px;color:var(--slate);display:flex;align-items:center;justify-content:center;flex:none;}
+.sweb-brand .swb-mark .burst{width:26px;height:26px;}
+.sweb-brand .swb-name{font-size:14.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em;}
+.sweb-brand .swb-live{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--green);background:var(--green-soft);border-radius:20px;padding:4px 10px;}
+.sweb-brand .swb-live .d{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(46,160,110,.5);animation:pulseDot 2.4s ease-out infinite;}
 
 /* ===== hamburger + menu drawer ===== */
 .headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
@@ -626,9 +704,14 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 
         <!-- ===== WAITING ===== -->
         <div class="phase-block show" data-phase="waiting">
+          <div class="wait-alert" id="waitAlert">
+            <span class="wa-ic"><svg viewBox="0 0 24 24"><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg></span>
+            <div class="wa-body"><b>Wait estimate updated</b><div class="wa-sub" id="waitAlertSub"></div></div>
+            <button class="wa-x" onclick="dismissWaitAlert()" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div>
           <div class="card dark v1c c3" id="hcard">
             <div class="wc-head">
-              <span class="kicker">Estimated wait time</span>
+              <span class="kicker">Estimated wait time until seeing a clinician</span>
               <button class="wc-info" onclick="toggleHExpl()" title="How is this estimated?"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
             </div>
             <div class="wc-range" id="waitRange">30-60<span>mins</span></div>
@@ -642,7 +725,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
               </button>
               <div class="tri-expl" id="triExpl">
                 <div class="inner" id="triInner">
-                  <b>What it means:</b> You're stable, and your care will likely involve two or more steps, like bloodwork plus a scan. That makes yours a longer kind of visit.
+                  <b>What it means:</b> You're stable, and your care will likely involve two or more steps. That makes yours a longer kind of visit.
                   <span class="nm"><b>What it doesn't mean:</b> It's not a score of how sick you feel. It's an estimate of how many steps your care will take.</span>
                   <span class="nm" style="color:rgba(255,255,255,.72);">Set at triage, 9:39 AM · Your level can change if you're reassessed. Tell staff right away if you feel worse.</span>
                 </div>
@@ -675,9 +758,23 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <p class="body-sm" id="uniqueBody"></p>
           </div>
           <div class="gap"></div>
-          <div class="card tappable linkrow" onclick="openShare()" style="padding:16px 18px;">
-            <b id="shareRowLabel">Let someone follow your visit</b>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
+          <!-- flat list rows (icon · label · chevron) with full-bleed dividers — matches Figma -->
+          <div class="rowlist">
+            <div class="listrow" onclick="openShare()">
+              <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
+              <b id="shareRowLabel">Let someone follow your visit</b>
+              <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="listrow" onclick="go('vitals')">
+              <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+              <b>Vitals</b>
+              <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="listrow" onclick="go('medications')">
+              <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 4.5h14v4.5H5z"/><path d="M12 12.5v5M9.5 15h5"/></svg></span>
+              <b>Medications on file</b>
+              <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
           </div>
         </div>
 
@@ -814,146 +911,23 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 
       </div>
     </section>
-    <!-- 3 NAV (AI) -->
-    <section class="screen" id="navigator">
-      <div class="scroll nav-scroll">
-        <div class="nav-head">
-          <span class="nav-wordmark"><span class="nav-mark burst-host"></span>Nav Health</span>
-        </div>
-        <div class="nav-hero" id="navHero">
-          <h2 class="nav-greet" id="navGreet">Hi Claire, how can I help?</h2>
-          <p class="nav-disclaim">Nav is an AI guide to your visit, not a substitute for medical advice. If you feel severely unwell or your symptoms get worse, tell a staff member or nurse right away.</p>
-        </div>
-        <div class="chat" id="chat" hidden></div>
-        <div class="nav-foot">
-          <div class="card tappable human-card" id="humanCard" onclick="chatHuman()">
-            <div>
-              <div class="ttl">Chat with a human?</div>
-              <div class="sub" id="humanCardSub">Message your care team</div>
-            </div>
-            <div class="faces">
-              <i style="background:#E0915B"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
-              <i style="background:#5BB98C"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=faces" alt=""></i>
-              <i style="background:#9B7FE0"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
-            </div>
-          </div>
-          <div class="kicker" style="margin-top:16px;">Suggested</div>
-          <div class="chips" id="chips">
-            <div class="qchip" onclick="ask(this)">Why isn't it first-come?</div>
-            <div class="qchip" onclick="ask(this)">Can I leave and come back?</div>
-            <div class="qchip" onclick="ask(this)">Who is looking after me?</div>
-          </div>
-          <p class="nav-cap">Nav can make mistakes and isn't monitored by staff. If it's an emergency, tell a staff member right away.</p>
-        </div>
-      </div>
-      <div class="inputbar">
-        <input placeholder="Ask Nav anything…" id="navInput" autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter')sendNav()">
-        <div class="send" onclick="sendNav()"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
-      </div>
-    </section>
-    <!-- 4 COMFORT -->
-    <section class="screen" id="comfort">
+    <!-- VITALS (full screen — opened from the Status row) -->
+    <section class="screen" id="vitals">
       <div class="scroll">
-        <h2 class="title">Care</h2>
-        <div class="subt">Small things you can do while you wait</div>
-        <div class="gap lg"></div>
-        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMed()">
-          <div class="row">
-            <div class="chip amber"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
-            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-          </div>
-        </div>
-        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won't miss you','Check back in when you return.')">
-          <div class="row">
-            <div class="chip green"><svg viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M14 16l4-4-4-4M18 12H9"/></svg></div>
-            <div><div class="ttl">Stepping outside?</div><div class="sub">Let us know so we don't miss you</div></div>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-          </div>
-        </div>
-        <div class="worse" onclick="openWorse()">
-          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
-          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
-          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-        </div>
-      </div>
-    </section>
-    <!-- 4b JOURNAL -->
-    <section class="screen" id="journal">
-      <div class="scroll">
-        <h2 class="title">Your journal</h2>
-        <div class="subt" id="jSub">Questions, pain and notes, all in one place</div>
-        <div class="gap lg"></div>
-
-        <!-- pain check-in -->
-        <div class="card">
-          <div class="kicker" id="ckKicker">Pain check-in</div>
-          <div class="ttl" style="margin-top:9px;" id="ckQ">How's your pain right now?</div>
-          <div class="painscale" id="painScale"></div>
-          <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--mut);margin-top:7px;"><span id="ckLo">No pain</span><span id="ckHi">Worst imaginable</span></div>
-          <div class="divider"></div>
-          <div class="kicker" id="ckEarlier">Earlier today</div>
-          <div class="vhist" id="painHist">
-            <div class="vrow"><div class="vtime"><b>11:15 AM</b><span>Nurse check</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Aching, a little better</div><span class="painpill mid">5/10</span></div>
-            <div class="vrow"><div class="vtime"><b>9:39 AM</b><span>Triage</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Sharp when breathing deeply</div><span class="painpill hi">7/10</span></div>
-          </div>
+        <div class="headrow" style="justify-content:flex-start;gap:12px;align-items:center;">
+          <button class="backbtn" onclick="go('status')" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div><h2 class="title">Vitals</h2><div class="subt" id="vMeta">12:58 PM · Marcus Lee</div></div>
         </div>
         <div class="gap"></div>
-
-        <!-- questions for the doctor -->
         <div class="card">
-          <div class="row" style="align-items:center;">
-            <div class="kicker">Questions for your doctor</div>
-            <span class="sub" style="margin:0 0 0 auto;" id="qCount">1 to ask</span>
-          </div>
-          <div id="qList">
-            <div class="q-item">
-              <div class="q-text">Do I need more tests, like a stress test?</div>
-              <div class="q-meta">Added 10:02 AM · not asked yet</div>
-              <button class="q-btn" onclick="openASheet(this)">✓ They answered · save what they said</button>
-            </div>
-            <div class="q-item answered">
-              <div class="q-text">Can I keep taking my blood-pressure pill today?</div>
-              <div class="q-meta">Asked at triage</div>
-              <div class="q-ans">“Yes, take it as usual, with food.”<div class="q-meta" style="margin-top:6px;">Answered by Dr. Khan · 11:20 AM</div></div>
-            </div>
-          </div>
-          <div class="addq" onclick="openQSheet()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a question…</div>
-          <div class="kicker" style="margin-top:14px;">Suggested</div>
-          <div class="chips" style="margin-top:9px;" id="qChips">
-            <div class="qchip" onclick="addQChip(this)">What do my ECG results mean?</div>
-            <div class="qchip" onclick="addQChip(this)">When should I come back?</div>
-          </div>
-        </div>
-        <div class="gap"></div>
-
-        <!-- notes -->
-        <div class="card">
-          <div class="kicker">Notes</div>
-          <div id="noteList">
-            <div class="q-item">
-              <div class="q-text" style="font-weight:500;">Dr. Khan said the ECG looks normal. Still waiting on blood results.</div>
-              <div class="q-meta">12:05 PM</div>
-            </div>
-          </div>
-          <div class="addq" onclick="addNote()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Jot something down…</div>
-        </div>
-        <div class="gap"></div>
-
-        <!-- vitals, folded in -->
-        <div class="card">
-          <div class="row" style="align-items:center;">
-            <div class="kicker">Your vitals</div>
-            <span class="sub" style="margin:0 0 0 auto;" id="vMeta">12:58 PM · Marcus Lee</span>
-          </div>
+          <div class="kicker">Latest reading</div>
           <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;" id="vSnap">
             <div><div style="font-size:17px;font-weight:700;">76 <span style="font-size:11px;font-weight:600;color:var(--mut);">bpm</span></div><div class="subt" style="font-size:11.5px;">Heart rate</div></div>
             <div><div style="font-size:17px;font-weight:700;">128/82</div><div class="subt" style="font-size:11.5px;">Blood pressure</div></div>
             <div><div style="font-size:17px;font-weight:700;">36.9°</div><div class="subt" style="font-size:11.5px;">Temp</div></div>
             <div><div style="font-size:17px;font-weight:700;">98<span style="font-size:11px;font-weight:600;color:var(--mut);">%</span></div><div class="subt" style="font-size:11.5px;">SpO₂</div></div>
           </div>
-          <button class="q-btn" style="width:100%;margin-top:13px;" id="vToggle" onclick="toggleVitals()">See trends &amp; history</button>
-          <div id="vitalsFull" hidden>
+        </div>
         <div class="gap"></div>
         <div class="vitals-grid">
           <div class="vital">
@@ -982,36 +956,166 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           </div>
         </div>
         <div class="gap"></div>
-        <div class="kicker">Reading history</div>
-        <div class="vhist" id="vHist">
+        <div class="card">
+          <div class="kicker">Reading history</div>
+          <div class="vhist" id="vHist">
             <div class="vrow">
               <div class="vtime"><b>12:58 PM</b><span>Latest</span></div>
               <div class="vvals"><span class="vv"><b>76</b> <span>bpm</span></span><span class="vv"><b>128/82</b></span><span class="vv"><b>36.9°</b></span><span class="vv"><b>98%</b> <span>SpO₂</span></span></div>
             </div>
-            <div class="vrow">
-              <div class="vtime"><b>11:15 AM</b><span>Nurse check</span></div>
-              <div class="vvals"><span class="vv"><b>80</b> <span>bpm</span></span><span class="vv"><b>132/84</b></span><span class="vv"><b>37.0°</b></span><span class="vv"><b>98%</b> <span>SpO₂</span></span></div>
-            </div>
-            <div class="vrow">
-              <div class="vtime"><b>9:38 AM</b><span>Triage</span></div>
-              <div class="vvals"><span class="vv"><b>88</b> <span>bpm</span></span><span class="vv"><b>138/86</b></span><span class="vv"><b>37.1°</b></span><span class="vv"><b>97%</b> <span>SpO₂</span></span></div>
-            </div>
-        </div>
           </div>
         </div>
         <div class="gap"></div>
-        <!-- medications, from the health profile shared at check-in -->
+        <p class="body-sm" style="text-align:center;padding:0 8px;">Measured by your care team. Spot something wrong? Tell your nurse.</p>
+      </div>
+    </section>
+    <!-- MEDICATIONS (full screen — opened from the Status row) -->
+    <section class="screen" id="medications">
+      <div class="scroll">
+        <div class="headrow" style="justify-content:flex-start;gap:12px;align-items:center;">
+          <button class="backbtn" onclick="go('status')" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div><h2 class="title">Medications</h2><div class="subt">Shared with your care team</div></div>
+        </div>
+        <div class="gap"></div>
+        <div class="card">
+          <div class="kicker">On file</div>
+          <div id="medList"></div>
+          <div class="addq" onclick="openMedSheet()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a medication…</div>
+          <p class="body-sm" style="margin-top:12px;">From your health profile, plus anything you add here. Updates you make are shared with your care team, so there's no need to flag them separately.</p>
+        </div>
+      </div>
+    </section>
+    <!-- 3 NAV (AI) -->
+    <section class="screen" id="navigator">
+      <div class="scroll nav-scroll">
+        <div class="nav-head">
+          <span class="nav-wordmark"><span class="nav-mark burst-host"></span>Nav Health</span>
+        </div>
+        <div class="nav-hero" id="navHero">
+          <h2 class="nav-greet" id="navGreet">Hi Claire, how can I help?</h2>
+          <p class="nav-disclaim">Nav is an AI guide to your visit, not a substitute for medical advice. If you feel severely unwell or your symptoms get worse, tell a staff member or nurse right away.</p>
+        </div>
+        <div class="chat" id="chat" hidden></div>
+        <div class="nav-foot">
+          <div class="card tappable human-card" id="humanCard" onclick="chatHuman()">
+            <div>
+              <div class="ttl">Chat with a human?</div>
+              <div class="sub" id="humanCardSub">Message your care team</div>
+            </div>
+            <div class="faces">
+              <i style="background:#E0915B"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
+              <i style="background:#5BB98C"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=faces" alt=""></i>
+              <i style="background:#9B7FE0"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
+            </div>
+          </div>
+          <div class="kicker" style="margin-top:16px;">Suggested</div>
+          <div class="chips" id="chips">
+            <div class="qchip" onclick="ask(this)">Why isn't it first come, first served?</div>
+            <div class="qchip" onclick="ask(this)">Can I leave and come back?</div>
+            <div class="qchip" onclick="ask(this)">Who is looking after me?</div>
+          </div>
+          <p class="nav-cap">Nav can make mistakes and isn't monitored by staff. If it's an emergency, tell a staff member right away.</p>
+        </div>
+      </div>
+      <div class="inputbar">
+        <input placeholder="Ask Nav anything…" id="navInput" autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter')sendNav()">
+        <div class="send" onclick="sendNav()"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+      </div>
+    </section>
+    <!-- 4 COMFORT -->
+    <section class="screen" id="comfort">
+      <div class="scroll">
+        <h2 class="title">Care</h2>
+        <div class="subt">Small things you can do while you wait</div>
+        <div class="gap lg"></div>
+        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMed()">
+          <div class="row">
+            <div class="chip green"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
+            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won't miss you','Check back in when you return.')">
+          <div class="row">
+            <div class="chip amber"><svg viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M14 16l4-4-4-4M18 12H9"/></svg></div>
+            <div><div class="ttl">Stepping outside?</div><div class="sub">Let us know so we don't miss you</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+        <div class="worse" onclick="openWorse()">
+          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
+          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+    </section>
+    <!-- 4b JOURNAL -->
+    <section class="screen" id="journal">
+      <div class="scroll">
+        <h2 class="title">Your journal</h2>
+        <div class="subt" id="jSub">Questions, pain and notes, all in one place</div>
+        <div class="gap lg"></div>
+
+        <!-- pain check-in -->
+        <div class="card">
+          <div class="kicker" id="ckKicker">Pain check-in</div>
+          <div class="ttl" style="margin-top:9px;" id="ckQ">How's your pain right now?</div>
+          <div class="painslider">
+            <div class="pain-readout" id="painReadout">—</div>
+            <input type="range" id="painRange" class="painrange" min="0" max="10" step="1" value="0" oninput="selectPainSlider(this.value)" aria-label="Pain level 0 to 10">
+            <div class="pain-ticks"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--mut);margin-top:7px;"><span id="ckLo">No pain</span><span id="ckHi">Worst imaginable</span></div>
+          <button class="pain-submit" id="painSubmit" onclick="submitPain()" disabled>Log rating</button>
+          <div class="divider"></div>
+          <div class="kicker" id="ckEarlier">Earlier today</div>
+          <div class="vhist" id="painHist">
+            <div class="vrow"><div class="vtime"><b>11:15 AM</b><span>Nurse check</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Aching, a little better</div><span class="painpill mid">5/10</span></div>
+            <div class="vrow"><div class="vtime"><b>9:39 AM</b><span>Triage</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Sharp when breathing deeply</div><span class="painpill hi">7/10</span></div>
+          </div>
+        </div>
+        <div class="gap"></div>
+
+        <!-- questions for the doctor -->
         <div class="card">
           <div class="row" style="align-items:center;">
-            <div class="kicker">Medications · on file</div>
-            <span class="sub" style="margin:0 0 0 auto;">Shared at check-in</span>
+            <div class="kicker">Questions for your doctor</div>
+            <span class="sub" style="margin:0 0 0 auto;" id="qCount">1 to ask</span>
           </div>
-          <div id="medList"></div>
-          <p class="body-sm" style="margin-top:10px;">From your health profile. Spot something wrong or missing? Tell your nurse.</p>
+          <div class="qlist" id="qList">
+            <div class="qrow" onclick="toggleQ(this)">
+              <span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <div class="qtxt">Do I need more tests, like a stress test?</div>
+            </div>
+            <div class="qrow answered" onclick="toggleQ(this)">
+              <span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <div class="qtxt">Can I keep taking my blood-pressure pill today?</div>
+            </div>
+          </div>
+          <div class="addq" onclick="openQSheet()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a question…</div>
+          <div class="kicker" style="margin-top:14px;">Suggested</div>
+          <div class="chips" style="margin-top:9px;" id="qChips">
+            <div class="qchip" onclick="addQChip(this)">What do my ECG results mean?</div>
+            <div class="qchip" onclick="addQChip(this)">When should I come back?</div>
+          </div>
         </div>
         <div class="gap"></div>
+
+        <!-- notes -->
+        <div class="card">
+          <div class="kicker">Notes</div>
+          <div id="noteList">
+            <div class="note-item">
+              <div class="note-txt">Dr. Khan said the ECG looks normal. Still waiting on blood results.</div>
+              <div class="note-time">12:05 PM</div>
+            </div>
+          </div>
+          <div class="addq" onclick="addNote()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Jot something down…</div>
+        </div>
+        <div class="gap"></div>
+
         <div class="card flat" style="background:var(--surface);border-color:transparent;">
-          <p class="body-sm" style="margin-top:0;">Your journal is private to you. Vitals and medications on file come from your care team and health profile. Ask your nurse if you'd like anything explained.</p>
+          <p class="body-sm" style="margin-top:0;">Ask your nurse if you'd like anything explained.</p>
         </div>
       </div>
     </section>
@@ -1050,6 +1154,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <div class="toast" id="toast">
       <div class="ti"><svg id="toastIcon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
       <div><div class="tt" id="toastTitle">Done</div><div class="ts" id="toastSub"></div></div>
+      <button class="toast-undo" id="toastUndo" onclick="runUndo()" hidden>Undo</button>
     </div>
     <div class="navwrap" id="tabs">
       <nav class="tabbar">
@@ -1101,6 +1206,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           <button class="symchip" onclick="symToggle(this)">Nausea</button>
           <button class="symchip" onclick="symToggle(this)">Something new</button>
         </div>
+        <textarea class="symnote" id="worseNote" oninput="symNote()" placeholder="Add anything in your own words (optional). What's new, when it started, how it feels…"></textarea>
         <button class="btn" id="worseSend" disabled onclick="sendWorse()">Send to the triage nurse
           <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
         </button>
@@ -1116,7 +1222,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       </div>
       <div class="mrow" onclick="closeMenu();openShare()">
         <div class="mi" style="background:var(--blue-soft);color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></div>
-        <div><div class="mt">My care circle</div><div class="ms" id="ccSub">Not sharing yet · invite someone</div></div>
+        <div><div class="mt">Shared with</div><div class="ms" id="ccSub">Not sharing yet · invite someone</div></div>
         <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
       </div>
       <div class="mrow" onclick="confirmAction('Settings','Language, text size and notifications. Prototype placeholder.')">
@@ -1146,7 +1252,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 
         <div class="shs">
           <div class="sh-title" id="shSeeTitle">What can Sarah see?</div>
-          <div class="sh-sub" id="shSeeSub">This is her actual screen. Dimmed items stay private.</div>
+          <div class="sh-sub" id="shSeeSub">Dimmed items stay private.</div>
           <div class="pvbox" id="shPreview">
             <div class="pvcap" id="pvCap">Sarah's screen</div>
             <div class="pvrow" data-tier="0"><span class="pvi" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><span id="pvYou">You're at Huntington ER, being cared for</span></div>
@@ -1252,10 +1358,18 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <div class="s-statusbar"><span id="aClk1">9:47</span><span class="r">Messages</span></div>
         <div class="sms-head">Huntington Hospital</div>
         <div class="sms-body">
-          <div class="sms-bubble"><span id="smsTxt">Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:</span>
-            <a onclick="openSarahWeb()">nav.health/f/8kq2</a>
+          <div class="sms-bubble"><span id="smsTxt">Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:</span></div>
+          <div class="linkprev" onclick="openSarahWeb()">
+            <div class="lp-top">
+              <span class="lp-ic"><span class="burst-host" style="display:flex;"></span></span>
+              <div>
+                <div class="lp-tt">Nav Health</div>
+                <div class="lp-sb" id="lpSub">Follow Claire's visit, live</div>
+              </div>
+            </div>
+            <div class="lp-dom"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>nav.health · secure link</div>
           </div>
-          <div class="sms-hint">Tap the link ↑</div>
+          <div class="sms-hint">Tap the preview ↑</div>
         </div>
       </div>
 
@@ -1263,7 +1377,12 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <div class="s-statusbar"><span id="aClk2">9:48</span><span class="r">Safari</span></div>
         <div class="sbrowser"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>nav.health · secure link</div>
         <div class="sscroll">
-          <div class="kicker" style="margin-top:8px;">Following</div>
+          <div class="sweb-brand">
+            <span class="swb-mark burst-host"></span>
+            <span class="swb-name">Nav Health</span>
+            <span class="swb-live"><span class="d"></span>Live</span>
+          </div>
+          <div class="kicker" style="margin-top:16px;">Following</div>
           <h2 class="title" style="font-size:22px;margin-top:3px;" id="advTitle">Claire's visit</h2>
           <div class="subt">Huntington Hospital ER · live</div>
           <div class="gap"></div>
@@ -1332,6 +1451,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       <button class="pp" data-p="marcus">Marcus</button>
       <button class="pp" data-p="yuki">Yuki</button>
     </div>
+    <input class="pc-name" id="testerName" placeholder="Type your name…" maxlength="18" autocomplete="off" oninput="setTesterName(this.value)" aria-label="Your name for testing">
   </div>
   <div class="pc-sep" id="triCtlSep"></div>
   <div class="pc-group" id="triCtlGroup">
@@ -1427,6 +1547,8 @@ function setCond(s){
   const c=H_COND[s];
   const r=document.getElementById('waitRange'); if(r) r.innerHTML=c.range+'<span>mins</span>';
   const e=document.getElementById('hExpl'); if(e) e.textContent=c.expl;
+  const ORDER={calm:0,steady:1,busy:2};
+  if(ORDER[s]>ORDER[curCond]) notifyWaitIncrease(c.range); else dismissWaitAlert();
   curCond=s; syncSarah(); laSync();
   /* keep a level 1/2 preview's range override alive across condition changes */
   if(typeof curTri!=='undefined' && CUR==='claire' && (curTri===1||curTri===2)) setTri(curTri);
@@ -1461,31 +1583,97 @@ function showToast(title, sub, alert, icon){
   document.getElementById('toastTitle').textContent=title;
   document.getElementById('toastSub').textContent=sub||'';
   document.getElementById('toastIcon').innerHTML=icon||checkPath;
+  document.getElementById('toastUndo').hidden=true;
   t.classList.toggle('alert', !!alert);
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>t.classList.remove('show'), 2600);
 }
 function confirmAction(title, sub){ showToast(title, sub, false, checkPath); }
+/* undo-able toast (used by the question checklist) */
+let pendingUndo=null;
+function showUndoToast(title, undoCb){
+  pendingUndo=undoCb;
+  const t=document.getElementById('toast');
+  document.getElementById('toastTitle').textContent=title;
+  document.getElementById('toastSub').textContent='';
+  document.getElementById('toastIcon').innerHTML=checkPath;
+  document.getElementById('toastUndo').hidden=false;
+  t.classList.remove('alert'); t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{ t.classList.remove('show'); pendingUndo=null; }, 3400);
+}
+function runUndo(){ if(pendingUndo) pendingUndo(); pendingUndo=null; document.getElementById('toast').classList.remove('show'); }
+/* question checklist: tap toggles a simple check; a quick undo pops up on marking */
+function toggleQ(row){
+  const wasAnswered=row.classList.contains('answered');
+  row.classList.toggle('answered');
+  updateQCount();
+  if(!wasAnswered){ showUndoToast('Marked as answered', function(){ row.classList.remove('answered'); updateQCount(); }); }
+}
+/* tester name — Claire is the default; a tester can type their own name */
+const CLAIRE_DEFAULT={user:'Claire',patient:'Claire',full:'Claire Morgan',chipLabel:'Claire',greet:'Hi Claire, how can I help?',sms:'Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:'};
+function setTesterName(v){
+  const name=(v||'').trim().replace(/\s+/g,' ');
+  const c=PERSONAS.claire;
+  if(name){
+    c.user=name; c.patient=name; c.full=name+' Morgan'; c.chipLabel=name;
+    c.nav.greet='Hi '+name+', how can I help?';
+    c.adv.sms='Huntington Hospital: '+name+' Morgan is in our ER and being cared for. She invited you to follow her visit live:';
+  }else{
+    c.user=CLAIRE_DEFAULT.user; c.patient=CLAIRE_DEFAULT.patient; c.full=CLAIRE_DEFAULT.full; c.chipLabel=CLAIRE_DEFAULT.chipLabel;
+    c.nav.greet=CLAIRE_DEFAULT.greet; c.adv.sms=CLAIRE_DEFAULT.sms;
+  }
+  const chip=document.querySelector('.pp[data-p="claire"]'); if(chip) chip.textContent=c.chipLabel;
+  PHASES[0].title='Welcome '+c.user;
+  if(CUR!=='claire') return;
+  setTxt('mName',c.full); setTxt('navGreet',c.nav.greet); setTxt('smsTxt',c.adv.sms);
+  setTxt('lpSub','Follow '+c.patient+"'s visit, live"); setTxt('advTitle',c.patient+"'s visit");
+  setTxt('advSharedBy','Shared by '+c.user);
+  setTxt('pvYou',(c.user===c.patient?"You're":c.patient+' is')+' at Huntington ER, being cared for');
+  const sf=document.getElementById('sFoot'); if(sf) sf.innerHTML='Access ends when '+c.patient+"'s visit ends.<br>"+c.pn+' can stop sharing at any time.';
+  setTxt('shWhoTitle','Who should follow '+vLabel()+'?');
+  if(phaseIdx===0) setTxt('stTitle',PHASES[0].title);
+}
+/* wait-time-increase notification */
+function notifyWaitIncrease(range){
+  const rr=range.replace('-','\u2013');
+  const b=document.getElementById('waitAlert');
+  if(b){ setTxt('waitAlertSub','The ER just got busier, so your estimate went up to '+rr+' mins. You have not lost your place, and the team knows you are waiting.'); b.classList.add('show'); }
+  showToast('Wait estimate updated','Your estimated wait went up to '+rr+' mins.', true, bellPath);
+}
+function dismissWaitAlert(){ const b=document.getElementById('waitAlert'); if(b) b.classList.remove('show'); }
 /* feeling worse / symptom change */
 function openWorse(){document.getElementById('worseBackdrop').classList.add('show');}
 function closeWorse(){document.getElementById('worseBackdrop').classList.remove('show');}
+function worseReady(){
+  const anyChip=!!document.querySelector('#symGrid .symchip.on');
+  const note=document.getElementById('worseNote');
+  const anyText=note && note.value.trim().length>0;
+  document.getElementById('worseSend').disabled=!(anyChip||anyText);
+}
 function symToggle(b){
   b.classList.toggle('on');
-  document.getElementById('worseSend').disabled=!document.querySelector('#symGrid .symchip.on');
+  worseReady();
 }
+function symNote(){ worseReady(); }
 function sendWorse(){
   const sel=[...document.querySelectorAll('#symGrid .symchip.on')].map(b=>b.textContent.toLowerCase());
-  document.getElementById('worseStatusSub').textContent='Reported: '+sel.join(', ')+' · A nurse is coming to check on you.';
+  const note=document.getElementById('worseNote');
+  const txt=note?note.value.trim():'';
+  let summary=sel.join(', ');
+  if(txt) summary=summary?summary+' · “'+txt+'”':'“'+txt+'”';
+  document.getElementById('worseStatusSub').textContent='Reported: '+summary+' · A nurse is coming to check on you.';
   document.getElementById('worseStatus').hidden=false;
   document.getElementById('worseSub').textContent='Reported just now. A nurse is on the way. Tap to add more.';
+  if(note) note.value='';
   closeWorse();
   showToast('A nurse has been alerted','Your update went straight to the triage team.',true,bellPath);
 }
 
 /* navigator suggested questions */
 const answers={
-  "Why isn't it first-come?":"Care is ordered by medical urgency, not arrival. The sickest are seen first, and that same rule protects you if your condition changes.",
+  "Why isn't it first come, first served?":"Care is ordered by medical urgency, not arrival. The sickest are seen first, and that same rule protects you if your condition changes.",
   "Can I leave and come back?":"Yes. Just tap “Stepping outside?” in Comfort first, so we don’t call your name while you’re away.",
   "Who is looking after me?":"Right now the triage team is monitoring everyone in the waiting area. You’ll be assigned a clinician once a care space opens."
 };
@@ -1498,13 +1686,13 @@ function navReply(q){
   if(/(heart|chest|cardiac|palpitat|flutter|attack)/.test(s)&&p['Is my heart okay?']) return p['Is my heart okay?'];
   if(/(anxi|scared|afraid|panic|calm|nervous)/.test(s)&&p['Can I do anything about the anxiety?']) return p['Can I do anything about the anxiety?'];
   if(/(how long|wait|when.*(seen|turn)|eta)/.test(s)) return "Your current estimate is on the Status screen. It's a conservative range based on how busy the ER is right now and your triage priority, and it updates as conditions change.";
-  if(/(first.?come|before me|skip|queue|line|order)/.test(s)) return answers["Why isn't it first-come?"];
+  if(/(first.?come|before me|skip|queue|line|order)/.test(s)) return answers["Why isn't it first come, first served?"];
   if(/(leave|outside|step out|bathroom|toilet|come back|car)/.test(s)) return answers["Can I leave and come back?"];
   if(/(who|doctor|nurse|looking after|care team|staff)/.test(s)) return answers["Who is looking after me?"];
   if(/(water|blanket|food|eat|drink|hungry|thirsty|cold)/.test(s)) return "You can ask any staff member for water or a blanket. One note: check with your nurse before eating or drinking, since some tests need an empty stomach.";
   if(/(pain|hurt|worse|dizzy|faint|sick)/.test(s)) return "If anything feels new or worse, tap “Report a symptom change” in Care. It goes straight to the triage nurse, and a re-check is never a bother.";
   if(/(result|test|blood|ecg|x.?ray|scan)/.test(s)) return "Results go to your clinician as they come in, and your Status screen updates the moment something changes. Your care team will explain what results mean.";
-  return "I can help with questions about this visit: the wait, your status, who's looking after you, and what happens next. For medical questions, your care team is the right place. Tap “Chat with a human?” below and they'll come find you.";
+  return "I can help with questions about this visit: the wait, your status, who's looking after you, and what happens next. For medical questions, your care team is the right place.";
 }
 function navSay(q){
   const hero=document.getElementById('navHero'); if(hero) hero.style.display='none';
@@ -1577,7 +1765,7 @@ function burstSVG(){
     'M19.3149 6.48794C19.247 5.46512 17.7863 0.152771 17.7863 0.152771C17.7863 0.152771 16.3556 5.25392 16.2904 6.48794C16.2252 7.72196 17.7863 10.8606 17.7863 10.8606C17.7863 10.8606 19.3828 7.51075 19.3149 6.48794Z'
   ];
   const s=paths.map(d=>`<path d="${d}"/>`).join('');
-  return `<svg viewBox="0 0 36 31" class="burst" fill="currentColor">${s}</svg>`;
+  return `<svg viewBox="0 0 36 31" class="burst" fill="currentColor" preserveAspectRatio="xMidYMid meet">${s}</svg>`;
 }
 document.querySelectorAll('.burst-host').forEach(el=>el.innerHTML=burstSVG());
 
@@ -1601,6 +1789,8 @@ function setPhase(i){
   document.querySelectorAll('.pc-tick').forEach((t,ti)=>t.classList.toggle('done',ti<=phaseIdx));
   const sc=document.querySelector('#status .scroll'); if(sc) sc.scrollTop=0;
   var hc=document.getElementById('humanCard'); if(hc) hc.style.display = (phaseIdx===0 ? 'none' : '');
+  renderJournal();
+  renderVitals();
   syncSarah(); laSync();
 }
 function gotoPhase(i){ setPhase(i); go('status'); }
@@ -1618,7 +1808,7 @@ document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('c
 /* ---- app tour (spotlight walkthrough, launched from Learn) ---- */
 const TOUR=[
   {screen:'status',   sel:'.tab[data-screen="status"]',   title:'Your status, live',      txt:'Where you are in your visit, your current wait estimate, and who’s caring for you, updated as things change.'},
-  {screen:'status',   sel:'#status .menubtn',             title:'Menu & care circle',     txt:'Your health profile, settings, and “Share my visit”. Send a loved one a live link, no app needed.'},
+  {screen:'status',   sel:'#status .menubtn',             title:'Menu & sharing',     txt:'Your health profile, settings, and “Share my visit”. Send a loved one a live link, no app needed.'},
   {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Take a guided breathing session or reach out to your care team, without leaving your seat.'},
   {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'Jot down symptoms and questions for the doctor, and see the vitals your care team has recorded.'},
   {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Plain-language explanations of how the ER really works, and why waits happen.'},
@@ -1708,7 +1898,7 @@ function shPick(i){
   share.pending=i;
   const c=shContacts()[i], f=share.f[i];
   setTxt('shSeeTitle','What can '+c.name+' see?');
-  setTxt('shSeeSub','This is '+c.pos+' actual screen. Dimmed items stay private.');
+  setTxt('shSeeSub','Dimmed items stay private.');
   setTxt('pvCap',c.name+"'s screen");
   setTxt('shSendLabel',(f.on?'Update sharing for ':'Send link to ')+c.name);
   document.getElementById('shStopBtn').hidden=!f.on;
@@ -1795,38 +1985,89 @@ function syncSarah(){
     const d=s.querySelector('.dot'); d.className='dot '+p.steps[si];
     d.innerHTML=p.steps[si]==='done'?'<i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i>':'<i></i>';
   });
+  /* follower's "latest vitals" is phase-aware too: only the triage reading exists during the wait */
+  const per=PERSONAS[CUR];
+  if(per){
+    const waiting=(phaseIdx===0);
+    const tri=per.vit.hist.find(h=>h[1]==='Triage')||per.vit.hist[per.vit.hist.length-1];
+    const hr=waiting?tri[2]:per.vit.hr, bp=waiting?tri[3]:per.vit.bp, spo2=waiting?tri[5]:per.vit.spo2;
+    const aEl=document.getElementById('aVitals');
+    if(aEl) aEl.innerHTML='<div><div style="font-size:18px;font-weight:700;">'+hr+'</div><div class="subt">Heart rate</div></div><div><div style="font-size:18px;font-weight:700;">'+bp+'</div><div class="subt">Blood pressure</div></div><div><div style="font-size:18px;font-weight:700;">'+spo2+'%</div><div class="subt">SpO₂</div></div>';
+    setTxt('aVT','Taken '+(waiting?tri[0]:per.vit.aTaken));
+  }
 }
 
 /* ---- journal: pain check-in ---- */
-(function(){
-  const scale=document.getElementById('painScale');
-  for(let n=0;n<=10;n++){
-    const b=document.createElement('button');
-    b.className='pain'; b.textContent=n;
-    b.addEventListener('click',()=>logPain(n,b));
-    scale.appendChild(b);
-  }
-})();
 function painCls(n){return n<=3?'lo':n<=6?'mid':'hi';}
-function logPain(n,btn){
-  document.querySelectorAll('#painScale .pain').forEach(b=>b.classList.remove('on','lo','mid','hi'));
-  btn.classList.add('on',painCls(n));
+let painSel=null;
+function selectPainSlider(v){
+  const n=+v;
+  painSel=n;
+  const r=document.getElementById('painReadout');
+  if(r){ r.textContent=n; r.classList.remove('lo','mid','hi'); r.classList.add(painCls(n)); }
+  const sb=document.getElementById('painSubmit'); if(sb){ sb.disabled=false; sb.textContent='Log '+n+'/10'; }
+}
+function submitPain(){
+  if(painSel===null) return;
+  const n=painSel;
   const row=document.createElement('div'); row.className='vrow';
   row.innerHTML=`<div class="vtime"><b>Just now</b><span>Self check</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Rated by you</div><span class="painpill ${painCls(n)}">${n}/10</span>`;
   document.getElementById('painHist').prepend(row);
   if(n>=7){ showToast(PERSONAS[CUR].j.word+' logged · '+n+'/10','That’s high. If it’s getting worse, tap “Report a symptom change” in Care.', true, bellPath); }
   else{ confirmAction(PERSONAS[CUR].j.word+' logged · '+n+'/10','Your journal keeps the trend over time.'); }
+  resetPainSel();
+}
+function resetPainSel(){
+  painSel=null;
+  const r=document.getElementById('painReadout'); if(r){ r.textContent='\u2014'; r.classList.remove('lo','mid','hi'); }
+  const rg=document.getElementById('painRange'); if(rg){ rg.value=0; }
+  const sb=document.getElementById('painSubmit'); if(sb){ sb.disabled=true; sb.textContent='Log rating'; }
 }
 
 /* ---- journal: questions & notes ---- */
 function updateQCount(){
-  const n=document.querySelectorAll('#qList .q-item:not(.answered)').length;
-  document.getElementById('qCount').textContent=n===0?'All answered':n+' to ask';
+  const total=document.querySelectorAll('#qList .qrow').length;
+  const n=document.querySelectorAll('#qList .qrow:not(.answered)').length;
+  document.getElementById('qCount').textContent = total===0 ? 'None yet' : (n===0 ? 'All answered' : n+' to ask');
+}
+/* journal reflects the moment: in the waiting phase only what's actually happened yet (the triage check-in) shows; questions & notes start blank. Fuller history returns in Care/After. */
+function renderJournal(){
+  const p=PERSONAS[CUR]; if(!p) return;
+  const waiting=(phaseIdx===0);
+  const hist=waiting?p.j.hist.filter(h=>h[1]==='Triage'):p.j.hist;
+  document.getElementById('painHist').innerHTML=hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">'+h[2]+'</div><span class="painpill '+painCls(h[3])+'">'+h[3]+'/10</span></div>').join('');
+  const qs=waiting?[]:p.j.qs;
+  document.getElementById('qList').innerHTML=qs.map(q=>q.ans
+    ?'<div class="qrow answered" onclick="toggleQ(this)"><span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div class="qtxt">'+q.q+'</div></div>'
+    :'<div class="qrow" onclick="toggleQ(this)"><span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div class="qtxt">'+q.q+'</div></div>').join('');
+  updateQCount();
+  /* suggestions are phase-aware too: wait = forward-looking (tests/what's next), Care/After = results/discharge */
+  const sugg=(waiting&&p.j.suggWait)?p.j.suggWait:p.j.sugg;
+  document.getElementById('qChips').innerHTML=sugg.map(q=>'<div class="qchip" onclick="addQChip(this)">'+q+'</div>').join('');
+  const notes=waiting?[]:p.j.notes;
+  document.getElementById('noteList').innerHTML=notes.map(n=>'<div class="note-item"><div class="note-txt">'+n[0]+'</div><div class="note-time">'+n[1]+'</div></div>').join('');
+}
+/* vitals reflect the moment too: in the waiting phase only the triage reading exists yet. Latest reading + full history return in Care/After. */
+function renderVitals(){
+  const p=PERSONAS[CUR]; if(!p) return;
+  const waiting=(phaseIdx===0);
+  const tri=p.vit.hist.find(h=>h[1]==='Triage')||p.vit.hist[p.vit.hist.length-1];
+  let hr,bp,temp,spo2,meta,hist;
+  if(waiting){ hr=tri[2];bp=tri[3];temp=tri[4];spo2=tri[5]; meta=tri[0]+' · Triage'; hist=[tri]; }
+  else{ hr=p.vit.hr;bp=p.vit.bp;temp=p.vit.temp;spo2=p.vit.spo2; meta=p.vit.meta; hist=p.vit.hist; }
+  setTxt('vMeta',meta);
+  document.getElementById('vSnap').innerHTML='<div><div style="font-size:17px;font-weight:700;">'+hr+' <span style="font-size:11px;font-weight:600;color:var(--mut);">bpm</span></div><div class="subt" style="font-size:11.5px;">Heart rate</div></div><div><div style="font-size:17px;font-weight:700;">'+bp+'</div><div class="subt" style="font-size:11.5px;">Blood pressure</div></div><div><div style="font-size:17px;font-weight:700;">'+temp+'°</div><div class="subt" style="font-size:11.5px;">Temp</div></div><div><div style="font-size:17px;font-weight:700;">'+spo2+'<span style="font-size:11px;font-weight:600;color:var(--mut);">%</span></div><div class="subt" style="font-size:11.5px;">SpO₂</div></div>';
+  document.getElementById('gHr').innerHTML=hr+'<span>bpm</span>';
+  document.getElementById('gBp').innerHTML=bp+'<span>mmHg</span>';
+  document.getElementById('gTemp').innerHTML=temp+'<span>°C</span>';
+  document.getElementById('gSpo2').innerHTML=spo2+'<span>%</span>';
+  document.getElementById('vHist').innerHTML=hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals"><span class="vv"><b>'+h[2]+'</b> <span>bpm</span></span><span class="vv"><b>'+h[3]+'</b></span><span class="vv"><b>'+h[4]+'°</b></span><span class="vv"><b>'+h[5]+'%</b> <span>SpO₂</span></span></div></div>').join('');
 }
 function makeQ(text){
-  const d=document.createElement('div'); d.className='q-item';
-  d.innerHTML=`<div class="q-text"></div><div class="q-meta">Added just now · not asked yet</div><button class="q-btn" onclick="openASheet(this)">✓ They answered · save what they said</button>`;
-  d.querySelector('.q-text').textContent=text;
+  const d=document.createElement('div'); d.className='qrow';
+  d.setAttribute('onclick','toggleQ(this)');
+  d.innerHTML='<span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div class="qtxt"></div>';
+  d.querySelector('.qtxt').textContent=text;
   return d;
 }
 function addQChip(chip){
@@ -1841,11 +2082,22 @@ let qMode='question', qTarget=null;
 function openNSheet(){
   qMode='note'; qTarget=null;
   document.getElementById('qSheetTitle').textContent='Jot something down';
-  document.getElementById('qSheetSub').textContent='Little details are easy to forget. Notes stay private to you.';
+  document.getElementById('qSheetSub').textContent='Little details are easy to forget. Jot them here so you have them.';
   document.getElementById('qSheetQ').hidden=true;
   const ta=document.getElementById('qSheetTa');
   ta.value=''; ta.placeholder='Type your note…';
   document.getElementById('qSheetBtn').textContent='Save note';
+  document.getElementById('qBackdrop').classList.add('show');
+  setTimeout(()=>ta.focus(),350);
+}
+function openMedSheet(){
+  qMode='med'; qTarget=null;
+  document.getElementById('qSheetTitle').textContent='Add a medication';
+  document.getElementById('qSheetSub').textContent='Anything you take, including over-the-counter. It goes on your record and your care team can see it, so there is no need to tell them separately.';
+  document.getElementById('qSheetQ').hidden=true;
+  const ta=document.getElementById('qSheetTa');
+  ta.value=''; ta.placeholder='e.g. Ibuprofen 200mg, as needed';
+  document.getElementById('qSheetBtn').textContent='Add medication';
   document.getElementById('qBackdrop').classList.add('show');
   setTimeout(()=>ta.focus(),350);
 }
@@ -1860,18 +2112,19 @@ function openQSheet(){
   document.getElementById('qBackdrop').classList.add('show');
   setTimeout(()=>ta.focus(),350);
 }
-function openASheet(btn){
-  qMode='answer'; qTarget=btn.closest('.q-item');
+function openARow(row){
+  qMode='answer'; qTarget=row;
   document.getElementById('qSheetTitle').textContent='What did they say?';
   document.getElementById('qSheetSub').textContent='Save it in their words, easy to look back on later.';
   const q=document.getElementById('qSheetQ');
-  q.textContent=qTarget.querySelector('.q-text').textContent; q.hidden=false;
+  q.textContent=qTarget.querySelector('.qtxt').textContent; q.hidden=false;
   const ta=document.getElementById('qSheetTa');
   ta.value=''; ta.placeholder='e.g. “Your ECG was normal, no more tests today…”';
   document.getElementById('qSheetBtn').textContent='Save answer';
   document.getElementById('qBackdrop').classList.add('show');
   setTimeout(()=>ta.focus(),350);
 }
+function showAns(row){ const a=row.getAttribute('data-ans')||''; const m=row.getAttribute('data-ansmeta')||''; confirmAction(row.querySelector('.qtxt').textContent, '\u201c'+a+'\u201d'+(m?' \u00b7 '+m:'')); }
 function closeQSheet(){ document.getElementById('qBackdrop').classList.remove('show'); }
 function saveQSheet(){
   const ta=document.getElementById('qSheetTa');
@@ -1881,19 +2134,30 @@ function saveQSheet(){
     document.getElementById('qList').appendChild(makeQ(v));
     confirmAction('Question saved','Have it ready when the doctor comes by.');
   }else if(qMode==='note'){
-    const d=document.createElement('div'); d.className='q-item';
-    const t=document.createElement('div'); t.className='q-text'; t.style.fontWeight='500'; t.textContent=v;
-    const m=document.createElement('div'); m.className='q-meta'; m.textContent='Added just now';
+    const d=document.createElement('div'); d.className='note-item';
+    const t=document.createElement('div'); t.className='note-txt'; t.textContent=v;
+    const m=document.createElement('div'); m.className='note-time'; m.textContent='Added just now';
     d.appendChild(t); d.appendChild(m);
     document.getElementById('noteList').appendChild(d);
     confirmAction('Note saved','Little details are easy to forget. Good catch.');
+  }else if(qMode==='med'){
+    const ml=document.getElementById('medList');
+    const empty=ml.querySelector('.med-empty'); if(empty) empty.remove();
+    const d=document.createElement('div'); d.className='q-item';
+    const t=document.createElement('div'); t.className='q-text'; t.style.fontWeight='600'; t.textContent=v;
+    const m=document.createElement('div'); m.className='q-meta'; m.textContent='Added by you · just now';
+    d.appendChild(t); d.appendChild(m);
+    ml.appendChild(d);
+    confirmAction('Medication added',"It's on your record and visible to your care team.");
   }else if(qTarget){
     const d=document.createElement('div'); d.className='q-ans';
     const t=document.createElement('div'); t.textContent='“'+v+'”';
     const m=document.createElement('div'); m.className='q-meta'; m.style.marginTop='6px'; m.textContent='Saved just now';
     d.appendChild(t); d.appendChild(m);
-    qTarget.querySelector('.q-btn').replaceWith(d);
     qTarget.classList.add('answered');
+    qTarget.setAttribute('data-ans', v);
+    qTarget.setAttribute('data-ansmeta','Saved just now');
+    qTarget.setAttribute('onclick','showAns(this)');
     confirmAction('Answer saved','It’ll appear in your visit summary too.');
   }
   updateQCount();
@@ -1988,7 +2252,7 @@ claire:{
   reason:'Chest discomfort, started this morning',
   rev:['A nurse has reviewed your arrival',"You're safe to wait here."],
   tri:{n:3,t1:'Triage level 3: stable, multiple steps expected',
-    means:"You're stable, and your care will likely involve two or more steps, like bloodwork plus a scan. That makes yours a longer kind of visit.",
+    means:"You're stable, and your care will likely involve two or more steps. That makes yours a longer kind of visit.",
     not:"It's not a score of how sick you feel. It's an estimate of how many steps your care will take.",
     set:"Set at triage, 9:39 AM · Your level can change if you're reassessed. Tell staff right away if you feel worse."},
   unique:null, nowWait:NOW_WAIT_DEFAULT,
@@ -2000,11 +2264,12 @@ claire:{
   laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
   laCare:"You're in a care space. Dr. Khan is with you now.",
   nav:{greet:'Hi Claire, how can I help?',
-    chips:["Why isn't it first-come?",'Can I leave and come back?','Who is looking after me?'],
-    ans:{"Why isn't it first-come?":ANS_FIRSTCOME,'Can I leave and come back?':ANS_LEAVE,'Who is looking after me?':ANS_WHO}},
+    chips:["Why isn't it first come, first served?",'Can I leave and come back?','Who is looking after me?'],
+    ans:{"Why isn't it first come, first served?":ANS_FIRSTCOME,'Can I leave and come back?':ANS_LEAVE,'Who is looking after me?':ANS_WHO}},
   j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier today',
     hist:[['11:15 AM','Nurse check','Aching, a little better',5],['9:39 AM','Triage','Sharp when breathing deeply',7]],
     qs:[{q:'Do I need more tests, like a stress test?',meta:'Added 10:02 AM · not asked yet'},{q:'Can I keep taking my blood-pressure pill today?',meta:'Asked at triage',ans:'Yes, take it as usual, with food.',ansMeta:'Answered by Dr. Khan · 11:20 AM'}],
+    suggWait:['Will I need more tests?','How will I know when it is my turn?'],
     sugg:['What do my ECG results mean?','When should I come back?'],
     notes:[['Dr. Khan said the ECG looks normal. Still waiting on blood results.','12:05 PM']]},
   vit:{meta:'12:58 PM · Marcus Lee',hr:'76',bp:'128/82',temp:'36.9',spo2:'98',aTaken:'9:52 AM',
@@ -2035,12 +2300,13 @@ margaret:{
   laCare:"You're in a care space. Dr. Khan is with you now.",
   nav:{greet:'Hi Margaret, how can I help?',
     chips:["Will someone tell Sarah how I'm doing?",'Who is looking after me?','Can someone help me move around?'],
-    ans:{"Will someone tell Sarah how I'm doing?":"If you share your visit from the menu (☰ → My care circle), Sarah gets a live link and sees each step as it happens, no calls needed. I can't send it for you, but it takes two taps.",
+    ans:{"Will someone tell Sarah how I'm doing?":"If you share your visit from the menu (☰ → Shared with), Sarah gets a live link and sees each step as it happens, no calls needed. I can't send it for you, but it takes two taps.",
       'Who is looking after me?':ANS_WHO,
       'Can someone help me move around?':"Yes. Flag James, the care assistant, or ask at the desk. With a hip injury please don't walk unaided; someone will come to you."}},
   j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['9:10 PM','Nurse check','Aching when still',5],['8:04 PM','Triage','Sharp when standing',7]],
     qs:[{q:'Will I need a hip X-ray?',meta:'Added 8:20 PM · not asked yet'},{q:'Can I take my arthritis pill tonight?',meta:'Asked at triage',ans:'Yes, your usual dose, with food.',ansMeta:'Answered by Marcus Lee · 8:10 PM'}],
+    suggWait:['Will I need an X-ray?','How long might the wait be?'],
     sugg:['How long until X-ray results?','Will I go home tonight?'],
     notes:[['Nurse says a wheelchair will take me to X-ray.','9:05 PM']]},
   vit:{meta:'9:40 PM · Marcus Lee',hr:'82',bp:'142/88',temp:'36.8',spo2:'97',aTaken:'8:05 PM',
@@ -2070,13 +2336,14 @@ elena:{
   laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
   laCare:"You're in a care space. Dr. Khan is with you now.",
   nav:{greet:'Hi Elena, how can I help?',
-    chips:['Can I do anything about the anxiety?',"Why isn't it first-come?",'Can I leave and come back?'],
+    chips:['Can I do anything about the anxiety?',"Why isn't it first come, first served?",'Can I leave and come back?'],
     ans:{'Is my heart okay?':"I can't assess your heart. That's for your care team. What I can tell you: your heart rate was measured at 96 bpm at triage and a clinician has reviewed it, and an ECG is planned. If the fluttering changes or gets worse, tap 'Report a symptom change' in Care. It goes straight to the triage nurse. And while you wait, many people find the <a onclick=\"go('comfort');openMed()\">guided breathing in Care</a> helps quiet the loop of fear feeding the racing.",
       'Can I do anything about the anxiety?':"Many people find the <a onclick=\"go('comfort');openMed()\">guided breathing in Care</a> interrupts the loop: fear feeding the racing, racing feeding the fear. It won't cost you your place in the queue, and you'll still get every update.",
-      "Why isn't it first-come?":ANS_FIRSTCOME}},
+      "Why isn't it first come, first served?":ANS_FIRSTCOME}},
   j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['11:40 PM','Self check','Tightness when it races',2],['11:12 PM','Triage','No real pain, some pressure',1]],
     qs:[{q:'Do I need a heart monitor after tonight?',meta:'Added 11:32 PM · not asked yet'},{q:"Is it bad that it's been racing for two hours?",meta:'Asked at triage',ans:'Your rate is elevated but steady. The ECG will tell us more.',ansMeta:'Answered by Marcus Lee · 11:14 PM'}],
+    suggWait:['Could this be anxiety, my heart, or both?','What happens while I wait?'],
     sugg:['Could this be anxiety, my heart, or both?','What if it happens again at home?'],
     notes:[['Fluttering eased a little during the breathing exercise.','11:48 PM']]},
   vit:{meta:'11:52 PM · Marcus Lee',hr:'91',bp:'134/86',temp:'36.8',spo2:'98',aTaken:'11:12 PM',
@@ -2113,6 +2380,7 @@ diana:{
   j:{sub:"Lily's symptoms, your questions and notes, all in one place",kicker:'Lily check-in',q:"How is Lily's crying right now?",lo:'Settled',hi:'Inconsolable',word:"Lily's crying",earlier:'Earlier tonight',
     hist:[['3:15 AM','Self check','Settled briefly after rocking',6],['2:40 AM','Triage','Crying in cycles, legs pulled up',8]],
     qs:[{q:'Could the new food (pear) have caused this?',meta:'Added 3:00 AM · not asked yet'},{q:'Should I stop solids for now?',meta:'Asked at triage',ans:'Hold off until the doctor has seen her.',ansMeta:'Answered by Marcus Lee · 2:44 AM'}],
+    suggWait:['What might they check tonight?','How long might the wait be?'],
     sugg:['What should we rule out tonight?','What do we watch for at home?'],
     notes:[['Crying comes in waves, settles ~10 min, then starts again.','3:05 AM']]},
   vit:{meta:'3:20 AM · Marcus Lee',hr:'142',bp:'92/58',temp:'37.4',spo2:'99',aTaken:'2:41 AM',
@@ -2149,6 +2417,7 @@ marcus:{
   j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['7:10 PM','Self check','Wrist throbbing and swollen',6],['6:25 PM','Triage','Wrist pain sharp with movement',6]],
     qs:[{q:'Will I need a cast tonight?',meta:'Added 6:40 PM · not asked yet'},{q:'Was the ER the right place to come?',meta:'Asked at triage',ans:'Yes. Your wrist needs an X-ray tonight, and this is the right place for that.',ansMeta:'Answered by Marcus Lee · 6:28 PM'}],
+    suggWait:['Will I need an X-ray?','How does the fast track work?'],
     sugg:['How long do X-ray results take?','What paperwork do I need for insurance?'],
     notes:[['Car is at the Fifth St tow lot, deal with it tomorrow.','7:02 PM']]},
   vit:{meta:'7:15 PM · Marcus Lee',hr:'84',bp:'126/78',temp:'37.0',spo2:'99',aTaken:'6:26 PM',
@@ -2178,13 +2447,14 @@ yuki:{
   laWait:"You're waiting. A nurse has reviewed you and you're safe to wait.",
   laCare:"You're in a care space. Dr. Khan is with you now.",
   nav:{greet:'Hi Yuki, how can I help? · こんにちは',
-    chips:['通訳はいつ来ますか？ (When will the interpreter come?)','Can I show where it hurts without words?',"Why isn't it first-come?"],
+    chips:['通訳はいつ来ますか？ (When will the interpreter come?)','Can I show where it hurts without words?',"Why isn't it first come, first served?"],
     ans:{'通訳はいつ来ますか？ (When will the interpreter come?)':"A Japanese interpreter joins by phone before the doctor speaks with you. For Japanese there can be a wait. Your medications and allergies are already translated for the team. · 医師の診察には必ず通訳が入ります。お薬とアレルギーは翻訳済みです。",
       'Can I show where it hurts without words?':"Yes. The journal check-in and the body map at triage let you point and rate, no translation needed. The nurse sees it in English instantly.",
-      "Why isn't it first-come?":ANS_FIRSTCOME}},
+      "Why isn't it first come, first served?":ANS_FIRSTCOME}},
   j:{sub:'Questions, pain and notes, all in one place · 記録',kicker:'Pain check-in · 痛みの記録',q:"How's your pain right now? · 今の痛みは？",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['9:30 PM','Self check','Burning, steady · 灼熱感',7],['8:52 PM','Triage','Upper abdomen, severe · 上腹部',8]],
     qs:[{q:'Could this be my reflux medicine? · 薬と関係がありますか？',meta:'Added 9:05 PM · not asked yet'},{q:'Can I drink water? · 水を飲んでもいいですか？',meta:'Asked at triage',ans:'Small sips only, until the doctor confirms.',ansMeta:'Answered by Marcus Lee · 9:00 PM'}],
+    suggWait:['When will the interpreter come?','What tests might I need?'],
     sugg:['Will my travel insurance be billed?','How do I send records to my doctor in Japan?'],
     notes:[['Pain started after dinner, worse lying down. · 夕食後から、横になると悪化。','9:15 PM']]},
   vit:{meta:'9:35 PM · Marcus Lee',hr:'90',bp:'132/84',temp:'37.2',spo2:'98',aTaken:'8:53 PM',
@@ -2246,26 +2516,14 @@ function applyPersona(key){
   setTxt('jSub',p.j.sub); setTxt('ckKicker',p.j.kicker); setTxt('ckQ',p.j.q);
   setTxt('ckLo',p.j.lo); setTxt('ckHi',p.j.hi); setTxt('ckEarlier',p.j.earlier);
   document.querySelectorAll('#painScale .pain').forEach(b=>b.classList.remove('on','lo','mid','hi'));
-  document.getElementById('painHist').innerHTML=p.j.hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">'+h[2]+'</div><span class="painpill '+painCls(h[3])+'">'+h[3]+'/10</span></div>').join('');
-  document.getElementById('qList').innerHTML=p.j.qs.map(q=>q.ans
-    ?'<div class="q-item answered"><div class="q-text">'+q.q+'</div><div class="q-meta">'+q.meta+'</div><div class="q-ans">“'+q.ans+'”<div class="q-meta" style="margin-top:6px;">'+q.ansMeta+'</div></div></div>'
-    :'<div class="q-item"><div class="q-text">'+q.q+'</div><div class="q-meta">'+q.meta+'</div><button class="q-btn" onclick="openASheet(this)">✓ They answered · save what they said</button></div>').join('');
-  document.getElementById('qChips').innerHTML=p.j.sugg.map(q=>'<div class="qchip" onclick="addQChip(this)">'+q+'</div>').join('');
-  updateQCount();
-  document.getElementById('noteList').innerHTML=p.j.notes.map(n=>'<div class="q-item"><div class="q-text" style="font-weight:500;">'+n[0]+'</div><div class="q-meta">'+n[1]+'</div></div>').join('');
-  /* vitals */
-  setTxt('vMeta',p.vit.meta);
-  document.getElementById('vSnap').innerHTML='<div><div style="font-size:17px;font-weight:700;">'+p.vit.hr+' <span style="font-size:11px;font-weight:600;color:var(--mut);">bpm</span></div><div class="subt" style="font-size:11.5px;">Heart rate</div></div><div><div style="font-size:17px;font-weight:700;">'+p.vit.bp+'</div><div class="subt" style="font-size:11.5px;">Blood pressure</div></div><div><div style="font-size:17px;font-weight:700;">'+p.vit.temp+'°</div><div class="subt" style="font-size:11.5px;">Temp</div></div><div><div style="font-size:17px;font-weight:700;">'+p.vit.spo2+'<span style="font-size:11px;font-weight:600;color:var(--mut);">%</span></div><div class="subt" style="font-size:11.5px;">SpO₂</div></div>';
-  document.getElementById('gHr').innerHTML=p.vit.hr+'<span>bpm</span>';
-  document.getElementById('gBp').innerHTML=p.vit.bp+'<span>mmHg</span>';
-  document.getElementById('gTemp').innerHTML=p.vit.temp+'<span>°C</span>';
-  document.getElementById('gSpo2').innerHTML=p.vit.spo2+'<span>%</span>';
-  document.getElementById('medList').innerHTML=(p.meds&&p.meds.length)?p.meds.map(m=>'<div class="q-item"><div class="q-text" style="font-weight:600;">'+m[0]+'</div><div class="q-meta">'+m[1]+'</div></div>').join(''):'<div class="q-item"><div class="q-text" style="font-weight:500;">None on file</div><div class="q-meta">You can add medications in your health profile</div></div>';
-  document.getElementById('vHist').innerHTML=p.vit.hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals"><span class="vv"><b>'+h[2]+'</b> <span>bpm</span></span><span class="vv"><b>'+h[3]+'</b></span><span class="vv"><b>'+h[4]+'°</b></span><span class="vv"><b>'+h[5]+'%</b> <span>SpO₂</span></span></div></div>').join('');
+  /* painHist / qList / noteList / suggestions are rendered by renderJournal() (phase-aware), called via setPhase(0) at the end of this function */
+  /* vitals snapshot/history is phase-aware — rendered by renderVitals() via setPhase(); meds on file are static */
+  document.getElementById('medList').innerHTML=(p.meds&&p.meds.length)?p.meds.map(m=>'<div class="q-item"><div class="q-text" style="font-weight:600;">'+m[0]+'</div><div class="q-meta">'+m[1]+'</div></div>').join(''):'<div class="q-item med-empty"><div class="q-text" style="font-weight:500;">None on file yet</div><div class="q-meta">Add anything you take using the button below</div></div>';
   /* symptom-change sheet */
   document.getElementById('worseStatus').hidden=true;
   document.getElementById('worseSub').textContent='Anything new or different. A nurse will re-check you. Use any time.';
   document.getElementById('symGrid').innerHTML=p.sym.map(s=>'<button class="symchip" onclick="symToggle(this)">'+s+'</button>').join('');
+  const wn=document.getElementById('worseNote'); if(wn) wn.value='';
   document.getElementById('worseSend').disabled=true;
   /* sharing & advocate device */
   if(share.f.some(f=>f.on)){
@@ -2280,12 +2538,12 @@ function applyPersona(key){
   document.getElementById('advLabel').innerHTML=p.adv.label;
   setTxt('aClk1',p.adv.clk[0]); setTxt('aClk2',p.adv.clk[1]);
   setTxt('smsTxt',p.adv.sms);
+  setTxt('lpSub','Follow '+p.patient+"'s visit, live");
   setTxt('advTitle',p.patient+"'s visit");
   setTxt('advJourneyK',p.posCap+' journey');
   setTxt('advWhyK','Why '+p.pn.toLowerCase()+"'s here");
   setTxt('advReason',p.reason); setTxt('advSharedBy','Shared by '+p.user);
-  document.getElementById('aVitals').innerHTML='<div><div style="font-size:18px;font-weight:700;">'+p.vit.hr+'</div><div class="subt">Heart rate</div></div><div><div style="font-size:18px;font-weight:700;">'+p.vit.bp+'</div><div class="subt">Blood pressure</div></div><div><div style="font-size:18px;font-weight:700;">'+p.vit.spo2+'%</div><div class="subt">SpO₂</div></div>';
-  setTxt('aVT','Taken '+p.vit.aTaken);
+  /* follower vitals (aVitals/aVT) rendered by syncSarah() — phase-aware */
   document.getElementById('sFoot').innerHTML='Access ends when '+p.patient+"'s visit ends.<br>"+p.pn+' can stop sharing at any time.';
   /* phase copy */
   PHASES[0].title='Welcome '+p.user;
@@ -2307,9 +2565,9 @@ document.querySelectorAll('.pp').forEach(b=>b.addEventListener('click',()=>{
 const TRI_PREVIEW={
  1:{n:1,t1:'Triage level 1: immediate care, right now',
     means:"Care starts before paperwork. A full team is with the patient right now, and everything else in the ER waits.",
-    not:"A patient at level 1 won't be reading this screen. This state is written for their care circle: Claire is receiving immediate care from a full team right now. Someone will update you as soon as they can.",
+    not:"A patient at level 1 won't be reading this screen. This state is written for the people following along: Claire is receiving immediate care from a full team right now. Someone will update you as soon as they can.",
     set:"Assigned at arrival · The team is with the patient now.",
-    range:'Now', unit:'', expl:'Care has already started. At level 1 this screen is shown to the care circle, not the patient.'},
+    range:'Now', unit:'', expl:'Care has already started. At level 1 this screen is shown to the people following, not the patient.'},
  2:{n:2,t1:'Triage level 2: high priority, seen very soon',
     means:"Your condition could change quickly, so the team wants eyes on you fast. You're ahead of most of the queue.",
     not:"A 2 doesn't mean the worst is happening. It means the team isn't taking chances.",
