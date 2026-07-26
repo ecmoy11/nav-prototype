@@ -126,8 +126,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .v1c.c4{background:#3F6249;border-color:#3F6249;} .v1c.c4 .tri-badge{color:#4A7757;}
 .v1c.c5{background:#1B7A54;border-color:#1B7A54;} .v1c.c5 .tri-badge{color:var(--green);}
 .pc-cond{display:flex;gap:6px;}
-.ht,.pp,.tp{border:1px solid var(--line2);background:#fff;border-radius:12px;padding:8px 12px;font-family:inherit;font-size:12px;font-weight:600;color:var(--sec);cursor:pointer;transition:all .15s ease;white-space:nowrap;}
-.ht.on,.pp.on,.tp.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.ht,.pp,.tp,.cs{border:1px solid var(--line2);background:#fff;border-radius:12px;padding:8px 12px;font-family:inherit;font-size:12px;font-weight:600;color:var(--sec);cursor:pointer;transition:all .15s ease;white-space:nowrap;}
+.ht.on,.pp.on,.tp.on,.cs.on{background:var(--ink);color:#fff;border-color:var(--ink);}
 .tp{min-width:34px;text-align:center;}
 .pc-pers{display:flex;gap:6px;flex-wrap:wrap;max-width:340px;}
 /* live activity condition color */
@@ -153,6 +153,9 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .upnext{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
 .upnext .l{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);}
 .upnext .r{font-size:14.5px;font-weight:600;}
+.care-wait{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.10);}
+.care-wait .cw-k{font-size:12px;font-weight:600;color:rgba(255,255,255,.66);}
+.care-wait .cw-v{font-size:20px;font-weight:700;letter-spacing:-.01em;color:#fff;white-space:nowrap;}
 /* care team */
 .team{display:flex;gap:14px;overflow-x:auto;margin:14px -18px 0;padding:2px 18px 4px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;}
 .team::-webkit-scrollbar{display:none;}
@@ -284,15 +287,34 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .q-ans{background:var(--green-soft);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:13.5px;line-height:1.5;}
 .q-btn{margin-top:10px;border:1.5px solid var(--line2);background:#fff;border-radius:12px;padding:8px 12px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--slate);cursor:pointer;transition:all .15s ease;}
 .qlist{margin-top:8px;}
-.qrow{display:flex;align-items:flex-start;gap:12px;padding:14px 2px;cursor:pointer;border-bottom:1px solid var(--line2);transition:background .12s ease;}
+.qrow{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;padding:14px 2px;border-bottom:1px solid var(--line2);transition:background .12s ease;position:relative;}
 .qlist .qrow:last-child{border-bottom:none;}
-.qrow:active{background:rgba(20,23,28,.02);}
-.qcheck{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background .15s ease,border-color .15s ease;}
+.qcheck{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;margin-top:1px;cursor:pointer;transition:background .15s ease,border-color .15s ease;}
+.qcheck:active{transform:scale(.92);}
 .qcheck svg{width:13px;height:13px;stroke:#9C9C9C;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .15s ease;}
 .qrow.answered .qcheck{background:#F3F3F3;border-color:#F3F3F3;}
 .qrow.answered .qcheck svg{opacity:1;}
-.qtxt{font-size:15px;font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.01em;}
+.qmain{flex:1;min-width:0;cursor:text;}
+.qtxt{font-size:15px;font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.01em;outline:none;border-radius:9px;transition:background .18s ease,box-shadow .18s ease,padding .18s ease;}
 .qrow.answered .qtxt{color:var(--sec);}
+/* editable-in-place: blinking caret + a whisper of a field, just enough to say "you're editing this" */
+.qtxt[contenteditable="true"]{caret-color:var(--slate);background:rgba(20,23,28,.025);box-shadow:0 0 0 1px rgba(20,23,28,.055);padding:6px 9px;margin:-6px -9px;}
+.qcap{font-size:11.5px;font-weight:600;color:var(--mut);margin-top:6px;display:flex;align-items:center;gap:5px;cursor:text;}
+.qcap.has{color:var(--slate);}
+.qcap svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;}
+.qrow.editing .qcap{display:none;}
+.notechips{margin-top:8px;display:flex;flex-direction:column;gap:6px;}
+.notechips:empty{display:none;}
+.notechip{font-size:12.5px;color:var(--slate);background:var(--slate-soft);border-radius:10px;padding:7px 10px;line-height:1.45;}
+.qedit{max-height:0;overflow:hidden;transition:max-height .28s cubic-bezier(.2,.7,.3,1);flex-basis:100%;order:9;}
+.qedit.open{max-height:240px;}
+.qedit-inner{padding:12px 2px 4px;}
+.qe-lbl{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:0 2px 6px;}
+.qe-ta{width:100%;box-sizing:border-box;border:1.5px solid var(--line2);border-radius:13px;padding:11px 12px;font-family:inherit;font-size:14px;line-height:1.45;color:var(--ink);background:var(--bg);resize:none;outline:none;transition:border-color .15s ease;}
+.qe-ta:focus{border-color:var(--slate);}
+.qe-acts{display:flex;gap:8px;margin-top:11px;}
+.qe-done{flex:1;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:10px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;}
+.qe-cancel{border:1.5px solid var(--line2);background:#fff;border-radius:12px;padding:10px 14px;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--sec);cursor:pointer;}
 .note-item{padding:2px 2px 0;}
 .note-item + .note-item{border-top:1px solid var(--line2);margin-top:12px;padding-top:12px;}
 .note-txt{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.5;}
@@ -402,6 +424,11 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .step.next .meta{color:var(--mut);}
 .step .lab{flex:1;}
 .step .t{margin-left:auto;flex:none;font-size:13px;font-weight:500;color:var(--sec);padding-top:3px;}
+.substeps{position:relative;margin:0 0 2px 40px;}
+.substep{position:relative;display:flex;align-items:flex-start;gap:11px;padding:5px 0;}
+.substep:before{content:"";position:absolute;left:3px;top:11px;width:9px;height:9px;border-radius:50%;background:var(--slate);}
+.substep .slab{flex:1;padding-left:20px;font-size:13.5px;font-weight:600;color:var(--ink);}
+.substep .smeta{display:block;font-size:11.5px;font-weight:600;color:var(--slate);margin-top:1px;}
 .linkrow{display:flex;align-items:center;justify-content:space-between;}
 .linkrow b{font-size:15px;font-weight:600;color:var(--slate);}
 .navrow{justify-content:flex-start;gap:13px;}
@@ -736,7 +763,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
               <div class="steps">
                 <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
                 <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
-                <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seeing a clinician<span class="meta">Up next</span></div></div>
+                <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team<span class="meta">Up next</span></div></div>
+                <div class="step future"><div class="dot future"><i></i></div><div class="lab">Diagnosis testing</div></div>
                 <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
               </div>
             </div>
@@ -785,8 +813,9 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <div class="ttl" style="font-size:21px;margin-top:6px;" id="careTtl">You're in a care space</div>
             <span class="statpill" style="color:var(--green);background:#fff;margin-left:0;margin-top:10px;" id="bayPill"><span class="d" style="background:var(--green);"></span>Bay 4</span>
             <div class="cap" id="careCap">Dr. Aisha Khan is with you now and will explain the plan and any tests you may need.</div>
-            <div class="segs"><i class="on"></i><i class="on"></i><i class="cur"></i><i></i></div>
-            <div class="upnext"><span class="l">Up next</span><span class="r">Treatment &amp; next steps</span></div>
+            <div class="care-wait" id="careWait" style="display:none;"><span class="cw-k">Blood results expected in</span><span class="cw-v" id="careWaitV">30–45 mins</span></div>
+            <div class="segs" id="careSegs"><i class="on"></i><i class="on"></i><i class="cur"></i><i></i></div>
+            <div class="upnext"><span class="l">Up next</span><span class="r" id="careUpnext">Diagnosis testing</span></div>
           </div>
           <div class="gap"></div>
           <div class="card">
@@ -825,11 +854,12 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           <div class="gap"></div>
           <div class="card">
             <div class="kicker">Your journey</div>
-            <div class="steps">
+            <div class="steps" id="careSteps">
               <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
               <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
-              <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seeing a clinician<span class="meta">You are here</span></div></div>
-              <div class="step next"><div class="dot next"><i></i></div><div class="lab">Treatment &amp; next steps<span class="meta">Up next</span></div></div>
+              <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team<span class="meta">You are here</span></div></div>
+              <div class="step next"><div class="dot next"><i></i></div><div class="lab">Diagnosis testing<span class="meta">Up next</span></div></div>
+              <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
             </div>
           </div>
           <div class="gap"></div>
@@ -1082,16 +1112,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <div class="kicker">Questions for your doctor</div>
             <span class="sub" style="margin:0 0 0 auto;" id="qCount">1 to ask</span>
           </div>
-          <div class="qlist" id="qList">
-            <div class="qrow" onclick="toggleQ(this)">
-              <span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
-              <div class="qtxt">Do I need more tests, like a stress test?</div>
-            </div>
-            <div class="qrow answered" onclick="toggleQ(this)">
-              <span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
-              <div class="qtxt">Can I keep taking my blood-pressure pill today?</div>
-            </div>
-          </div>
+          <div class="qlist" id="qList"></div>
           <div class="addq" onclick="openQSheet()"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a question…</div>
           <div class="kicker" style="margin-top:14px;">Suggested</div>
           <div class="chips" style="margin-top:9px;" id="qChips">
@@ -1406,7 +1427,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <div class="steps" id="sSteps">
               <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
               <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
-              <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seeing a clinician</div></div>
+              <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team</div></div>
+              <div class="step future"><div class="dot future"><i></i></div><div class="lab">Diagnosis testing</div></div>
               <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
             </div>
           </div>
@@ -1462,6 +1484,14 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       <button class="tp on" data-t="3">3</button>
       <button class="tp" data-t="4">4</button>
       <button class="tp" data-t="5">5</button>
+    </div>
+  </div>
+  <div class="pc-sep" id="careStageSep" hidden></div>
+  <div class="pc-group" id="careStageGroup" hidden>
+    <div class="pc-cap">Care stage</div>
+    <div class="pc-cond">
+      <button class="cs on" data-cs="0" onclick="setCareStage(0)">Seeing doctor</button>
+      <button class="cs" data-cs="1" onclick="setCareStage(1)">Testing</button>
     </div>
   </div>
   <div class="pc-sep"></div>
@@ -1605,11 +1635,75 @@ function showUndoToast(title, undoCb){
 }
 function runUndo(){ if(pendingUndo) pendingUndo(); pendingUndo=null; document.getElementById('toast').classList.remove('show'); }
 /* question checklist: tap toggles a simple check; a quick undo pops up on marking */
-function toggleQ(row){
+/* a question row: tap the CIRCLE to check it off; tap the WORDS to edit it in place and add a note */
+function qEditHTML(){
+  return '<div class="qedit"><div class="qedit-inner">'
+    +'<div class="qe-lbl">Add a note</div>'
+    +'<textarea class="qe-ta" rows="2" placeholder="Jot something for later…"></textarea>'
+    +'<div class="qe-acts"><button class="qe-cancel" onclick="cancelQ(this,event)">Cancel</button>'
+    +'<button class="qe-done" onclick="commitQ(this,event)">Done</button></div>'
+    +'</div></div>';
+}
+function qRowHTML(text, answered){
+  return '<div class="qrow'+(answered?' answered':'')+'">'
+    +'<span class="qcheck" onclick="toggleQ(this,event)"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>'
+    +'<div class="qmain" onclick="editQ(this,event)">'
+    +'<div class="qtxt">'+text+'</div>'
+    +'<div class="qcap"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg><span>Add a note</span></div>'
+    +'<div class="notechips"></div>'
+    +'</div>'+qEditHTML()+'</div>';
+}
+function toggleQ(check,e){
+  if(e) e.stopPropagation();
+  const row=check.closest('.qrow');
+  if(row.classList.contains('editing')) return;
   const wasAnswered=row.classList.contains('answered');
   row.classList.toggle('answered');
   updateQCount();
   if(!wasAnswered){ showUndoToast('Marked as answered', function(){ row.classList.remove('answered'); updateQCount(); }); }
+}
+function placeCaretEnd(el){ el.focus(); try{ const r=document.createRange(); r.selectNodeContents(el); r.collapse(false); const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }catch(_){} }
+function editQ(main,e){
+  if(e) e.stopPropagation();
+  const row=main.closest('.qrow');
+  if(row.classList.contains('editing')) return;
+  document.querySelectorAll('#qList .qrow.editing').forEach(function(r){ closeQ(r); });
+  row.classList.add('editing');
+  const qt=row.querySelector('.qtxt');
+  row._origQ=qt.textContent;
+  qt.setAttribute('contenteditable','true');
+  qt.setAttribute('spellcheck','false');
+  row.querySelector('.qedit').classList.add('open');
+  placeCaretEnd(qt);
+  qt.onkeydown=function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); row.querySelector('.qe-ta').focus(); } };
+}
+function commitQ(btn,e){
+  if(e) e.stopPropagation();
+  const row=btn.closest('.qrow');
+  const qt=row.querySelector('.qtxt');
+  const newq=qt.textContent.trim();
+  if(newq){ row._origQ=newq; } else { qt.textContent=row._origQ||''; }
+  const ta=row.querySelector('.qe-ta'); const note=ta.value.trim();
+  if(note){
+    const chip=document.createElement('div'); chip.className='notechip'; chip.textContent=note;
+    row.querySelector('.notechips').appendChild(chip);
+    const cnt=row.querySelectorAll('.notechips .notechip').length;
+    const cap=row.querySelector('.qcap'); cap.classList.add('has');
+    cap.querySelector('span').textContent=cnt+' note'+(cnt>1?'s':'');
+  }
+  closeQ(row);
+}
+function cancelQ(btn,e){
+  if(e) e.stopPropagation();
+  const row=btn.closest('.qrow');
+  const qt=row.querySelector('.qtxt'); qt.textContent=row._origQ||qt.textContent;
+  closeQ(row);
+}
+function closeQ(row){
+  row.classList.remove('editing');
+  const qt=row.querySelector('.qtxt'); if(qt){ qt.removeAttribute('contenteditable'); qt.onkeydown=null; }
+  const ed=row.querySelector('.qedit'); if(ed) ed.classList.remove('open');
+  const ta=row.querySelector('.qe-ta'); if(ta) ta.value='';
 }
 /* tester name — Claire is the default; a tester can type their own name */
 const CLAIRE_DEFAULT={user:'Claire',patient:'Claire',full:'Claire Morgan',chipLabel:'Claire',greet:'Hi Claire, how can I help?',sms:'Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:'};
@@ -1776,6 +1870,40 @@ const PHASES=[
   {key:'after',title:'Your visit summary',sub:'Discharged 1:12 PM · Today'}
 ];
 let phaseIdx=0;
+/* ===== In-care stage: seeing doctor (0) -> testing (1) ===== */
+let careStage=0;
+function csHelp(lab,t,cls){return '<div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">'+lab+'</div><span class="t '+(cls||'')+'">'+t+'</span></div>';}
+function setCareStage(s){
+  careStage=+s;
+  document.querySelectorAll('.cs').forEach(b=>b.classList.toggle('on',+b.dataset.cs===careStage));
+  renderCareStage();
+}
+function renderCareStage(){
+  const stepsEl=document.getElementById('careSteps'); if(!stepsEl) return;
+  const p=(typeof PERSONAS!=='undefined'&&PERSONAS[CUR])?PERSONAS[CUR]:null;
+  const ck=p?p.ck:'9:31 AM', tr=p?p.tr:'9:39 AM';
+  if(careStage===1){
+    setTxt('careTtl','Waiting on your test results');
+    setTxt('careCap','Your blood has been taken and sent to the lab. Dr. Khan will review the results with you once they come back.');
+    document.getElementById('careWait').style.display='';
+    document.getElementById('careSegs').innerHTML='<i class="on"></i><i class="on"></i><i class="on"></i><i class="cur"></i>';
+    setTxt('careUpnext','Doctor reviews your results');
+    setTxt('nowIncare','Your blood test helps the team rule out a problem with your heart. Results usually take 30–45 minutes. You can rest here — staff will come to you.');
+    stepsEl.innerHTML=csHelp('Checked in',ck,'js-ck')+csHelp('Triage assessment',tr,'js-tr')+csHelp('Seen by the care team','9:52 AM')+
+      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnosis testing<span class="meta">You are here</span></div></div>'+
+      '<div class="substeps"><div class="substep"><span class="slab">Blood test<span class="smeta">Ordered by Dr. Khan · 9:52 AM</span></span></div></div>'+
+      '<div class="step next"><div class="dot next"><i></i></div><div class="lab">Treatment &amp; next steps<span class="meta">Up next</span></div></div>';
+  } else {
+    if(p){ setTxt('careTtl',p.careTtl); setTxt('careCap',p.careCap); setTxt('nowIncare',p.nowCare); }
+    document.getElementById('careWait').style.display='none';
+    document.getElementById('careSegs').innerHTML='<i class="on"></i><i class="on"></i><i class="cur"></i><i></i>';
+    setTxt('careUpnext','Diagnosis testing');
+    stepsEl.innerHTML=csHelp('Checked in',ck,'js-ck')+csHelp('Triage assessment',tr,'js-tr')+
+      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team<span class="meta">You are here</span></div></div>'+
+      '<div class="step next"><div class="dot next"><i></i></div><div class="lab">Diagnosis testing<span class="meta">Up next</span></div></div>'+
+      '<div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>';
+  }
+}
 function setPhase(i){
   phaseIdx=Math.max(0,Math.min(PHASES.length-1,i));
   const p=PHASES[phaseIdx];
@@ -1792,6 +1920,12 @@ function setPhase(i){
   renderJournal();
   renderVitals();
   syncSarah(); laSync();
+  /* care-stage toggle: Claire only, in the Care phase */
+  const csG=document.getElementById('careStageGroup'), csS=document.getElementById('careStageSep');
+  const showCS=(phaseIdx===1)&&(CUR==='claire');
+  if(csG){ csG.hidden=!showCS; if(csS) csS.hidden=!showCS; }
+  if(phaseIdx!==1){ careStage=0; document.querySelectorAll('.cs').forEach(b=>b.classList.toggle('on',+b.dataset.cs===0)); }
+  renderCareStage();
 }
 function gotoPhase(i){ setPhase(i); go('status'); }
 document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('click',()=>gotoPhase(+b.dataset.i)));
@@ -1966,9 +2100,9 @@ function hideAdvPhone(){ document.getElementById('sarahWrap').classList.remove('
 function openSarahWeb(){document.getElementById('sSms').hidden=true;document.getElementById('sWeb').hidden=false;syncSarah();}
 let curCond='steady';
 const S_PHASES=[
-  {txt:"She's been seen by a nurse and is safe",sub:'Waiting to see a clinician',wait:true,steps:['done','done','now','future']},
-  {txt:"She's in a care space being seen now",sub:'With the care team · Bay 4',wait:false,steps:['done','done','done','now']},
-  {txt:'Her visit is complete',sub:'Discharged 1:12 PM today',wait:false,steps:['done','done','done','done']}
+  {txt:"She's been seen by a nurse and is safe",sub:'Waiting to see a provider',wait:true,steps:['done','done','now','future','future']},
+  {txt:"She's in a care space being seen now",sub:'With the care team · Bay 4',wait:false,steps:['done','done','done','now','future']},
+  {txt:'Her visit is complete',sub:'Discharged 1:12 PM today',wait:false,steps:['done','done','done','done','done']}
 ];
 function syncSarah(){
   const f0=share.f[0];
@@ -2037,9 +2171,7 @@ function renderJournal(){
   const hist=waiting?p.j.hist.filter(h=>h[1]==='Triage'):p.j.hist;
   document.getElementById('painHist').innerHTML=hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">'+h[2]+'</div><span class="painpill '+painCls(h[3])+'">'+h[3]+'/10</span></div>').join('');
   const qs=waiting?[]:p.j.qs;
-  document.getElementById('qList').innerHTML=qs.map(q=>q.ans
-    ?'<div class="qrow answered" onclick="toggleQ(this)"><span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div class="qtxt">'+q.q+'</div></div>'
-    :'<div class="qrow" onclick="toggleQ(this)"><span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div class="qtxt">'+q.q+'</div></div>').join('');
+  document.getElementById('qList').innerHTML=qs.map(q=>qRowHTML(q.q, !!q.ans)).join('');
   updateQCount();
   /* suggestions are phase-aware too: wait = forward-looking (tests/what's next), Care/After = results/discharge */
   const sugg=(waiting&&p.j.suggWait)?p.j.suggWait:p.j.sugg;
@@ -2064,11 +2196,11 @@ function renderVitals(){
   document.getElementById('vHist').innerHTML=hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals"><span class="vv"><b>'+h[2]+'</b> <span>bpm</span></span><span class="vv"><b>'+h[3]+'</b></span><span class="vv"><b>'+h[4]+'°</b></span><span class="vv"><b>'+h[5]+'%</b> <span>SpO₂</span></span></div></div>').join('');
 }
 function makeQ(text){
-  const d=document.createElement('div'); d.className='qrow';
-  d.setAttribute('onclick','toggleQ(this)');
-  d.innerHTML='<span class="qcheck"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div class="qtxt"></div>';
-  d.querySelector('.qtxt').textContent=text;
-  return d;
+  const wrap=document.createElement('div');
+  wrap.innerHTML=qRowHTML('', false);
+  const row=wrap.firstElementChild;
+  row.querySelector('.qtxt').textContent=text;
+  return row;
 }
 function addQChip(chip){
   const q=chip.textContent.trim();
