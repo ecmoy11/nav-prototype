@@ -27,7 +27,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 [hidden]{display:none!important;}
 html{height:100%;}
-body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;flex-direction:column;align-items:center;min-height:100%;padding:186px 16px 256px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;flex-direction:column;align-items:center;min-height:100%;padding:170px 16px 256px;transition:padding-top .28s cubic-bezier(.2,.8,.25,1);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 .intro{max-width:393px;width:100%;margin-bottom:18px;}
 .intro h1{font-size:16px;font-weight:600;letter-spacing:-.01em;}
 .intro p{font-size:13px;color:#6f6a60;margin-top:3px;line-height:1.45;}
@@ -131,7 +131,17 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .ht,.pp,.tp,.cs{border:1px solid var(--line2);background:#fff;border-radius:12px;padding:8px 12px;font-family:inherit;font-size:12px;font-weight:600;color:var(--sec);cursor:pointer;transition:all .15s ease;white-space:nowrap;}
 .ht.on,.pp.on,.tp.on,.cs.on{background:var(--ink);color:#fff;border-color:var(--ink);}
 .tp{min-width:34px;text-align:center;}
-.pc-pers{display:flex;gap:6px;flex-wrap:wrap;max-width:340px;}
+.pc-pers{display:flex;gap:6px;flex-wrap:wrap;max-width:262px;align-items:center;}
+/* ••• overflow for the less-used personas */
+.pc-more{position:relative;display:flex;}
+.pc-dots{border:1px solid var(--line2);background:#fff;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;font-weight:700;line-height:1;color:var(--sec);cursor:pointer;transition:all .15s ease;white-space:nowrap;letter-spacing:.04em;}
+.pc-dots:hover{background:var(--surface);color:var(--ink);}
+.pc-dots.on{background:var(--ink);color:#fff;border-color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;padding:8px 12px;}
+.pc-dots.open{border-color:var(--slate);color:var(--ink);}
+.pc-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:210;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(20,23,28,.16);padding:9px;flex-direction:column;gap:5px;min-width:132px;}
+.pc-menu.show{display:flex;animation:rise .18s ease both;}
+.pc-menu .pp{width:100%;text-align:left;}
+.pc-menu-cap{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);padding:2px 3px 4px;}
 /* live activity condition color */
 .liveact .la-cond{width:7px;height:7px;border-radius:50%;flex:none;background:var(--lc,#9098a3);transition:background .3s ease;}
 .liveact .la-num{color:var(--lc,#fff);}
@@ -190,12 +200,13 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .phase-block{display:none;}
 .phase-block.show{display:block;animation:rise .42s cubic-bezier(.2,.7,.3,1) both;}
 /* prototype journey control (top of screen, reads left → right) */
-.protoctl{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 34px rgba(20,23,28,.14);padding:12px 22px 14px;display:flex;align-items:flex-start;flex-wrap:wrap;justify-content:center;row-gap:12px;gap:22px;max-width:calc(100vw - 24px);}
+.protoctl{position:fixed;top:12px;left:0;right:0;margin:0 auto;width:fit-content;z-index:200;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 34px rgba(20,23,28,.14);padding:12px 22px 14px;display:flex;align-items:flex-start;flex-wrap:wrap;justify-content:center;row-gap:12px;gap:20px;max-width:calc(100vw - 24px);}
 .pc-group{display:flex;flex-direction:column;gap:9px;}
 .pc-hide{position:absolute;top:7px;right:7px;width:22px;height:22px;border-radius:50%;border:none;background:var(--surface);color:var(--sec);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
 .pc-hide:hover{background:var(--line);}
 .pc-hide svg{width:11px;height:11px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;}
 .protoctl.hidden{display:none;}
+body.ctl-off{padding-top:82px;}
 .pc-pill{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;background:#fff;border:1px solid var(--line);border-radius:999px;box-shadow:0 8px 24px rgba(20,23,28,.12);padding:8px 15px;font-family:inherit;font-size:12px;font-weight:600;color:var(--sec);cursor:pointer;display:none;align-items:center;gap:7px;}
 .pc-pill.show{display:flex;}
 .pc-pill svg{width:12px;height:12px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;}
@@ -206,6 +217,9 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .scroll-lock.on svg{stroke:#fff;}
 .pc-cap{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);}
 .pc-journey{position:relative;width:280px;margin:0 16px;padding-top:5px;}
+/* journey bar — sits directly above the phone, independent of the controls panel */
+.jbar{width:100%;max-width:393px;box-sizing:border-box;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 26px rgba(20,23,28,.11);padding:12px 44px 15px;margin-bottom:20px;display:flex;flex-direction:column;gap:9px;}
+.jbar .pc-journey{width:100%;margin:0;}
 .pc-rail{position:relative;height:6px;border-radius:6px;background:var(--line2);}
 .pc-fill{position:absolute;top:0;bottom:0;left:0;width:0;border-radius:6px;background:var(--ink);transition:width .32s cubic-bezier(.2,.8,.25,1);}
 .pc-tick{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--line2);padding:0;cursor:pointer;z-index:1;}
@@ -588,7 +602,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .toast .ti svg{width:17px;height:17px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .toast-undo{margin-left:auto;flex:none;background:rgba(255,255,255,.18);border:none;color:#fff;font-family:inherit;font-weight:700;font-size:13px;padding:7px 14px;border-radius:10px;cursor:pointer;transition:background .15s ease;}
 .toast-undo:active{background:rgba(255,255,255,.32);}
-.pc-name{margin-top:9px;width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink);background:#fff;outline:none;transition:border-color .15s ease;}
+.pc-name{margin-top:9px;width:100%;min-width:190px;box-sizing:border-box;border:1px solid var(--line2);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink);background:#fff;outline:none;transition:border-color .15s ease;}
 .pc-name::placeholder{color:var(--mut);font-weight:400;}
 .pc-name:focus{border-color:var(--slate);}
 .wait-alert{display:none;align-items:flex-start;gap:11px;background:var(--amber-soft);border:1px solid rgba(188,132,24,.30);border-radius:16px;padding:13px 14px;margin-bottom:12px;}
@@ -795,6 +809,26 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 <div class="intro">
   <h1>Active Autonomy Companion</h1>
   <p>Clickable prototype — tap buttons and the bottom tabs to navigate. Share the visit (menu ☰ on Status) to reveal the advocate view. On the phone home screen, tap the Dynamic Island for live wait &amp; status.</p>
+</div>
+<!-- user journey — lives above the phone so it stays reachable with the controls collapsed -->
+<div class="jbar" id="jbar">
+  <div class="pc-cap">User journey</div>
+  <div class="pc-journey">
+    <div class="pc-rail" id="pcRail">
+      <div class="pc-fill" id="pcFill"></div>
+      <button class="pc-tick" data-i="0" style="left:0%"></button>
+      <button class="pc-tick" data-i="1" style="left:33.33%"></button>
+      <button class="pc-tick" data-i="2" style="left:66.67%"></button>
+      <button class="pc-tick" data-i="3" style="left:100%"></button>
+      <div class="pc-thumb" id="pcThumb"></div>
+    </div>
+    <div class="pc-stops">
+      <button class="pc-stop" data-i="0" style="left:0%">Waiting</button>
+      <button class="pc-stop" data-i="1" style="left:33.33%">Care</button>
+      <button class="pc-stop" data-i="2" style="left:66.67%">Testing</button>
+      <button class="pc-stop" data-i="3" style="left:100%">After care</button>
+    </div>
+  </div>
 </div>
 <div class="stage">
 <div class="device">
@@ -1773,11 +1807,17 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <div class="pc-cap">Patient</div>
     <div class="pc-pers">
       <button class="pp on" data-p="claire">Claire</button>
-      <button class="pp" data-p="margaret">Margaret</button>
       <button class="pp" data-p="elena">Elena</button>
-      <button class="pp" data-p="diana">Diana &amp; Lily</button>
-      <button class="pp" data-p="marcus">Marcus</button>
-      <button class="pp" data-p="yuki">Yuki</button>
+      <div class="pc-more" id="ppMoreWrap">
+        <button class="pc-dots" id="ppMore" onclick="ppMenuToggle(event)" aria-expanded="false" aria-haspopup="true" title="More patients">&#8943;</button>
+        <div class="pc-menu" id="ppMenu">
+          <div class="pc-menu-cap">More patients</div>
+          <button class="pp" data-p="margaret">Margaret</button>
+          <button class="pp" data-p="diana">Diana &amp; Lily</button>
+          <button class="pp" data-p="marcus">Marcus</button>
+          <button class="pp" data-p="yuki">Yuki</button>
+        </div>
+      </div>
     </div>
     <input class="pc-name" id="testerName" placeholder="Type your name…" maxlength="18" autocomplete="off" oninput="setTesterName(this.value)" aria-label="Your name for testing">
   </div>
@@ -1790,26 +1830,6 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       <button class="tp on" data-t="3">3</button>
       <button class="tp" data-t="4">4</button>
       <button class="tp" data-t="5">5</button>
-    </div>
-  </div>
-  <div class="pc-sep"></div>
-  <div class="pc-group">
-    <div class="pc-cap">User journey</div>
-    <div class="pc-journey">
-      <div class="pc-rail" id="pcRail">
-        <div class="pc-fill" id="pcFill"></div>
-        <button class="pc-tick" data-i="0" style="left:0%"></button>
-        <button class="pc-tick" data-i="1" style="left:33.33%"></button>
-        <button class="pc-tick" data-i="2" style="left:66.67%"></button>
-        <button class="pc-tick" data-i="3" style="left:100%"></button>
-        <div class="pc-thumb" id="pcThumb"></div>
-      </div>
-      <div class="pc-stops">
-        <button class="pc-stop" data-i="0" style="left:0%">Waiting</button>
-        <button class="pc-stop" data-i="1" style="left:33.33%">Care</button>
-        <button class="pc-stop" data-i="2" style="left:66.67%">Testing</button>
-        <button class="pc-stop" data-i="3" style="left:100%">After care</button>
-      </div>
     </div>
   </div>
   <div class="pc-sep"></div>
@@ -1841,8 +1861,23 @@ function toggleScrollLock(){
   document.getElementById('slIconClosed').style.display=scrollLocked?'':'none';
   b.title=scrollLocked?'Page scroll locked · tap to unlock':'Lock page scroll';
 }
-function ctlHide(){ document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); }
-function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); }
+/* ••• overflow menu for the less-used personas */
+function ppMenuToggle(e){
+  if(e) e.stopPropagation();
+  const m=document.getElementById('ppMenu'), b=document.getElementById('ppMore');
+  const open=m.classList.toggle('show');
+  b.classList.toggle('open',open);
+  b.setAttribute('aria-expanded',open?'true':'false');
+}
+function ppMenuClose(){
+  const m=document.getElementById('ppMenu'), b=document.getElementById('ppMore');
+  if(!m) return;
+  m.classList.remove('show'); b.classList.remove('open'); b.setAttribute('aria-expanded','false');
+}
+document.addEventListener('click',e=>{ const w=document.getElementById('ppMoreWrap'); if(w&&!w.contains(e.target)) ppMenuClose(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') ppMenuClose(); });
+function ctlHide(){ ppMenuClose(); document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); document.body.classList.add('ctl-off'); }
+function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); document.body.classList.remove('ctl-off'); }
 /* ===== Hospital map: floor plan + wayfinding graph + routing ===== */
 let mapBack='status';
 const MAP_M_PER_UNIT=0.18;   /* svg units -> metres */
@@ -3238,6 +3273,14 @@ function setTxt(id,txt){const e=document.getElementById(id); if(e) e.textContent
 function applyPersona(key){
   CUR=key; const p=PERSONAS[key];
   document.querySelectorAll('.pp').forEach(b=>b.classList.toggle('on',b.dataset.p===key));
+  /* ••• button carries the name when a tucked-away persona is active */
+  const dots=document.getElementById('ppMore');
+  if(dots){
+    const hidden=document.getElementById('ppMenu').querySelector('.pp[data-p="'+key+'"]');
+    dots.classList.toggle('on',!!hidden);
+    dots.innerHTML = hidden ? hidden.innerHTML : '&#8943;';
+    dots.title = hidden ? 'Viewing '+p.chipLabel+' · switch patient' : 'More patients';
+  }
   /* identity & clock */
   setTxt('sbClk',p.clk); setTxt('mName',p.full); setTxt('mAv',p.ini);
   /* waiting phase */
@@ -3349,6 +3392,7 @@ function applyPersona(key){
   setPhase(0);
 }
 document.querySelectorAll('.pp').forEach(b=>b.addEventListener('click',()=>{
+  ppMenuClose();
   applyPersona(b.dataset.p);
   go('status');
   showToast('Now viewing: '+PERSONAS[b.dataset.p].chipLabel, PERSONAS[b.dataset.p].tag);
