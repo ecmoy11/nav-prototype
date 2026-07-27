@@ -13,6 +13,7 @@
   --line:#EBE6DC; --line2:#DFD9CD; --surface:#EFEAE0;
   --slate:#3E4E5A; --slate-deep:#33414C; --slate-soft:#E3E8EC;
   --blue:#2563C9; --blue-soft:#E9F0FD; --blue-deep:#1E4FA3;
+  --navy:#173F80; --navy-soft:#DCE5F4;
   --green:#1E9E6A; --green-soft:#E5F4ED;
   --amber:#BC8418; --amber-soft:#FAF0D8;
   --violet:#6B4FD0; --violet-soft:#EDEAFB;
@@ -67,6 +68,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .chip.green{background:var(--green-soft);} .chip.green svg{stroke:var(--green);}
 .chip.amber{background:var(--amber-soft);} .chip.amber svg{stroke:var(--amber);}
 .chip.violet{background:var(--violet-soft);} .chip.violet svg{stroke:var(--violet);}
+.chip.navy{background:var(--navy-soft);} .chip.navy svg{stroke:var(--navy);}
 .chip.red{background:var(--red-soft);} .chip.red svg{stroke:var(--red-ink);}
 .ttl{font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
 .sub{font-size:13px;color:var(--sec);margin-top:2px;}
@@ -240,6 +242,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .v-ic.blue{background:var(--blue-soft);} .v-ic.blue svg{stroke:var(--blue);}
 .v-ic.amber{background:var(--amber-soft);} .v-ic.amber svg{stroke:var(--amber);}
 .v-ic.green{background:var(--green-soft);} .v-ic.green svg{stroke:var(--green);}
+.v-ic.navy{background:var(--navy-soft);} .v-ic.navy svg{stroke:var(--navy);}
 .v-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
 .v-tag.ok{color:var(--green);background:var(--green-soft);}
 .v-tag.hi{color:var(--amber);background:var(--amber-soft);}
@@ -448,12 +451,26 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .backbtn svg{width:19px;height:19px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .backbtn:active{transform:scale(.94);}
 /* hospital map */
-.floorplan{width:100%;height:auto;display:block;}
+.floorplan{width:100%;height:auto;display:block;border-radius:14px;background:#F0EEE8;}
+.fp-wrap{margin:12px -6px 0;}
+.fp-lab{font-family:var(--sans);font-weight:700;}
 .map-legend{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;font-weight:600;color:var(--sec);}
-.map-legend .lg-you{width:13px;height:13px;border-radius:4px;background:var(--slate);position:relative;flex:none;}
-.map-legend .lg-you:after{content:"";position:absolute;right:-3px;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid #fff;}
-.maprow{display:flex;align-items:flex-start;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line);}
+.map-legend .lg-you{width:13px;height:13px;border-radius:50%;background:var(--blue);position:relative;flex:none;box-shadow:0 0 0 3px rgba(37,99,201,.18);}
+/* turn-by-turn bar */
+.routebar{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line2);border-radius:18px;padding:13px 14px;margin-bottom:14px;box-shadow:var(--sh-card);animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+.routebar .rb-ar{flex:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--ink);}
+.routebar .rb-ar svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;}
+.routebar .rb-b{flex:1;min-width:0;}
+.routebar .rb-t{font-size:15.5px;font-weight:600;color:var(--ink);letter-spacing:-.01em;line-height:1.25;}
+.routebar .rb-s{font-size:12.5px;color:var(--sec);margin-top:3px;}
+.routebar .rb-x{flex:none;width:30px;height:30px;border-radius:50%;border:none;background:var(--surface);color:var(--sec);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.routebar .rb-x svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;}
+.maprow{display:flex;align-items:flex-start;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line);cursor:pointer;transition:opacity .15s ease;}
+.maprow:active{opacity:.6;}
+.maprow.on .mp-dist{color:var(--blue);}
 .maprow:last-child{border-bottom:none;}
+.mp-go{flex:none;display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--blue);background:var(--blue-soft);border-radius:20px;padding:4px 9px;margin-top:1px;white-space:nowrap;}
+.mp-go svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
 .mp-ic{flex:none;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;}
 .mp-ic svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .mp-b{flex:1;min-width:0;}
@@ -939,8 +956,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             </div>
           </div>
           <div class="gap"></div>
-          <div class="card tappable" onclick="go('hospitalmap')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
-            <span class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
+          <div class="card tappable" onclick="openMap('status')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
+            <span class="v-ic navy" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
             <div style="flex:1;min-width:0;">
               <b style="font-size:14.5px;letter-spacing:-.01em;">Find your way around</b>
               <div style="font-size:12px;color:var(--sec);margin-top:2px;">Cafe, restrooms, exits — and where you are</div>
@@ -1151,72 +1168,129 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <section class="screen" id="hospitalmap">
       <div class="scroll">
         <div class="headrow" style="justify-content:flex-start;gap:12px;align-items:center;">
-          <button class="backbtn" onclick="go('status')" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="backbtn" onclick="go(mapBack)" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
           <div><h2 class="title">Find your way</h2><div class="subt" id="mapWhere">You're in Bay 4</div></div>
         </div>
         <div class="gap"></div>
+        <div class="routebar" id="routeBar" style="display:none;">
+          <span class="rb-ar" id="rbArrow"></span>
+          <div class="rb-b"><div class="rb-t" id="rbTurn">Turn left at the nurses' station</div><div class="rb-s" id="rbSub">44 m &middot; 62 m to Cafe &amp; vending</div></div>
+          <button class="rb-x" onclick="clearRoute()" aria-label="Clear route"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        </div>
         <div class="card">
-          <div class="kicker">Where you are</div>
-          <svg class="floorplan" viewBox="0 0 340 288" role="img" aria-label="Emergency department floor plan" style="margin-top:12px;">
-            <rect x="4" y="4" width="332" height="280" rx="20" fill="#EFEAE0" stroke="#DFD9CD" stroke-width="1.5"/>
-            <text x="16" y="22" font-family="Hanken Grotesk, sans-serif" font-size="9.5" font-weight="700" letter-spacing="1" fill="#9CA2AB">CARE BAYS</text>
-            <!-- bays -->
-            <g font-family="Hanken Grotesk, sans-serif" font-weight="700" text-anchor="middle">
-              <rect x="14"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="37"  y="53" font-size="13" fill="#646B76">1</text>
-              <rect x="68"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="91"  y="53" font-size="13" fill="#646B76">2</text>
-              <rect x="122" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="145" y="53" font-size="13" fill="#646B76">3</text>
-              <rect x="176" y="28" width="46" height="40" rx="9" fill="#3E4E5A" stroke="#3E4E5A"/><text x="199" y="52" font-size="11" fill="#fff">You</text>
-              <circle cx="214" cy="35" r="4.5" fill="#1E9E6A" stroke="#fff" stroke-width="1.5"/>
-              <rect x="230" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="253" y="53" font-size="13" fill="#646B76">5</text>
-              <rect x="284" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="307" y="53" font-size="13" fill="#646B76">6</text>
+          <div class="kicker" id="mapKicker">Where you are</div>
+          <div class="fp-wrap">
+          <svg class="floorplan" id="fpSvg" viewBox="0 0 340 460" role="img" aria-label="Emergency department floor plan">
+            <defs>
+              <filter id="fpShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="1.5" stdDeviation="1.6" flood-color="#7A7261" flood-opacity=".26"/>
+              </filter>
+            </defs>
+            <rect x="0" y="0" width="340" height="460" fill="#F0EEE8"/>
+            <!-- building shell -->
+            <rect x="12" y="12" width="316" height="436" rx="10" fill="#FBFAF7" stroke="#E2DDD1" stroke-width="1.2"/>
+
+            <!-- ===== rooms (beige = enclosed space, white = circulation) ===== -->
+            <g stroke="none">
+              <!-- triage + care bays -->
+              <rect x="20" y="20" width="76" height="44" rx="3" fill="#E7DFCC"/>
+              <rect x="20" y="68" width="76" height="44" rx="3" fill="#E7DFCC"/>
+              <rect x="104" y="20" width="216" height="92" rx="3" fill="#E3DAC5"/>
+              <g stroke="#FBFAF7" stroke-width="2">
+                <path d="M140 20V112M176 20V112M212 20V112M248 20V112M284 20V112"/>
+              </g>
+              <!-- middle band -->
+              <rect id="fpNurse" x="20" y="142" width="98" height="56" rx="3" fill="#E7DFCC"/>
+              <rect x="20" y="202" width="98" height="36" rx="3" fill="#E7DFCC"/>
+              <rect id="fpRest" x="20" y="242" width="98" height="58" rx="3" fill="#DEEAF4"/>
+              <rect id="fpWait" x="152" y="142" width="98" height="110" rx="3" fill="#DFEDE1"/>
+              <rect x="152" y="256" width="47" height="44" rx="3" fill="#E7DFCC"/>
+              <rect x="203" y="256" width="47" height="44" rx="3" fill="#E7DFCC"/>
+              <rect x="280" y="142" width="40" height="56" rx="3" fill="#E7DFCC"/>
+              <rect id="fpVend" x="280" y="202" width="40" height="50" rx="3" fill="#F7EEDA"/>
+              <rect x="280" y="256" width="40" height="44" rx="3" fill="#E7DFCC"/>
+              <!-- lobby level -->
+              <rect id="fpCafe" x="20" y="330" width="108" height="62" rx="3" fill="#F7EEDA"/>
+              <rect id="fpGift" x="20" y="396" width="108" height="48" rx="3" fill="#EDE7F6"/>
+              <rect id="fpPharm" x="248" y="330" width="72" height="56" rx="3" fill="#DFEDE1"/>
+              <rect id="fpExit" x="248" y="390" width="72" height="54" rx="3" fill="#E3E8EC"/>
             </g>
-            <!-- corridor -->
-            <rect x="14" y="76" width="316" height="18" rx="6" fill="#fff" stroke="#DFD9CD"/>
-            <text x="172" y="88.5" font-family="Hanken Grotesk, sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#9CA2AB">CORRIDOR</text>
-            <!-- rooms -->
-            <g font-family="Hanken Grotesk, sans-serif" font-weight="600" text-anchor="middle">
-              <rect x="14"  y="102" width="150" height="42" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="89"  y="127" font-size="11" fill="#191C20">Nurses' station</text>
-              <rect x="180" y="102" width="150" height="42" rx="10" fill="#E9F0FD"/><text x="255" y="127" font-size="11" fill="#191C20">Restrooms</text>
-              <rect x="14"  y="152" width="150" height="48" rx="10" fill="#E5F4ED"/><text x="89"  y="180" font-size="11" fill="#191C20">Family waiting</text>
-              <rect x="180" y="152" width="150" height="48" rx="10" fill="#FAF0D8"/><text x="255" y="180" font-size="11" fill="#191C20">Cafe &amp; vending</text>
-              <rect x="14"  y="208" width="316" height="44" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="172" y="234" font-size="11" fill="#191C20">Main entrance &amp; Exit</text>
+
+            <!-- ===== circulation ===== -->
+            <g fill="#FFFFFF">
+              <rect x="16" y="116" width="308" height="22"/>
+              <rect x="122" y="116" width="26" height="200"/>
+              <rect x="256" y="116" width="20" height="200"/>
+              <rect x="16" y="304" width="308" height="22"/>
+              <rect x="132" y="326" width="112" height="118"/>
+            </g>
+            <g stroke="#EDE8DC" stroke-width="1" fill="none">
+              <path d="M16 116h308M16 138h308M16 304h308M16 326h308"/>
+            </g>
+
+            <!-- ===== room labels ===== -->
+            <g class="fp-lab" font-family="Hanken Grotesk, sans-serif" fill="#A79E8B" font-size="7" letter-spacing=".6" text-anchor="middle">
+              <text x="58" y="45">TRIAGE 1</text>
+              <text x="58" y="93">TRIAGE 2</text>
+              <text x="122" y="70">1</text><text x="158" y="70">2</text><text x="194" y="70">3</text>
+              <text x="230" y="70">4</text><text x="266" y="70">5</text><text x="302" y="70">6</text>
+              <text x="69" y="224">SUPPLY</text>
+              <text x="175.5" y="282">CONSULT</text><text x="226.5" y="282">CONSULT</text>
+              <text x="300" y="174">FAMILY</text>
+              <text x="300" y="281">STAFF</text>
+              <text x="188" y="382" fill="#B5AC98">MAIN LOBBY</text>
+            </g>
+
+            <!-- ===== route + markers (built by JS) ===== -->
+            <path id="fpRoute" fill="none" stroke="#1F6FE5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+            <g id="fpPins"></g>
+            <g id="fpDest" opacity="0"><circle r="14" fill="none" stroke="#1F6FE5" stroke-width="2.6" opacity=".85"/><circle r="18.5" fill="none" stroke="#1F6FE5" stroke-width="1.2" opacity=".35"/></g>
+            <g id="fpYou" opacity="0">
+              <circle r="11" fill="#2563C9" opacity=".18"/>
+              <circle r="6" fill="#2563C9" stroke="#fff" stroke-width="2.4"/>
             </g>
           </svg>
-          <div class="map-legend"><span class="lg-you"></span>You are here — <span id="mapBayLg" style="margin-left:4px;color:var(--ink);">Bay 4</span></div>
+          </div>
+          <div class="map-legend"><span class="lg-you"></span>You are here &mdash; <span id="mapBayLg" style="margin-left:4px;color:var(--ink);">Bay 4</span></div>
         </div>
         <div class="gap"></div>
         <div class="card">
           <div class="kicker">Getting around</div>
-          <div class="maplist" style="margin-top:4px;">
-            <div class="maprow">
+          <div class="maplist" id="mapList" style="margin-top:4px;">
+            <div class="maprow" data-dest="cafe" onclick="route('cafe')">
               <span class="mp-ic" style="background:var(--amber-soft);color:var(--amber);"><svg viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg></span>
               <div class="mp-b"><b>Cafe &amp; vending</b><span>Main lobby, just past the entrance.</span></div>
-              <span class="mp-dist">~4 min</span>
+              <span class="mp-go"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Route</span>
             </div>
-            <div class="maprow">
+            <div class="maprow" data-dest="restrooms" onclick="route('restrooms')">
               <span class="mp-ic" style="background:var(--blue-soft);color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v17h10V4a1 1 0 0 0-1-1z"/><path d="M5 21h14"/><circle cx="12" cy="12.5" r="1"/></svg></span>
               <div class="mp-b"><b>Restrooms</b><span>Just off the corridor, opposite the nurses' station.</span></div>
-              <span class="mp-dist">~1 min</span>
+              <span class="mp-go"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Route</span>
             </div>
-            <div class="maprow">
+            <div class="maprow" data-dest="water" onclick="route('water')">
               <span class="mp-ic" style="background:var(--blue-soft);color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M12 2.7S6 9 6 13.5a6 6 0 0 0 12 0C18 9 12 2.7 12 2.7z"/></svg></span>
               <div class="mp-b"><b>Water station</b><span>By the nurses' station.</span></div>
-              <span class="mp-dist">~1 min</span>
+              <span class="mp-go"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Route</span>
             </div>
-            <div class="maprow">
+            <div class="maprow" data-dest="waiting" onclick="route('waiting')">
               <span class="mp-ic" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
-              <div class="mp-b"><b>Family waiting area</b><span>Near the main entrance, to your left.</span></div>
-              <span class="mp-dist">~2 min</span>
+              <div class="mp-b"><b>Waiting area</b><span>Near the main entrance, to your left. Family can wait here too.</span></div>
+              <span class="mp-go"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Route</span>
             </div>
-            <div class="maprow">
-              <span class="mp-ic" style="background:var(--surface);color:var(--slate);"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span>
-              <div class="mp-b"><b>Main entrance &amp; Exit</b><span>Straight down the corridor.</span></div>
-              <span class="mp-dist">~2 min</span>
-            </div>
-            <div class="maprow">
+            <div class="maprow" data-dest="pharmacy" onclick="route('pharmacy')">
               <span class="mp-ic" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 4.5h14v4.5H5z"/><path d="M12 12.5v5M9.5 15h5"/></svg></span>
-              <div class="mp-b"><b>Pharmacy</b><span>Main lobby, next to the cafe — handy on your way out.</span></div>
-              <span class="mp-dist">~4 min</span>
+              <div class="mp-b"><b>Pharmacy</b><span>Main lobby, next to the cafe &mdash; handy on your way out.</span></div>
+              <span class="mp-go"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Route</span>
+            </div>
+            <div class="maprow" data-dest="gift" onclick="route('gift')">
+              <span class="mp-ic" style="background:var(--violet-soft);color:var(--violet);"><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+              <div class="mp-b"><b>Gift shop</b><span>Main lobby, by the entrance doors.</span></div>
+              <span class="mp-go"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Route</span>
+            </div>
+            <div class="maprow" data-dest="exit" onclick="route('exit')">
+              <span class="mp-ic" style="background:var(--surface);color:var(--slate);"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span>
+              <div class="mp-b"><b>Main entrance &amp; Exit</b><span>Straight down the corridor, past the lobby.</span></div>
+              <span class="mp-go"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Route</span>
             </div>
           </div>
         </div>
@@ -1265,26 +1339,33 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <section class="screen" id="comfort">
       <div class="scroll">
         <h2 class="title">Care</h2>
-        <div class="subt">Small things you can do while you wait</div>
+        <div class="subt" id="cfSub">Small things you can do while you wait</div>
         <div class="gap lg"></div>
-        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMed()">
-          <div class="row">
-            <div class="chip green"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
-            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-          </div>
+        <div class="worse" onclick="openWorse()" style="margin-bottom:11px;">
+          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
+          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
         </div>
-        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won\'t miss you','Check back in when you return.')">
+        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="confirmAction('Got it, we won\'t miss you','Check back in when you return.')">
           <div class="row">
             <div class="chip amber"><svg viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M14 16l4-4-4-4M18 12H9"/></svg></div>
             <div><div class="ttl">Stepping outside?</div><div class="sub">Let us know so we don't miss you</div></div>
             <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
         </div>
-        <div class="worse" onclick="openWorse()">
-          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
-          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
-          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMap('comfort')">
+          <div class="row">
+            <div class="chip navy"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></div>
+            <div><div class="ttl">Find your way around</div><div class="sub" id="cfMapSub">Cafe, restrooms, exits — and where you are</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="openMed()">
+          <div class="row">
+            <div class="chip green"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
+            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
         </div>
       </div>
     </section>
@@ -1343,6 +1424,14 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <div class="gap"></div>
         <div class="lrailwrap"><div class="lrail" id="lRail"></div></div>
         <div id="lFeed"></div>
+        <div class="card tappable" onclick="startTour()" style="display:flex;align-items:center;gap:13px;padding:15px 16px;margin-top:22px;">
+          <div class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5"/></svg></div>
+          <div style="flex:1;min-width:0;">
+            <b style="font-size:14.5px;letter-spacing:-.01em;">Take a quick tour</b>
+            <div style="font-size:12px;color:var(--sec);margin-top:2px;">See what each part of the app does, about a minute.</div>
+          </div>
+          <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </div>
       </div>
     </section>
     <!-- 5b ARTICLE (Learn detail) -->
@@ -1737,6 +1826,233 @@ function toggleScrollLock(){
 }
 function ctlHide(){ document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); }
 function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); }
+/* ===== Hospital map: floor plan + wayfinding graph + routing ===== */
+let mapBack='status';
+const MAP_M_PER_UNIT=0.18;   /* svg units -> metres */
+
+/* walkable graph: corridor nodes + door nodes */
+const MAP_NODES={
+  A45:[45,127],A69:[69,127],A122:[122,127],A135:[135,127],A158:[158,127],A194:[194,127],
+  A230:[230,127],A266:[266,127],A302:[302,127],
+  B170:[135,170],B197:[135,197],B271:[135,271],C135:[135,315],
+  E170:[266,170],E227:[266,227],C266:[266,315],
+  C74:[74,315],C188:[188,315],L358:[188,358],L417:[188,417],L420:[188,420],
+  Dnurses:[118,170],Drest:[118,271],Dwait:[152,197],Dfamily:[280,170],Dvend:[280,227],
+  Dcafe:[74,330],Dgift:[128,420],Dpharm:[248,358],Dexit:[248,417],
+  Dbay1:[122,116],Dbay2:[158,116],Dbay3:[194,116],Dbay4:[230,116],Dbay5:[266,116],Dbay6:[302,116]
+};
+const MAP_EDGES=[
+  ['A45','A69'],['A69','A122'],['A122','A135'],['A135','A158'],['A158','A194'],
+  ['A194','A230'],['A230','A266'],['A266','A302'],
+  ['A135','B170'],['B170','B197'],['B197','B271'],['B271','C135'],
+  ['A266','E170'],['E170','E227'],['E227','C266'],
+  ['C74','C135'],['C135','C188'],['C188','C266'],
+  ['C188','L358'],['L358','L417'],['L417','L420'],
+  ['Dnurses','B170'],['Drest','B271'],['Dwait','B197'],['Dfamily','E170'],['Dvend','E227'],
+  ['Dcafe','C74'],['Dgift','L420'],['Dpharm','L358'],['Dexit','L417'],
+  ['Dbay1','A122'],['Dbay2','A158'],['Dbay3','A194'],['Dbay4','A230'],['Dbay5','A266'],['Dbay6','A302']
+];
+const MAP_ADJ=(function(){
+  const g={};
+  const d=(a,b)=>Math.hypot(MAP_NODES[a][0]-MAP_NODES[b][0],MAP_NODES[a][1]-MAP_NODES[b][1]);
+  MAP_EDGES.forEach(function(e){
+    (g[e[0]]=g[e[0]]||[]).push({n:e[1],w:d(e[0],e[1])});
+    (g[e[1]]=g[e[1]]||[]).push({n:e[0],w:d(e[0],e[1])});
+  });
+  return g;
+})();
+/* destinations offered in the Getting-around list */
+const MAP_PLACES={
+  cafe:{node:'Dcafe', at:[74,360],  name:'Cafe & vending'},
+  restrooms:{node:'Drest', at:[69,271], name:'Restrooms'},
+  water:{node:'Dnurses', at:[69,170], name:'the water station'},
+  waiting:{node:'Dwait', at:[201,215], name:'the waiting area'},
+  pharmacy:{node:'Dpharm', at:[284,358], name:'the Pharmacy'},
+  gift:{node:'Dgift', at:[74,420], name:'the Gift shop'},
+  exit:{node:'Dexit', at:[284,417], name:'the Main entrance'}
+};
+/* pins drawn on the plan: x, y, colour, label, label anchor, icon key */
+const MAP_PINS=[
+  [74,360,'#E0801F','Cafe','start','cup'],
+  [69,271,'#3C3B7A','Restrooms','start','door'],
+  [69,170,'#2563C9','Nurses','start','heart'],
+  [201,172,'#1E9E6A','Waiting area','middle','people'],
+  [284,358,'#1E9E6A','Pharmacy','end','cross'],
+  [74,420,'#6B4FD0','Gift shop','start','gift'],
+  [284,412,'#3E4E5A','Entrance','end','exit'],
+  [300,222,'#E0801F','Vending','middle','cup']
+];
+const MAP_ICONS={
+  cup:'M8.5 7.5h7v5.5a3 3 0 0 1-3 3h-1a3 3 0 0 1-3-3zM15.5 8.5h1.2a2 2 0 0 1 0 4h-1.2',
+  door:'M9 6h6v12H9zM8 18h8M13.4 12.4h.01',
+  heart:'M12 17s-5-3.2-5-6.4A2.6 2.6 0 0 1 12 9a2.6 2.6 0 0 1 5 1.6C17 13.8 12 17 12 17z',
+  people:'M9.5 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM15 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM6 17v-1a3 3 0 0 1 3-3h1M14 13h1a3 3 0 0 1 3 3v1',
+  cross:'M12 7.5v9M7.5 12h9',
+  gift:'M7 12h10v6H7zM6 9h12v3H6zM12 18V9M12 9H9.6A1.6 1.6 0 1 1 12 6.6zM12 9h2.4A1.6 1.6 0 1 0 12 6.6z',
+  exit:'M10 17H7.5A1.5 1.5 0 0 1 6 15.5v-7A1.5 1.5 0 0 1 7.5 7H10M14.5 14.5 17 12l-2.5-2.5M17 12h-7'
+};
+/* landmarks used to name a turn */
+const MAP_MARKS=[
+  [69,170,"the nurses' station"],[201,190,'the waiting area'],[212,66,'the care bays'],
+  [69,271,'the restrooms'],[188,380,'the main lobby'],[74,360,'the cafe'],
+  [284,417,'the main entrance'],[300,227,'the vending area'],[300,170,'the family lounge'],
+  [188,127,'the main corridor'],[135,240,'the central corridor'],[188,315,'the lobby corridor']
+];
+
+function mapOrigin(){
+  const p=(typeof PERSONAS!=='undefined'&&PERSONAS[CUR])?PERSONAS[CUR]:null;
+  const ph=(typeof phaseIdx!=='undefined')?phaseIdx:0;
+  if(ph===0) return {node:'Dwait', at:[201,228], label:'the waiting area'};
+  if(ph===3) return {node:'Dexit', at:[284,417], label:'the main entrance'};
+  const bayName=p?p.bay:'Bay 4';
+  const n=Math.min(6,Math.max(1,parseInt((bayName.match(/\d+/)||['4'])[0],10)));
+  return {node:'Dbay'+n, at:[MAP_NODES['Dbay'+n][0],66], label:bayName, bay:n};
+}
+function mapPath(from,to){
+  const dist={},prev={},seen={};
+  Object.keys(MAP_NODES).forEach(k=>dist[k]=Infinity);
+  dist[from]=0;
+  for(;;){
+    let cur=null,best=Infinity;
+    for(const k in dist){ if(!seen[k]&&dist[k]<best){best=dist[k];cur=k;} }
+    if(cur===null||cur===to) break;
+    seen[cur]=1;
+    (MAP_ADJ[cur]||[]).forEach(function(e){
+      if(dist[cur]+e.w<dist[e.n]){ dist[e.n]=dist[cur]+e.w; prev[e.n]=cur; }
+    });
+  }
+  if(dist[to]===Infinity) return null;
+  const out=[]; let c=to;
+  while(c){ out.unshift(MAP_NODES[c]); c=prev[c]; }
+  return out;
+}
+function mapLen(pts){ let L=0; for(let i=1;i<pts.length;i++) L+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]); return L; }
+function mapNear(pt){
+  let best=MAP_MARKS[0],bd=Infinity;
+  MAP_MARKS.forEach(function(m){ const d=Math.hypot(m[0]-pt[0],m[1]-pt[1]); if(d<bd){bd=d;best=m;} });
+  return best[2];
+}
+function mapFirstTurn(pts){
+  for(let i=1;i<pts.length-1;i++){
+    const v1=[pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]];
+    const v2=[pts[i+1][0]-pts[i][0],pts[i+1][1]-pts[i][1]];
+    const cross=v1[0]*v2[1]-v1[1]*v2[0];
+    if(Math.abs(cross)>2) return {dir:cross>0?'right':'left', at:pts[i], upto:mapLen(pts.slice(0,i+1))};
+  }
+  return null;
+}
+const RB_ARROWS={
+  left:'<svg viewBox="0 0 24 24"><path d="M13 20V10a4 4 0 0 0-4-4H4"/><path d="M8 2 4 6l4 4"/></svg>',
+  right:'<svg viewBox="0 0 24 24"><path d="M11 20V10a4 4 0 0 1 4-4h5"/><path d="m16 2 4 4-4 4"/></svg>',
+  straight:'<svg viewBox="0 0 24 24"><path d="M12 21V4"/><path d="m6 10 6-6 6 6"/></svg>'
+};
+let mapRouteKey=null;
+
+function buildMapPins(){
+  const g=document.getElementById('fpPins'); if(!g||g.dataset.built) return;
+  let html='';
+  MAP_PINS.forEach(function(p){
+    const x=p[0],y=p[1],col=p[2],lab=p[3],anch=p[4],ic=MAP_ICONS[p[5]];
+    const lx = anch==='start' ? x+13 : anch==='end' ? x-13 : x;
+    const ly = anch==='middle' ? y+22 : y+3.4;
+    html+='<g><circle cx="'+x+'" cy="'+y+'" r="8.6" fill="'+col+'" filter="url(#fpShadow)"/>'
+        + '<g transform="translate('+(x-12)+','+(y-12)+') scale(1)">'
+        + '<path d="'+ic+'" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" transform="translate(12,12) scale(0.62) translate(-12,-12)"/></g>'
+        + '<text x="'+lx+'" y="'+ly+'" font-family="Hanken Grotesk, sans-serif" font-size="9.2" font-weight="700" fill="'+col+'" text-anchor="'+(anch==='middle'?'middle':anch)+'" paint-order="stroke" stroke="#FBFAF7" stroke-width="2.6" stroke-linejoin="round">'+lab+'</text></g>';
+  });
+  g.innerHTML=html; g.dataset.built='1';
+}
+
+function renderMap(){
+  const svg=document.getElementById('fpSvg'); if(!svg) return;
+  buildMapPins();
+  const o=mapOrigin();
+  /* highlight the room you're in */
+  const resting={fpWait:'#DFEDE1',fpExit:'#E3E8EC'};
+  ['fpWait','fpExit'].forEach(function(id){ const n=document.getElementById(id); if(n) n.setAttribute('fill',resting[id]); });
+  const bays=document.getElementById('fpBayHi');
+  if(bays) bays.remove();
+  const ph=(typeof phaseIdx!=='undefined')?phaseIdx:0;
+  if(ph===0){ document.getElementById('fpWait').setAttribute('fill','#BCDCC4'); }
+  else if(ph===3){ document.getElementById('fpExit').setAttribute('fill','#CBD5DD'); }
+  else {
+    const hi=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    hi.setAttribute('id','fpBayHi');
+    hi.setAttribute('x', 104+(o.bay-1)*36 + 1.5); hi.setAttribute('y','21.5');
+    hi.setAttribute('width','33'); hi.setAttribute('height','89'); hi.setAttribute('rx','2.5');
+    hi.setAttribute('fill','#CFE0F5');
+    const pins=document.getElementById('fpPins');
+    pins.parentNode.insertBefore(hi, pins);
+  }
+  /* you-are-here marker */
+  const you=document.getElementById('fpYou');
+  you.setAttribute('transform','translate('+o.at[0]+','+o.at[1]+')');
+  you.setAttribute('opacity','1');
+  /* header copy */
+  const where = ph===0 ? "You're in the waiting area" : ph===3 ? 'On your way out' : "You're in "+o.label;
+  const lg    = ph===0 ? 'Waiting area' : ph===3 ? 'Main entrance' : o.label;
+  setTxt('mapWhere', where); setTxt('mapBayLg', lg);
+  if(mapRouteKey) route(mapRouteKey); else clearRoute();
+}
+
+function route(key){
+  const dest=MAP_PLACES[key]; if(!dest) return;
+  const o=mapOrigin();
+  if(o.node===dest.node){
+    clearRoute();
+    document.getElementById('rbArrow').innerHTML=RB_ARROWS.straight;
+    setTxt('rbTurn',"You're already here");
+    setTxt('rbSub', dest.name.replace(/^the /,'').replace(/^./,c=>c.toUpperCase())+' is where you are now.');
+    document.getElementById('routeBar').style.display='flex';
+    document.querySelectorAll('#mapList .maprow').forEach(function(r){ r.classList.toggle('on', r.dataset.dest===key); });
+    return;
+  }
+  const pts=mapPath(o.node,dest.node); if(!pts) return;
+  /* keep every leg orthogonal: elbow out of the origin room and into the destination room */
+  const first=pts[0], last=pts[pts.length-1];
+  let full=[o.at,[first[0],o.at[1]]].concat(pts,[[last[0],dest.at[1]],dest.at]);
+  full=full.filter(function(p,i){ return i===0 || p[0]!==full[i-1][0] || p[1]!==full[i-1][1]; });
+  mapRouteKey=key;
+  document.getElementById('fpRoute').setAttribute('d','M '+full.map(p=>p[0]+' '+p[1]).join(' L '));
+  document.getElementById('fpRoute').setAttribute('opacity','1');
+  const d=document.getElementById('fpDest');
+  d.setAttribute('transform','translate('+dest.at[0]+','+dest.at[1]+')');
+  d.setAttribute('opacity','1');
+  /* instruction */
+  const total=Math.round(mapLen(full)*MAP_M_PER_UNIT);
+  const t=mapFirstTurn(full);
+  const bar=document.getElementById('routeBar');
+  if(t){
+    document.getElementById('rbArrow').innerHTML=RB_ARROWS[t.dir];
+    setTxt('rbTurn','Turn '+t.dir+' at '+mapNear(t.at));
+    setTxt('rbSub', Math.max(2,Math.round(t.upto*MAP_M_PER_UNIT))+' m · '+total+' m to '+dest.name);
+  } else {
+    document.getElementById('rbArrow').innerHTML=RB_ARROWS.straight;
+    setTxt('rbTurn','Head straight to '+dest.name);
+    setTxt('rbSub', total+' m');
+  }
+  bar.style.display='flex';
+  setTxt('mapKicker','Your route');
+  document.querySelectorAll('#mapList .maprow').forEach(function(r){ r.classList.toggle('on', r.dataset.dest===key); });
+}
+function clearRoute(){
+  mapRouteKey=null;
+  const r=document.getElementById('fpRoute'); if(r) r.setAttribute('opacity','0');
+  const d=document.getElementById('fpDest'); if(d) d.setAttribute('opacity','0');
+  const bar=document.getElementById('routeBar'); if(bar) bar.style.display='none';
+  setTxt('mapKicker','Where you are');
+  document.querySelectorAll('#mapList .maprow').forEach(function(r2){ r2.classList.remove('on'); });
+}
+function openMap(from){ mapBack = from || 'status'; mapRouteKey=null; renderMap(); go('hospitalmap'); }
+function renderComfort(){
+  const waiting=(typeof phaseIdx==='undefined')||phaseIdx===0;
+  const after=(typeof phaseIdx!=='undefined')&&phaseIdx===3;
+  setTxt('cfSub', waiting ? 'Small things you can do while you wait'
+        : after ? 'Small things you can do before you head out'
+        : 'Small things you can do while you’re here');
+  setTxt('cfMapSub', waiting ? 'Cafe, restrooms, exits — and where you are'
+        : 'Cafe, restrooms, exits — and where your care space is');
+}
 function dismissTourNote(e){ if(e&&e.stopPropagation) e.stopPropagation(); const n=document.getElementById('tourNote'); if(n) n.style.display='none'; }
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -2200,6 +2516,8 @@ function setPhase(i){
   var hc=document.getElementById('humanCard'); if(hc) hc.style.display = (phaseIdx===0 ? 'none' : '');
   renderJournal();
   renderVitals();
+  renderMap();
+  renderComfort();
   syncSarah(); laSync();
   /* testing is now its own journey step: phase 2 = In Care – Testing */
   careStage=(phaseIdx===2)?1:0;
@@ -2221,7 +2539,7 @@ document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('c
 const TOUR=[
   {screen:'status',   sel:'.tab[data-screen="status"]',   title:'Your status, live',      txt:'Where you are in your visit, your current wait estimate, and who’s caring for you, updated as things change.'},
   {screen:'status',   sel:'#status .menubtn',             title:'Menu & sharing',     txt:'Your health profile, settings, and “Share my visit”. Send a loved one a live link, no app needed.'},
-  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Take a guided breathing session or reach out to your care team, without leaving your seat.'},
+  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Report a symptom change, find your way around the department, or take a guided breathing session — without leaving your seat.'},
   {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'Jot down symptoms and questions for the doctor, and see the vitals your care team has recorded.'},
   {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Plain-language explanations of how the ER really works, and why waits happen.'},
   {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav isn’t a substitute for medical advice; in an emergency, tell a staff member.'}
@@ -2933,7 +3251,7 @@ function applyPersona(key){
   /* in-care phase */
   setTxt('careTtl',p.careTtl);
   document.getElementById('bayPill').innerHTML='<span class="d" style="background:var(--green);"></span>'+p.bay;
-  setTxt('mapWhere',"You're in "+p.bay); setTxt('mapBayLg',p.bay);
+  renderMap();
   setTxt('careCap',p.careCap); setTxt('nowIncare',p.nowCare);
   /* after phase */
   setTxt('dcTtl',p.dcTtl); setTxt('dcSub','Discharged '+p.dc+' · Today');
@@ -3085,10 +3403,10 @@ const L_TOPICS=[
   {id:'sleepapnea',cat:'breath',t:'Sleep apnea',d:"Why snoring isn't nothing, and what testing involves.",min:4,ph:'photo-1758524940928-c6ab833ca3c7',by:'Unsplash'},
   {id:'back',cat:'pain',t:'Back pain',d:"What imaging can and can't tell you about a sore back.",min:5,ph:'photo-1618914241652-ff0a094b5a86',by:'Toa Heftiba'},
   {id:'falls',cat:'pain',t:'After a fall',d:'What gets checked, and how to make the next one less likely.',min:5,ph:'photo-1742498481569-1e2a68882d5c',by:'Unsplash'},
-  {id:'head',cat:'pain',t:'Head injuries & concussion',d:'The signs worth coming back for in the next 48 hours.',min:4,ph:'photo-1618498390344-445c804f2ac5',by:'Unsplash'},
+  {id:'head',cat:'pain',t:'Head injuries & concussion',d:'The signs worth coming back for in the next 48 hours.',min:4,ph:'photo-1776047129625-50b8c7299705',by:'Unsplash'},
   {id:'medsafe',cat:'meds',t:'Medication safety',d:'Keeping one accurate list, and why it matters here.',min:4,ph:'photo-1727657409504-e2b82feba141',by:'Unsplash'},
   {id:'painmed',cat:'meds',t:'Pain medicine in the ER',d:'What you can be offered, and what to say about how it feels.',min:4,ph:'photo-1628771065518-0d82f1938462',by:'Unsplash'},
-  {id:'allergy',cat:'meds',t:'Allergies & reactions',d:'Telling a side effect from a true allergy.',min:3,ph:'photo-1745939921744-ba8ef27940bf',by:'Unsplash'},
+  {id:'allergy',cat:'meds',t:'Allergies & reactions',d:'Telling a side effect from a true allergy.',min:3,ph:'photo-1541752988809-6073b61ad3db',by:'Unsplash'},
   {id:'fever',cat:'kids',t:'Fever in children',d:'Numbers matter less than how they look and act.',min:5,ph:'photo-1584650000640-a70adafd062e',by:'Unsplash'},
   {id:'kidser',cat:'kids',t:'Bringing a child to the ER',d:'What to pack, what to expect, and how to keep them calm.',min:5,ph:'photo-1578496781379-7dcfb995293d',by:'Unsplash'},
   {id:'stress',cat:'mind',t:'Waiting is its own stress',d:'A two-minute way to settle while you sit here.',min:2,ph:'photo-1758274529460-455002cfe74c',by:'Unsplash'},
