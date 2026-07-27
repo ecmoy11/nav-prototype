@@ -13,6 +13,7 @@
   --line:#EBE6DC; --line2:#DFD9CD; --surface:#EFEAE0;
   --slate:#3E4E5A; --slate-deep:#33414C; --slate-soft:#E3E8EC;
   --blue:#2563C9; --blue-soft:#E9F0FD; --blue-deep:#1E4FA3;
+  --navy:#173F80; --navy-soft:#DCE5F4;
   --green:#1E9E6A; --green-soft:#E5F4ED;
   --amber:#BC8418; --amber-soft:#FAF0D8;
   --violet:#6B4FD0; --violet-soft:#EDEAFB;
@@ -67,6 +68,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .chip.green{background:var(--green-soft);} .chip.green svg{stroke:var(--green);}
 .chip.amber{background:var(--amber-soft);} .chip.amber svg{stroke:var(--amber);}
 .chip.violet{background:var(--violet-soft);} .chip.violet svg{stroke:var(--violet);}
+.chip.navy{background:var(--navy-soft);} .chip.navy svg{stroke:var(--navy);}
 .chip.red{background:var(--red-soft);} .chip.red svg{stroke:var(--red-ink);}
 .ttl{font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
 .sub{font-size:13px;color:var(--sec);margin-top:2px;}
@@ -240,6 +242,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .v-ic.blue{background:var(--blue-soft);} .v-ic.blue svg{stroke:var(--blue);}
 .v-ic.amber{background:var(--amber-soft);} .v-ic.amber svg{stroke:var(--amber);}
 .v-ic.green{background:var(--green-soft);} .v-ic.green svg{stroke:var(--green);}
+.v-ic.navy{background:var(--navy-soft);} .v-ic.navy svg{stroke:var(--navy);}
 .v-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
 .v-tag.ok{color:var(--green);background:var(--green-soft);}
 .v-tag.hi{color:var(--amber);background:var(--amber-soft);}
@@ -514,6 +517,28 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .symnote:focus{outline:none;border-color:var(--blue);}
 .symnote::placeholder{color:var(--mut);}
 .btn[disabled]{opacity:.35;pointer-events:none;box-shadow:none;}
+/* symptom-change: progressive follow-up questions */
+#worseBackdrop .sheet{max-height:88%;overflow-y:auto;}
+.symq{margin:0 0 16px;animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+.symq[hidden]{display:none;}
+.symq-k{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
+.symq-a{font-size:12.5px;color:var(--sec);line-height:1.45;margin-bottom:10px;}
+.symq-a b{color:var(--ink);font-weight:700;}
+.symq .symgrid{margin:0;}
+.symq .painscale{margin-top:0;}
+.symsub{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding-left:12px;border-left:2px solid var(--line2);}
+.symsub[hidden]{display:none;}
+.symprev{background:var(--surface);border-radius:16px;padding:13px 15px;margin:0 0 14px;animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+.symprev[hidden]{display:none;}
+.symprev .pk{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
+.symprev .pl{font-size:13px;color:var(--ink);line-height:1.6;}
+.symprev .pl .lk{color:var(--sec);}
+.symflag{display:none;gap:11px;align-items:flex-start;background:var(--amber-soft);border:1px solid rgba(188,132,24,.34);border-radius:16px;padding:13px 14px;margin:0 0 16px;}
+.symflag.show{display:flex;animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+.symflag .fi{flex:none;width:28px;height:28px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;}
+.symflag .fi svg{width:16px;height:16px;stroke:var(--amber);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.symflag b{font-size:14px;color:var(--ink);font-weight:700;display:block;}
+.symflag .fs{font-size:12.5px;color:var(--sec);line-height:1.45;margin-top:3px;}
 /* persistent status in check-in card after reporting */
 .worse-status{display:flex;gap:10px;align-items:flex-start;background:var(--amber-soft);border-radius:14px;padding:12px 13px;margin-top:12px;font-size:12.5px;line-height:1.5;}
 .worse-status .d{flex:none;width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:5px;box-shadow:0 0 0 0 rgba(188,132,24,.5);animation:pulseDot 2.4s ease-out infinite;}
@@ -681,6 +706,61 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .sentring{width:56px;height:56px;border-radius:50%;background:var(--green-soft);color:var(--green);display:flex;align-items:center;justify-content:center;margin:6px auto 16px;}
 .sentring svg{width:26px;height:26px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .btn.subtle{background:var(--surface);color:var(--sec);box-shadow:none;}
+/* ---- Learn tab: mini news page (Jul 27, 2026) ---- */
+.lsearch{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line2);border-radius:15px;padding:0 13px;height:46px;box-shadow:var(--sh);}
+.lsearch svg.mag{width:16px;height:16px;stroke:var(--mut);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;}
+.lsearch input{flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:inherit;font-size:14.5px;color:var(--ink);}
+.lsearch input::placeholder{color:var(--mut);}
+.lsearch .lclr{width:19px;height:19px;border-radius:10px;background:var(--line2);display:none;align-items:center;justify-content:center;flex:none;cursor:pointer;}
+.lsearch .lclr svg{width:10px;height:10px;stroke:#fff;stroke-width:2.8;fill:none;stroke-linecap:round;}
+.lsearch.has .lclr{display:flex;}
+.lrailwrap{position:relative;margin:0 -20px;}
+.lrailwrap:after{content:"";position:absolute;right:0;top:0;bottom:10px;width:28px;background:linear-gradient(to left,var(--bg),rgba(243,242,240,0));pointer-events:none;}
+.lrail{display:flex;gap:8px;overflow-x:auto;padding:2px 20px 12px;scrollbar-width:none;}
+.lrail::-webkit-scrollbar{height:0;}
+.lrail .lpill{flex:none;height:34px;padding:0 14px;border-radius:17px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--sec);white-space:nowrap;cursor:pointer;transition:background .16s,color .16s,border-color .16s;}
+.lrail .lpill i{width:6px;height:6px;border-radius:3px;background:currentColor;opacity:.5;display:block;}
+.lrail .lpill.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+.lph{background:var(--surface);position:relative;overflow:hidden;}
+.lph img{display:block;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease;}
+.lph img.on{opacity:1;}
+.lfeat{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--sh-card);margin-bottom:20px;cursor:pointer;transition:transform .14s ease,box-shadow .2s ease;}
+.lfeat:hover{box-shadow:var(--sh-card-h);}
+.lfeat:active{transform:scale(.987);}
+.lfeat .lph{height:166px;}
+.lfeat .ltx{padding:15px 17px 17px;}
+.lfeat h3{font-size:20px;font-weight:700;letter-spacing:-.023em;line-height:1.19;margin:7px 0 5px;}
+.lfeat p{font-size:13.5px;color:var(--sec);line-height:1.48;margin:0 0 11px;}
+.lcat{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.lmeta{font-size:11.5px;color:var(--mut);font-weight:500;display:flex;align-items:center;gap:6px;}
+.lmeta i{width:3px;height:3px;border-radius:2px;background:var(--mut);display:block;flex:none;}
+.lsechead{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 11px;}
+.lsechead .n{font-size:11.5px;color:var(--mut);font-weight:600;}
+.lrow{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer;}
+.lrow:last-child{border-bottom:none;}
+.lrow .lph{width:84px;height:84px;border-radius:14px;flex:none;}
+.lrow .ltx{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
+.lrow h4{font-size:15px;font-weight:600;letter-spacing:-.013em;line-height:1.26;margin:5px 0 3px;}
+.lrow p{font-size:12.5px;color:var(--sec);line-height:1.4;margin:0 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.lrow:active{opacity:.72;}
+.lempty{padding:30px 4px;text-align:center;font-size:13.5px;color:var(--mut);line-height:1.6;}
+/* article */
+#article .scroll{padding:0 0 116px;}
+.labar{position:absolute;top:0;left:0;right:0;height:98px;z-index:12;display:flex;align-items:flex-end;padding:0 16px 10px;background:linear-gradient(to bottom,rgba(243,242,240,.92) 24%,rgba(243,242,240,.5) 62%,rgba(243,242,240,0));pointer-events:none;}
+.labar .backbtn{pointer-events:auto;}
+.lhero{height:214px;}
+.lbody{padding:0 20px;}
+.lbody .lh1{font-size:26px;font-weight:700;letter-spacing:-.026em;line-height:1.14;margin:7px 0 8px;}
+.lbody .ldek{font-size:15px;color:var(--sec);line-height:1.5;}
+.lrule{height:1px;background:var(--line2);margin:15px 0 16px;}
+.lbody p{font-size:14.5px;line-height:1.62;color:#2C3138;margin:0 0 14px;}
+.lbody h3{font-size:16.5px;font-weight:700;letter-spacing:-.014em;margin:22px 0 8px;}
+.lpull{border-left:3px solid var(--line2);padding:2px 0 2px 14px;margin:18px 0;font-size:15.5px;line-height:1.45;font-weight:600;letter-spacing:-.01em;color:var(--slate);}
+.lfill{display:inline-block;font-size:10px;font-family:ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.06em;color:var(--mut);background:var(--surface);border-radius:5px;padding:3px 7px;margin-bottom:14px;}
+.lmore{margin-top:26px;}
+.lmore .lrel{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line);cursor:pointer;}
+.lmore .lrel .lph{width:56px;height:56px;border-radius:12px;flex:none;}
+.lcredit{font-size:11px;color:var(--mut);margin-top:22px;padding-top:14px;border-top:1px solid var(--line);line-height:1.5;}
 </style>
 </head>
 <body>
@@ -803,7 +883,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           <!-- action feedback: stays hidden until the user reports a change or calls a human -->
           <div class="worse-status" id="worseStatus" hidden>
             <span class="d"></span>
-            <div><b>You've reported a symptom change.</b>
+            <div><b id="worseStatusTitle">You've reported a symptom change.</b>
             <div class="ws-sub" id="worseStatusSub">A nurse is coming to check on you.</div></div>
           </div>
           <div class="worse-status" id="humanStatus" hidden>
@@ -862,8 +942,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             </div>
           </div>
           <div class="gap"></div>
-          <div class="card tappable" onclick="go('hospitalmap')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
-            <span class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
+          <div class="card tappable" onclick="openMap('status')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
+            <span class="v-ic navy" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
             <div style="flex:1;min-width:0;">
               <b style="font-size:14.5px;letter-spacing:-.01em;">Find your way around</b>
               <div style="font-size:12px;color:var(--sec);margin-top:2px;">Cafe, restrooms, exits — and where you are</div>
@@ -1074,7 +1154,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <section class="screen" id="hospitalmap">
       <div class="scroll">
         <div class="headrow" style="justify-content:flex-start;gap:12px;align-items:center;">
-          <button class="backbtn" onclick="go('status')" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="backbtn" onclick="go(mapBack)" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
           <div><h2 class="title">Find your way</h2><div class="subt" id="mapWhere">You're in Bay 4</div></div>
         </div>
         <div class="gap"></div>
@@ -1088,8 +1168,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
               <rect x="14"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="37"  y="53" font-size="13" fill="#646B76">1</text>
               <rect x="68"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="91"  y="53" font-size="13" fill="#646B76">2</text>
               <rect x="122" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="145" y="53" font-size="13" fill="#646B76">3</text>
-              <rect x="176" y="28" width="46" height="40" rx="9" fill="#3E4E5A" stroke="#3E4E5A"/><text x="199" y="52" font-size="11" fill="#fff">You</text>
-              <circle cx="214" cy="35" r="4.5" fill="#1E9E6A" stroke="#fff" stroke-width="1.5"/>
+              <rect id="fpBay" x="176" y="28" width="46" height="40" rx="9" fill="#3E4E5A" stroke="#3E4E5A"/><text id="fpBayT" x="199" y="52" font-size="11" fill="#fff">You</text>
               <rect x="230" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="253" y="53" font-size="13" fill="#646B76">5</text>
               <rect x="284" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="307" y="53" font-size="13" fill="#646B76">6</text>
             </g>
@@ -1100,10 +1179,11 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <g font-family="Hanken Grotesk, sans-serif" font-weight="600" text-anchor="middle">
               <rect x="14"  y="102" width="150" height="42" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="89"  y="127" font-size="11" fill="#191C20">Nurses' station</text>
               <rect x="180" y="102" width="150" height="42" rx="10" fill="#E9F0FD"/><text x="255" y="127" font-size="11" fill="#191C20">Restrooms</text>
-              <rect x="14"  y="152" width="150" height="48" rx="10" fill="#E5F4ED"/><text x="89"  y="180" font-size="11" fill="#191C20">Family waiting</text>
+              <rect id="fpWait" x="14"  y="152" width="150" height="48" rx="10" fill="#E5F4ED"/><text id="fpWaitT" x="89"  y="180" font-size="11" fill="#191C20">Waiting area</text>
               <rect x="180" y="152" width="150" height="48" rx="10" fill="#FAF0D8"/><text x="255" y="180" font-size="11" fill="#191C20">Cafe &amp; vending</text>
-              <rect x="14"  y="208" width="316" height="44" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="172" y="234" font-size="11" fill="#191C20">Main entrance &amp; Exit</text>
+              <rect id="fpExit" x="14"  y="208" width="316" height="44" rx="10" fill="#fff" stroke="#DFD9CD"/><text id="fpExitT" x="172" y="234" font-size="11" fill="#191C20">Main entrance &amp; Exit</text>
             </g>
+            <circle id="fpDot" cx="214" cy="35" r="4.5" fill="#1E9E6A" stroke="#fff" stroke-width="1.5"/>
           </svg>
           <div class="map-legend"><span class="lg-you"></span>You are here — <span id="mapBayLg" style="margin-left:4px;color:var(--ink);">Bay 4</span></div>
         </div>
@@ -1128,7 +1208,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             </div>
             <div class="maprow">
               <span class="mp-ic" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
-              <div class="mp-b"><b>Family waiting area</b><span>Near the main entrance, to your left.</span></div>
+              <div class="mp-b"><b>Waiting area</b><span>Near the main entrance, to your left. Family can wait here too.</span></div>
               <span class="mp-dist">~2 min</span>
             </div>
             <div class="maprow">
@@ -1188,26 +1268,33 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <section class="screen" id="comfort">
       <div class="scroll">
         <h2 class="title">Care</h2>
-        <div class="subt">Small things you can do while you wait</div>
+        <div class="subt" id="cfSub">Small things you can do while you wait</div>
         <div class="gap lg"></div>
-        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMed()">
-          <div class="row">
-            <div class="chip green"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
-            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-          </div>
+        <div class="worse" onclick="openWorse()" style="margin-bottom:11px;">
+          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
+          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
         </div>
-        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won\'t miss you','Check back in when you return.')">
+        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="confirmAction('Got it, we won\'t miss you','Check back in when you return.')">
           <div class="row">
             <div class="chip amber"><svg viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M14 16l4-4-4-4M18 12H9"/></svg></div>
             <div><div class="ttl">Stepping outside?</div><div class="sub">Let us know so we don't miss you</div></div>
             <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
         </div>
-        <div class="worse" onclick="openWorse()">
-          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
-          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
-          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMap('comfort')">
+          <div class="row">
+            <div class="chip navy"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></div>
+            <div><div class="ttl">Find your way around</div><div class="sub" id="cfMapSub">Cafe, restrooms, exits — and where you are</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="openMed()">
+          <div class="row">
+            <div class="chip green"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
+            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
         </div>
       </div>
     </section>
@@ -1252,13 +1339,21 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         </div>
       </div>
     </section>
-    <!-- 5 BEHIND -->
+    <!-- 5 BEHIND (Learn — mini news page) -->
     <section class="screen" id="behind">
       <div class="scroll">
         <h2 class="title">Learn</h2>
-        <div class="subt">How the ER works, and how to get the most from this app.</div>
+        <div class="subt">Plain-language health reading, while you wait.</div>
         <div class="gap lg"></div>
-        <div class="card tappable" onclick="startTour()" style="display:flex;align-items:center;gap:13px;padding:15px 16px;margin-bottom:16px;">
+        <label class="lsearch" id="lSearch">
+          <svg class="mag" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="lQ" placeholder="Search topics…" autocomplete="off" oninput="learnSearch(this)" aria-label="Search topics">
+          <span class="lclr" onclick="learnClear()" aria-label="Clear search"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+        </label>
+        <div class="gap"></div>
+        <div class="lrailwrap"><div class="lrail" id="lRail"></div></div>
+        <div id="lFeed"></div>
+        <div class="card tappable" onclick="startTour()" style="display:flex;align-items:center;gap:13px;padding:15px 16px;margin-top:22px;">
           <div class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5"/></svg></div>
           <div style="flex:1;min-width:0;">
             <b style="font-size:14.5px;letter-spacing:-.01em;">Take a quick tour</b>
@@ -1266,22 +1361,12 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           </div>
           <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
         </div>
-        <div class="kicker">Why waits happen</div>
-        <div style="font-size:13px;color:var(--sec);line-height:1.5;margin:4px 4px 12px;">The waiting room isn't a line. Here's how it really works.</div>
-        <div class="card bh" style="margin-bottom:12px;">
-          <div class="row" style="align-items:center;"><div class="numbadge">1</div><h3>Based on need, not arrival time</h3></div>
-          <p>Patients are seen by how urgent their condition is. Someone who arrives after you may be seen first if they're more critical, and the same protects you.</p>
-        </div>
-        <div class="card bh" style="margin-bottom:12px;">
-          <div class="row" style="align-items:center;"><div class="numbadge">2</div><h3>Your place can change</h3></div>
-          <p>If your priority is re-assessed, or a space opens, your status here updates automatically.</p>
-        </div>
-        <div class="card bh" style="margin-bottom:16px;">
-          <div class="row" style="align-items:center;"><div class="numbadge">3</div><h3>The team is working even when it's quiet</h3></div>
-          <p>Behind the doors, clinicians are treating patients, waiting on tests, and freeing up rooms.</p>
-        </div>
-        <div style="font-size:13.5px;color:var(--slate);line-height:1.55;padding:0 4px;">Our aim: make the system readable to you, not to overwhelm you with everything at once.</div>
       </div>
+    </section>
+    <!-- 5b ARTICLE (Learn detail) -->
+    <section class="screen" id="article">
+      <div class="labar"><button class="backbtn" onclick="closeArticle()" aria-label="Back to Learn"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+      <div class="scroll" id="lArt"></div>
     </section>
     <!-- toast -->
     <div class="toast" id="toast">
@@ -1329,18 +1414,39 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       <div class="sheet" onclick="event.stopPropagation()">
         <div class="sheet-grip"></div>
         <button class="sheet-x" onclick="closeWorse()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-        <div class="sh-title">What's changed?</div>
-        <div class="sh-sub">This goes straight to the triage nurse and keeps your assessment current.</div>
-        <div class="symgrid" id="symGrid">
-          <button class="symchip" onclick="symToggle(this)">Pain is worse</button>
-          <button class="symchip" onclick="symToggle(this)">Discomfort is spreading</button>
-          <button class="symchip" onclick="symToggle(this)">Trouble breathing</button>
-          <button class="symchip" onclick="symToggle(this)">Dizzy or lightheaded</button>
-          <button class="symchip" onclick="symToggle(this)">Nausea</button>
-          <button class="symchip" onclick="symToggle(this)">Something new</button>
+        <div class="sh-title" id="worseTitle">What's changed?</div>
+        <div class="sh-sub" id="worseSheetSub">This goes straight to the triage nurse and keeps your assessment current.</div>
+        <!-- red-flag interrupt: stops being a form, becomes an instruction -->
+        <div class="symflag" id="symFlag">
+          <div class="fi"><svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+          <div><b id="symFlagT">Don't wait for us to come to you.</b>
+          <div class="fs" id="symFlagS">Go to the triage desk now, or raise your hand and a staff member will come to you. We'll still send this.</div></div>
         </div>
-        <textarea class="symnote" id="worseNote" oninput="symNote()" placeholder="Add anything in your own words (optional). What's new, when it started, how it feels…"></textarea>
-        <button class="btn" id="worseSend" disabled onclick="sendWorse()">Send to the triage nurse
+        <div class="symq"><div class="symq-k" id="symKWhat">What's changed</div>
+          <div class="symgrid" id="symGrid"></div>
+        </div>
+        <!-- severity: anchored to the score recorded at triage -->
+        <div class="symq" id="symQSev" hidden><div class="symq-k" id="symKSev">How bad is it now</div>
+          <div class="symq-a" id="symSevAnchor"></div>
+          <div class="painscale" id="symScale"></div>
+          <div class="symgrid" id="symSevChips" data-single="1"></div>
+        </div>
+        <!-- onset -->
+        <div class="symq" id="symQWhen" hidden><div class="symq-k" id="symKWhen">When did this start</div>
+          <div class="symgrid" id="symWhen" data-single="1"></div>
+        </div>
+        <!-- location / spread -->
+        <div class="symq" id="symQLoc" hidden><div class="symq-k" id="symKLoc">Where is it</div>
+          <div class="symgrid" id="symLoc" data-single="1"></div>
+          <div class="symsub" id="symSpread" hidden></div>
+        </div>
+        <div class="symq"><div class="symq-k" id="symKWords">In your own words (optional)</div>
+        <textarea class="symnote" id="worseNote" oninput="symRender()" placeholder="What's new, when it started, how it feels…" style="margin-bottom:0;"></textarea></div>
+        <!-- transparency: exactly what gets handed to the nurse -->
+        <div class="symprev" id="symPrev" hidden><div class="pk" id="symKPrev">What your nurse will see</div>
+          <div class="pl" id="symPrevBody"></div>
+        </div>
+        <button class="btn" id="worseSend" disabled onclick="sendWorse()"><span id="worseSendT">Send to the triage nurse</span>
           <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
         </button>
         <p class="foot-note" style="text-align:center;margin-top:12px;">If this feels like an emergency, tell a staff member right away.</p>
@@ -1649,6 +1755,49 @@ function toggleScrollLock(){
 }
 function ctlHide(){ document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); }
 function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); }
+/* ===== Hospital map: remember where we came from + phase-aware "you are here" ===== */
+let mapBack='status';
+function openMap(from){ mapBack = from || 'status'; renderMap(); go('hospitalmap'); }
+function renderMap(){
+  const bay=document.getElementById('fpBay'), bayT=document.getElementById('fpBayT'),
+        dot=document.getElementById('fpDot'), wait=document.getElementById('fpWait'),
+        waitT=document.getElementById('fpWaitT'), exit=document.getElementById('fpExit'),
+        exitT=document.getElementById('fpExitT');
+  if(!bay) return;
+  const p=(typeof PERSONAS!=='undefined'&&PERSONAS[CUR])?PERSONAS[CUR]:null;
+  const bayName=p?p.bay:'Bay 4';
+  const bayNum=(bayName.match(/\d+/)||['4'])[0];
+  /* reset every room to its resting fill */
+  bay.setAttribute('fill','#fff');      bay.setAttribute('stroke','#DFD9CD');
+  bayT.setAttribute('fill','#646B76');  bayT.setAttribute('font-size','13'); bayT.setAttribute('y','53'); bayT.textContent=bayNum;
+  wait.setAttribute('fill','#E5F4ED');  waitT.setAttribute('fill','#191C20'); waitT.textContent='Waiting area';
+  exit.setAttribute('fill','#fff');     exit.setAttribute('stroke','#DFD9CD'); exitT.setAttribute('fill','#191C20');
+  const here=(typeof phaseIdx!=='undefined'?phaseIdx:0)===0 ? 'wait'
+           : (typeof phaseIdx!=='undefined'&&phaseIdx===3) ? 'exit' : 'bay';
+  if(here==='bay'){
+    bay.setAttribute('fill','#3E4E5A'); bay.setAttribute('stroke','#3E4E5A');
+    bayT.setAttribute('fill','#fff'); bayT.setAttribute('font-size','11'); bayT.setAttribute('y','52'); bayT.textContent='You';
+    dot.setAttribute('cx','214'); dot.setAttribute('cy','35');
+    setTxt('mapWhere',"You're in "+bayName); setTxt('mapBayLg',bayName);
+  } else if(here==='wait'){
+    wait.setAttribute('fill','#3E4E5A'); waitT.setAttribute('fill','#fff'); waitT.textContent='You — waiting area';
+    dot.setAttribute('cx','156'); dot.setAttribute('cy','159');
+    setTxt('mapWhere',"You're in the waiting area"); setTxt('mapBayLg','Waiting area');
+  } else {
+    exit.setAttribute('fill','#3E4E5A'); exit.setAttribute('stroke','#3E4E5A'); exitT.setAttribute('fill','#fff');
+    dot.setAttribute('cx','322'); dot.setAttribute('cy','215');
+    setTxt('mapWhere',"On your way out"); setTxt('mapBayLg','Main entrance');
+  }
+}
+function renderComfort(){
+  const waiting=(typeof phaseIdx==='undefined')||phaseIdx===0;
+  const after=(typeof phaseIdx!=='undefined')&&phaseIdx===3;
+  setTxt('cfSub', waiting ? 'Small things you can do while you wait'
+        : after ? 'Small things you can do before you head out'
+        : 'Small things you can do while you’re here');
+  setTxt('cfMapSub', waiting ? 'Cafe, restrooms, exits — and where you are'
+        : 'Cafe, restrooms, exits — and where your care space is');
+}
 function dismissTourNote(e){ if(e&&e.stopPropagation) e.stopPropagation(); const n=document.getElementById('tourNote'); if(n) n.style.display='none'; }
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -1844,32 +1993,122 @@ function notifyWaitIncrease(range){
   showToast('Wait estimate updated','Your estimated wait went up to '+rr+' mins.', true, bellPath);
 }
 function dismissWaitAlert(){ const b=document.getElementById('waitAlert'); if(b) b.classList.remove('show'); }
-/* feeling worse / symptom change */
-function openWorse(){document.getElementById('worseBackdrop').classList.add('show');}
+/* feeling worse / symptom change
+   Design: this form is a SORTING signal for the triage nurse, not a nursing assessment.
+   Three questions max, each earning its place against one decision: go now, go soon, or add to the round.
+   1. what changed (chips, complaint-aware)  2. how bad NOW vs the score recorded at triage (delta beats absolute)
+   3. when it started (sudden onset is clinically louder than severity)
+   Location is a conditional 4th and only asks what changes the decision: same spot / new spot / spreading. */
+let symSev=null, symReported=null, symFlagged=false;
+const SYM_FLAG_RE=/(can'?t breathe|cannot breathe|can'?t catch my breath|chest pain|crushing|passing out|black(ing)? out|worst pain|won'?t stop bleeding|numb face|slurred|can'?t wake|not breathing)/i;
+
+function nowStamp(){
+  const p=PERSONAS[CUR];
+  return p.clk+' '+((p.ck&&/PM/.test(p.ck))?'PM':'AM');
+}
+function openWorse(){document.getElementById('worseBackdrop').classList.add('show');symRender();}
 function closeWorse(){document.getElementById('worseBackdrop').classList.remove('show');}
-function worseReady(){
-  const anyChip=!!document.querySelector('#symGrid .symchip.on');
-  const note=document.getElementById('worseNote');
-  const anyText=note && note.value.trim().length>0;
-  document.getElementById('worseSend').disabled=!(anyChip||anyText);
-}
+
+/* single-select groups clear their siblings; multi-select groups just toggle */
 function symToggle(b){
-  b.classList.toggle('on');
-  worseReady();
+  const grp=b.closest('[data-single]');
+  if(grp){const was=b.classList.contains('on');grp.querySelectorAll('.symchip').forEach(x=>x.classList.remove('on'));if(!was)b.classList.add('on');}
+  else b.classList.toggle('on');
+  symRender();
 }
-function symNote(){ worseReady(); }
-function sendWorse(){
-  const sel=[...document.querySelectorAll('#symGrid .symchip.on')].map(b=>b.textContent.toLowerCase());
+function symPain(b,n){
+  const was=b.classList.contains('on');
+  document.querySelectorAll('#symScale .pain').forEach(x=>x.classList.remove('on','lo','mid','hi'));
+  if(was){symSev=null;}else{b.classList.add('on',n<=3?'lo':(n<=6?'mid':'hi'));symSev=n;}
+  symRender();
+}
+function symOn(id){return [...document.querySelectorAll('#'+id+' .symchip.on')].map(b=>b.textContent);}
+function symK(){return [...document.querySelectorAll('#symGrid .symchip.on')].map(b=>b.dataset.k||'').join(',');}
+
+function symRender(){
+  const p=PERSONAS[CUR], L=p.symL||{};
+  const picked=symOn('symGrid'), kinds=symK();
   const note=document.getElementById('worseNote');
   const txt=note?note.value.trim():'';
-  let summary=sel.join(', ');
-  if(txt) summary=summary?summary+' · “'+txt+'”':'“'+txt+'”';
-  document.getElementById('worseStatusSub').textContent='Reported: '+summary+' · A nurse is coming to check on you.';
+  const any=picked.length>0||txt.length>0;
+
+  /* red-flag interrupt: the form stops being a form and becomes an instruction */
+  symFlagged=/flag/.test(kinds)||SYM_FLAG_RE.test(txt);
+  document.getElementById('symFlag').classList.toggle('show',symFlagged);
+
+  const needSev=/sev/.test(kinds), needLoc=/loc/.test(kinds);
+  document.getElementById('symQSev').hidden=!needSev;
+  document.getElementById('symQWhen').hidden=!any;
+  document.getElementById('symQLoc').hidden=!needLoc;
+
+  /* spread sub-chips appear only once they say it moved */
+  const loc=symOn('symLoc')[0]||'';
+  const moved=/new|spread|新しい|広が/i.test(loc);
+  const sp=document.getElementById('symSpread');
+  sp.hidden=!(moved&&p.spread&&p.spread.length);
+  if(sp.hidden) sp.querySelectorAll('.symchip').forEach(x=>x.classList.remove('on'));
+
+  /* preview: exactly what gets handed over, in plain language */
+  const rows=[];
+  if(picked.length) rows.push(['Changed',picked.join(', ')]);
+  if(needSev){
+    if(p.sev.mode==='pain'&&symSev!==null) rows.push(['How bad now',symSev+' out of 10 '+(symSev>p.sev.score?'(up from '+p.sev.score+' at triage)':(symSev<p.sev.score?'(down from '+p.sev.score+' at triage)':'(same as triage)'))]);
+    else{const r=symOn('symSevChips')[0]; if(r) rows.push(['How bad now',r+' than at triage']);}
+  }
+  const w=symOn('symWhen')[0]; if(w) rows.push(['Started',w]);
+  if(needLoc&&loc){const sps=symOn('symSpread'); rows.push(['Where',loc+(sps.length?' · '+sps.join(', '):'')]);}
+  if(txt) rows.push([(p.user===p.patient?'In your own words':p.user+"'s words"),'“'+txt+'”']);
+  const prev=document.getElementById('symPrev');
+  prev.hidden=!any;
+  document.getElementById('symPrevBody').innerHTML=rows.map(r=>'<span class="lk">'+r[0]+':</span> '+r[1]).join('<br>');
+
+  document.getElementById('worseSend').disabled=!any;
+  document.getElementById('worseSendT').textContent =
+    symFlagged ? (L.sendFlag||'Send and get someone now')
+    : symReported ? (L.sendAdd||'Add to my report')
+    : (L.send||'Send to the triage nurse');
+}
+
+function sendWorse(){
+  const p=PERSONAS[CUR], L=p.symL||{};
+  const picked=symOn('symGrid');
+  const note=document.getElementById('worseNote');
+  const txt=note?note.value.trim():'';
+  const bits=[];
+  if(picked.length) bits.push(picked.join(', '));
+  if(!document.getElementById('symQSev').hidden){
+    if(p.sev.mode==='pain'&&symSev!==null) bits.push(symSev+'/10 (was '+p.sev.score+' at triage)');
+    else{const r=symOn('symSevChips')[0]; if(r) bits.push(r.toLowerCase()+' than at triage');}
+  }
+  const w=symOn('symWhen')[0]; if(w) bits.push('started '+w.toLowerCase());
+  if(!document.getElementById('symQLoc').hidden){
+    const loc=symOn('symLoc')[0];
+    if(loc){const sps=symOn('symSpread'); bits.push(loc.toLowerCase()+(sps.length?' ('+sps.join(', ').toLowerCase()+')':''));}
+  }
+  if(txt) bits.push('“'+txt+'”');
+  const summary=bits.join(' · ');
+  const t=nowStamp();
+  const first=!symReported;
+  symReported=symReported||t;
+
+  /* honest post-send state: reports what happened (it was sent), not a promise about what staff will do next */
+  document.getElementById('worseStatusTitle').textContent=(first?'Sent to the triage desk · ':'Added to your report · ')+t;
+  document.getElementById('worseStatusSub').textContent=summary+'. The triage team will re-check you. If anything gets worse before then, tell any staff member.';
   document.getElementById('worseStatus').hidden=false;
-  document.getElementById('worseSub').textContent='Reported just now. A nurse is on the way. Tap to add more.';
+  document.getElementById('worseSub').textContent='Sent at '+symReported+'. Tap to add to your report.';
+
+  /* clear the form so a follow-up report starts fresh */
   if(note) note.value='';
+  document.querySelectorAll('#symGrid .symchip, #symWhen .symchip, #symLoc .symchip, #symSpread .symchip, #symSevChips .symchip').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#symScale .pain').forEach(b=>b.classList.remove('on','lo','mid','hi'));
+  symSev=null;
+  const flagged=symFlagged; symFlagged=false;
+  symRender();
+  document.getElementById('worseTitle').textContent=L.titleAdd||'Add to your report';
+  document.getElementById('worseSheetSub').textContent=(L.subAdd||'You reported at ')+symReported+(L.subAdd2||'. Anything else that has changed goes on the same report.');
   closeWorse();
-  showToast('A nurse has been alerted','Your update went straight to the triage team.',true,bellPath);
+  if(flagged) showToast(L.toastFlagT||'Sent. Now tell someone.',L.toastFlagS||'Go to the triage desk or raise your hand, do not wait.',true,bellPath);
+  else showToast(L.toastT||'Sent to the triage desk',(L.toastS||'Your update is with the triage team · ')+t,false,bellPath);
 }
 
 /* navigator suggested questions */
@@ -2022,6 +2261,8 @@ function setPhase(i){
   var hc=document.getElementById('humanCard'); if(hc) hc.style.display = (phaseIdx===0 ? 'none' : '');
   renderJournal();
   renderVitals();
+  renderMap();
+  renderComfort();
   syncSarah(); laSync();
   /* testing is now its own journey step: phase 2 = In Care – Testing */
   careStage=(phaseIdx===2)?1:0;
@@ -2043,7 +2284,7 @@ document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('c
 const TOUR=[
   {screen:'status',   sel:'.tab[data-screen="status"]',   title:'Your status, live',      txt:'Where you are in your visit, your current wait estimate, and who’s caring for you, updated as things change.'},
   {screen:'status',   sel:'#status .menubtn',             title:'Menu & sharing',     txt:'Your health profile, settings, and “Share my visit”. Send a loved one a live link, no app needed.'},
-  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Take a guided breathing session or reach out to your care team, without leaving your seat.'},
+  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Report a symptom change, find your way around the department, or take a guided breathing session — without leaving your seat.'},
   {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'Jot down symptoms and questions for the doctor, and see the vitals your care team has recorded.'},
   {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Plain-language explanations of how the ER really works, and why waits happen.'},
   {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav isn’t a substitute for medical advice; in an emergency, tell a staff member.'}
@@ -2507,7 +2748,10 @@ claire:{
     notes:[['Dr. Khan said the ECG looks normal. Still waiting on blood results.','12:05 PM']]},
   vit:{meta:'12:58 PM · Marcus Lee',hr:'76',bp:'128/82',temp:'36.9',spo2:'98',aTaken:'9:52 AM',
     hist:[['12:58 PM','Latest','76','128/82','36.9','98'],['11:15 AM','Nurse check','80','132/84','37.0','98'],['9:38 AM','Triage','88','138/86','37.1','97']]},
-  sym:['Pain is worse','Discomfort is spreading','Trouble breathing','Dizzy or lightheaded','Nausea','Something new'],
+  sym:[{t:'Pain is worse',k:'sev,loc'},{t:'Discomfort is spreading',k:'sev,loc'},{t:'Trouble breathing',k:'flag'},{t:'Dizzy or lightheaded',k:''},{t:'Nausea',k:''},{t:'Something new',k:'loc'}],
+  sev:{mode:'pain',score:7,at:'9:39 AM',note:'Sharp when breathing deeply'},
+  spread:['To my arm','To my jaw or neck','To my back','My upper belly'],
+  symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[['Lisinopril 10 mg','Once daily · blood pressure']],
   adv:{name:'Sarah',full:'Sarah Morgan',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['9:47','9:48'],
     label:"<b>Sarah's phone</b> · daughter &amp; advocate · no app, just a link",
@@ -2544,7 +2788,10 @@ margaret:{
     notes:[['Nurse says a wheelchair will take me to X-ray.','9:05 PM']]},
   vit:{meta:'9:40 PM · Marcus Lee',hr:'82',bp:'142/88',temp:'36.8',spo2:'97',aTaken:'8:05 PM',
     hist:[['9:40 PM','Latest','82','142/88','36.8','97'],['8:04 PM','Triage','90','150/92','36.9','96']]},
-  sym:['Pain is worse','New numbness in the leg','Dizzy or lightheaded','Trouble breathing','Nausea','Something new'],
+  sym:[{t:'Pain is worse',k:'sev,loc'},{t:'New numbness in the leg',k:'loc'},{t:'Dizzy or lightheaded',k:''},{t:'Trouble breathing',k:'flag'},{t:'Nausea',k:''},{t:'Something new',k:'loc'}],
+  sev:{mode:'pain',score:7,at:'8:04 PM',note:'Sharp when standing'},
+  spread:['Down my leg','Into my back','Into my groin'],
+  symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[['Meloxicam 7.5 mg','Once daily · arthritis'],['Amlodipine 5 mg','Once daily · blood pressure'],['Vitamin D 1000 IU','Once daily']],
   adv:{name:'Sarah',full:'Sarah Hale',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['8:12','8:13'],
     label:"<b>Sarah's phone</b> · daughter · no app, just a link",
@@ -2581,7 +2828,10 @@ elena:{
     notes:[['Fluttering eased a little during the breathing exercise.','11:48 PM']]},
   vit:{meta:'11:52 PM · Marcus Lee',hr:'91',bp:'134/86',temp:'36.8',spo2:'98',aTaken:'11:12 PM',
     hist:[['11:52 PM','Latest','91','134/86','36.8','98'],['11:12 PM','Triage','96','138/88','37.0','98']]},
-  sym:['Heart racing faster','New chest pain','Trouble breathing','Dizzy or faint','Tingling or numbness','Something new'],
+  sym:[{t:'Heart racing faster',k:'sev'},{t:'New chest pain',k:'sev,loc,flag'},{t:'Trouble breathing',k:'flag'},{t:'Dizzy or faint',k:''},{t:'Tingling or numbness',k:'loc'},{t:'Something new',k:'loc'}],
+  sev:{mode:'rel',at:'11:12 PM',note:'No real pain, some pressure'},
+  spread:['To my arm','To my jaw or neck','To my back'],
+  symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[],
   adv:{name:'Daniel',full:'Daniel Vasquez',rel:'Husband · emergency contact',letter:'D',pn:'He',pos:'his',clk:['8:29','8:30'],
     label:"<b>Daniel's phone</b> · husband · no app, just a link",
@@ -2618,7 +2868,10 @@ diana:{
     notes:[['Crying comes in waves, settles ~10 min, then starts again.','3:05 AM']]},
   vit:{meta:'3:20 AM · Marcus Lee',hr:'142',bp:'92/58',temp:'37.4',spo2:'99',aTaken:'2:41 AM',
     hist:[['3:20 AM','Latest','142','92/58','37.4','99'],['2:40 AM','Triage','152','94/60','37.5','99']]},
-  sym:['Crying is worse','Vomiting','Fever feels higher','Refusing feeds','New rash','Something new'],
+  sym:[{t:'Crying is worse',k:'sev'},{t:'Her breathing looks hard',k:'flag'},{t:'Hard to wake her',k:'flag'},{t:'Vomiting',k:''},{t:'Fever feels higher',k:''},{t:'Refusing feeds',k:''},{t:'New rash',k:'loc'},{t:'Something new',k:'loc'}],
+  sev:{mode:'rel',at:'2:40 AM',note:'Crying in cycles, legs pulled up'},
+  spread:[],
+  symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[['Vitamin D drops 400 IU','Once daily · infant supplement']],
   adv:{name:'Ben',full:'Ben Okafor',rel:"Lily's dad · emergency contact",letter:'B',pn:'He',pos:'his',clk:['3:02','3:03'],
     label:"<b>Ben's phone</b> · Lily's dad · no app, just a link",
@@ -2655,7 +2908,10 @@ marcus:{
     notes:[['Car is at the Fifth St tow lot, deal with it tomorrow.','7:02 PM']]},
   vit:{meta:'7:15 PM · Marcus Lee',hr:'84',bp:'126/78',temp:'37.0',spo2:'99',aTaken:'6:26 PM',
     hist:[['7:15 PM','Latest','84','126/78','37.0','99'],['6:25 PM','Triage','92','130/80','37.0','99']]},
-  sym:['Wrist pain is worse','New numbness or tingling','Fingers feel cold or look pale','Swelling is spreading','Feeling faint','Something new'],
+  sym:[{t:'Wrist pain is worse',k:'sev,loc'},{t:'New numbness or tingling',k:'loc'},{t:'Fingers feel cold or look pale',k:'flag'},{t:'Swelling is spreading',k:'loc'},{t:'Feeling faint',k:''},{t:'Something new',k:'loc'}],
+  sev:{mode:'pain',score:6,at:'6:25 PM',note:'Wrist pain sharp with movement'},
+  spread:['Up my forearm','Into my hand or fingers'],
+  symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[],
   adv:{name:'Angela',full:'Angela Webb',rel:'Mom · emergency contact',letter:'A',pn:'She',pos:'her',clk:['6:58','6:59'],
     label:"<b>Angela's phone</b> · Marcus's mom · no app, just a link",
@@ -2692,7 +2948,16 @@ yuki:{
     notes:[['Pain started after dinner, worse lying down. · 夕食後から、横になると悪化。','9:15 PM']]},
   vit:{meta:'9:35 PM · Marcus Lee',hr:'90',bp:'132/84',temp:'37.2',spo2:'98',aTaken:'8:53 PM',
     hist:[['9:35 PM','Latest','90','132/84','37.2','98'],['8:52 PM','Triage','95','136/86','37.3','98']]},
-  sym:['Pain is worse · 痛みが強い','Vomiting · 嘔吐','Fever · 発熱','Dizzy · めまい','Chest pain · 胸の痛み','Something new · その他'],
+  sym:[{t:'Pain is worse · 痛みが強い',k:'sev,loc'},{t:'Vomiting · 嘔吐',k:''},{t:'Fever · 発熱',k:''},{t:'Dizzy · めまい',k:''},{t:'Chest pain · 胸の痛み',k:'sev,loc,flag'},{t:'Trouble breathing · 息苦しい',k:'flag'},{t:'Something new · その他',k:'loc'}],
+  sev:{mode:'pain',score:8,at:'8:52 PM',note:'Upper abdomen, severe · 上腹部'},
+  spread:['To my back · 背中','To my chest · 胸','Lower belly · 下腹部'],
+  symOpts:{when:['Just now · たった今','Last few minutes · 数分前','Building for a while · しばらく前から'],loc:['Same place · 同じ場所','A new place · 新しい場所','Spreading · 広がっている'],rel:['About the same · 同じくらい','Somewhat worse · 少し悪い','A lot worse · かなり悪い']},
+  symL:{kWhat:"What's changed · 変化",kSev:'How bad is it now · 今の強さ',kWhen:'When did this start · いつから',kLoc:'Where is it · どこ',kWords:'In your own words (optional) · ご自由に',kPrev:'What your nurse will see · 看護師が見る内容',
+    send:'Send to the triage nurse · 看護師に送る',sendAdd:'Add to my report · 追加する',sendFlag:'Send and get someone now · 送信してすぐ知らせる',
+    flagT:"Don't wait for us to come to you. · お待ちにならないでください。",flagS:'Go to the triage desk now, or raise your hand and a staff member will come. We will still send this. · 受付へ行くか、手を挙げてください。',
+    titleAdd:'Add to your report · 追加',subAdd:'You reported at ',subAdd2:'. Anything else that has changed goes on the same report. · 同じ報告に追加されます。',
+    toastT:'Sent to the triage desk · 送信しました',toastS:'Your update is with the triage team · ',
+    toastFlagT:'Sent. Now tell someone. · 送信しました',toastFlagS:'Go to the triage desk or raise your hand, do not wait.'},
   meds:[['Omeprazole 20 mg · オメプラゾール','Once daily · 1日1回 · translated for the team']],
   adv:{name:'Kenji',full:'Kenji Tanaka',rel:'Husband · emergency contact',letter:'K',pn:'He',pos:'his',clk:['1:12','1:13'],
     label:"<b>Kenji's phone</b> · husband · no app, just a link",
@@ -2731,7 +2996,7 @@ function applyPersona(key){
   /* in-care phase */
   setTxt('careTtl',p.careTtl);
   document.getElementById('bayPill').innerHTML='<span class="d" style="background:var(--green);"></span>'+p.bay;
-  setTxt('mapWhere',"You're in "+p.bay); setTxt('mapBayLg',p.bay);
+  renderMap();
   setTxt('careCap',p.careCap); setTxt('nowIncare',p.nowCare);
   /* after phase */
   setTxt('dcTtl',p.dcTtl); setTxt('dcSub','Discharged '+p.dc+' · Today');
@@ -2753,12 +3018,35 @@ function applyPersona(key){
   /* painHist / qList / noteList / suggestions are rendered by renderJournal() (phase-aware), called via setPhase(0) at the end of this function */
   /* vitals snapshot/history is phase-aware — rendered by renderVitals() via setPhase(); meds on file are static */
   document.getElementById('medList').innerHTML=(p.meds&&p.meds.length)?p.meds.map(m=>'<div class="q-item"><div class="q-text" style="font-weight:600;">'+m[0]+'</div><div class="q-meta">'+m[1]+'</div></div>').join(''):'<div class="q-item med-empty"><div class="q-text" style="font-weight:500;">None on file yet</div><div class="q-meta">Add anything you take using the button below</div></div>';
-  /* symptom-change sheet */
+  /* symptom-change sheet — chips, follow-up questions and the triage anchor are all persona data */
   document.getElementById('worseStatus').hidden=true;
   document.getElementById('worseSub').textContent='Anything new or different. A nurse will re-check you. Use any time.';
-  document.getElementById('symGrid').innerHTML=p.sym.map(s=>'<button class="symchip" onclick="symToggle(this)">'+s+'</button>').join('');
+  symSev=null; symReported=null; symFlagged=false;
+  const SL=p.symL||{}, SO=p.symOpts;
+  const chip=(t)=>'<button class="symchip" onclick="symToggle(this)">'+t+'</button>';
+  document.getElementById('symGrid').innerHTML=p.sym.map(x=>'<button class="symchip" data-k="'+(x.k||'')+'" onclick="symToggle(this)">'+x.t+'</button>').join('');
+  document.getElementById('symWhen').innerHTML=SO.when.map(chip).join('');
+  document.getElementById('symLoc').innerHTML=SO.loc.map(chip).join('');
+  document.getElementById('symSpread').innerHTML=(p.spread||[]).map(chip).join('');
+  /* severity is anchored to what triage actually recorded, so the nurse reads a trend and not a stranger's number */
+  const isPain=p.sev.mode==='pain';
+  document.getElementById('symScale').hidden=!isPain;
+  document.getElementById('symSevChips').hidden=isPain;
+  document.getElementById('symScale').innerHTML=isPain?Array.from({length:11},(_,i)=>'<button class="pain" onclick="symPain(this,'+i+')">'+i+'</button>').join(''):'';
+  document.getElementById('symSevChips').innerHTML=isPain?'':SO.rel.map(chip).join('');
+  document.getElementById('symSevAnchor').innerHTML=isPain
+    ? 'At triage you rated it <b>'+p.sev.score+' out of 10</b> at '+p.sev.at+'. Where is it now?'
+    : 'At '+p.sev.at+' the triage nurse recorded <b>“'+p.sev.note+'”</b>. How is it now?';
+  setTxt('symKWhat',SL.kWhat||"What's changed"); setTxt('symKSev',SL.kSev||'How bad is it now');
+  setTxt('symKWhen',SL.kWhen||'When did this start'); setTxt('symKLoc',SL.kLoc||'Where is it');
+  setTxt('symKWords',SL.kWords||'In your own words (optional)'); setTxt('symKPrev',SL.kPrev||'What your nurse will see');
+  setTxt('symFlagT',SL.flagT||"Don't wait for us to come to you.");
+  setTxt('symFlagS',SL.flagS||"Go to the triage desk now, or raise your hand and a staff member will come to you. We'll still send this.");
+  setTxt('worseTitle',SL.title||"What's changed?");
+  setTxt('worseSheetSub',SL.sub||'This goes straight to the triage nurse and keeps your assessment current.');
   const wn=document.getElementById('worseNote'); if(wn) wn.value='';
-  document.getElementById('worseSend').disabled=true;
+  document.querySelectorAll('#symGrid .symchip, #symWhen .symchip, #symLoc .symchip, #symSpread .symchip, #symSevChips .symchip').forEach(b=>b.classList.remove('on'));
+  symRender();
   /* sharing & advocate device */
   if(share.f.some(f=>f.on)){
     document.getElementById('sarahWrap').classList.remove('show');
@@ -2835,6 +3123,142 @@ function setTri(n){
   if(tR){tR.classList.remove('open'); tE.style.maxHeight='0';}
 }
 document.querySelectorAll('.tp').forEach(b=>b.addEventListener('click',()=>setTri(+b.dataset.t)));
+/* ================= LEARN — mini news page (Jul 27, 2026) ================= */
+const L_CATS=[
+  {id:'er',label:'In this ER'},
+  {id:'heart',label:'Heart & chest'},
+  {id:'breath',label:'Breathing'},
+  {id:'pain',label:'Pain & injury'},
+  {id:'meds',label:'Meds & safety'},
+  {id:'kids',label:'Kids & family'},
+  {id:'mind',label:'Mind & body'},
+  {id:'gen',label:'General health'}
+];
+const L_TOPICS=[
+  {id:'waits',cat:'er',t:'Why waits happen',d:"The waiting room isn't a line. Here's how it really works.",min:3,ph:'photo-1655210909184-a5cac308548d',by:'Kelly Sikkema'},
+  {id:'triage',cat:'er',t:'What triage actually decided',d:'Two things: how stable you are, and how many steps your visit is likely to take.',min:3,ph:'photo-1666886573440-16ac24f89e31',by:'Getty Images'},
+  {id:'who',cat:'er',t:"Who's who behind the doors",d:'Triage nurse, tech, resident, attending — who does what, and who to ask.',min:4,ph:'photo-1631217868204-db1ed6bdd224',by:'National Cancer Institute'},
+  {id:'tests',cat:'er',t:'Why tests take the time they take',d:'Bloodwork, imaging, and the queue you never see.',min:3,ph:'photo-1606206591513-adbfbdd7a177',by:'Testalize.me'},
+  {id:'discharge',cat:'er',t:'Before you go home',d:'Return precautions, follow-up, and the questions worth asking first.',min:5,ph:'photo-1730040762827-2d5275cfdbf7',by:'Unsplash'},
+  {id:'chest',cat:'heart',t:'Chest pain in the ER',d:'What gets checked first, and why the order matters.',min:4,ph:'photo-1686956644655-18fe91c8f948',by:'Unsplash'},
+  {id:'bp',cat:'heart',t:'High blood pressure',d:'What the two numbers mean and what moves them.',min:5,ph:'photo-1621525466547-4ac135e85f59',by:'Mockup Graphics'},
+  {id:'hf',cat:'heart',t:'Heart failure, day to day',d:'Fluid, weight, and the early signs of a flare.',min:6,ph:'photo-1774194647558-713c89f149d8',by:'Unsplash'},
+  {id:'asthma',cat:'breath',t:'Asthma flare-ups',d:'Triggers, rescue inhalers, and when it becomes an ER visit.',min:4,ph:'photo-1733751683181-0b57039b3fd4',by:'Unsplash'},
+  {id:'copd',cat:'breath',t:'Living with COPD',d:'Breathing techniques and knowing your baseline.',min:6,ph:'photo-1763994684115-3ef7476645ea',by:'Unsplash'},
+  {id:'sleepapnea',cat:'breath',t:'Sleep apnea',d:"Why snoring isn't nothing, and what testing involves.",min:4,ph:'photo-1758524940928-c6ab833ca3c7',by:'Unsplash'},
+  {id:'back',cat:'pain',t:'Back pain',d:"What imaging can and can't tell you about a sore back.",min:5,ph:'photo-1618914241652-ff0a094b5a86',by:'Toa Heftiba'},
+  {id:'falls',cat:'pain',t:'After a fall',d:'What gets checked, and how to make the next one less likely.',min:5,ph:'photo-1742498481569-1e2a68882d5c',by:'Unsplash'},
+  {id:'head',cat:'pain',t:'Head injuries & concussion',d:'The signs worth coming back for in the next 48 hours.',min:4,ph:'photo-1776047129625-50b8c7299705',by:'Unsplash'},
+  {id:'medsafe',cat:'meds',t:'Medication safety',d:'Keeping one accurate list, and why it matters here.',min:4,ph:'photo-1727657409504-e2b82feba141',by:'Unsplash'},
+  {id:'painmed',cat:'meds',t:'Pain medicine in the ER',d:'What you can be offered, and what to say about how it feels.',min:4,ph:'photo-1628771065518-0d82f1938462',by:'Unsplash'},
+  {id:'allergy',cat:'meds',t:'Allergies & reactions',d:'Telling a side effect from a true allergy.',min:3,ph:'photo-1541752988809-6073b61ad3db',by:'Unsplash'},
+  {id:'fever',cat:'kids',t:'Fever in children',d:'Numbers matter less than how they look and act.',min:5,ph:'photo-1584650000640-a70adafd062e',by:'Unsplash'},
+  {id:'kidser',cat:'kids',t:'Bringing a child to the ER',d:'What to pack, what to expect, and how to keep them calm.',min:5,ph:'photo-1578496781379-7dcfb995293d',by:'Unsplash'},
+  {id:'stress',cat:'mind',t:'Waiting is its own stress',d:'A two-minute way to settle while you sit here.',min:2,ph:'photo-1758274529460-455002cfe74c',by:'Unsplash'},
+  {id:'sleep',cat:'mind',t:'Sleep and recovery',d:'Why the first nights after a visit are the hardest.',min:4,ph:'photo-1699610587645-64e75ae457ce',by:'Unsplash'},
+  {id:'diabetes',cat:'gen',t:'Diabetes basics',d:'Type 1, type 2, and what changes in a hospital visit.',min:6,ph:'photo-1683727186226-910f31a9da45',by:'Unsplash'},
+  {id:'nutrition',cat:'gen',t:'Eating well, realistically',d:'Small changes that hold up on an ordinary week.',min:5,ph:'photo-1557844352-761f2565b576',by:'Anna Pelzer'},
+  {id:'move',cat:'gen',t:'Moving more',d:'What counts as exercise when you are starting from zero.',min:4,ph:'photo-1477332552946-cfb384aeaf1c',by:'Unsplash'},
+  {id:'smoke',cat:'gen',t:'Quitting tobacco',d:'What actually helps, ranked by how well it works.',min:6,ph:'photo-1555441293-6c6fb1eb9773',by:'Unsplash'},
+  {id:'screen',cat:'gen',t:'Screenings by age',d:'The short list worth bringing to your next check-up.',min:5,ph:'photo-1631217868264-e5b90bb7e133',by:'National Cancer Institute'}
+];
+const L_FEAT=L_TOPICS[0];
+const lCat=id=>{const c=L_CATS.find(x=>x.id===id);return c?c.label:'';};
+const lImg=(id,w,h)=>'https://images.unsplash.com/'+id+'?w='+w+'&h='+h+'&fit=crop&crop=entropy&q=72&auto=format';
+/* photo tile with fade-in; alt kept empty (decorative) */
+const lPh=(t,w,h,cls)=>'<div class="lph'+(cls?' '+cls:'')+'"><img src="'+lImg(t.ph,w,h)+'" alt="" loading="lazy" onload="this.classList.add(\'on\')"></div>';
+const lMeta=t=>'<div class="lmeta"><span>'+lCat(t.cat)+'</span><i></i><span>'+t.min+' min read</span></div>';
+let L_STATE={cat:'all',q:''};
+
+function lFiltered(){
+  const q=L_STATE.q.trim().toLowerCase();
+  return L_TOPICS.filter(t=>{
+    if(L_STATE.cat!=='all' && t.cat!==L_STATE.cat) return false;
+    if(q && (t.t+' '+t.d+' '+lCat(t.cat)).toLowerCase().indexOf(q)===-1) return false;
+    return true;
+  });
+}
+const lFiltering=()=>L_STATE.cat!=='all'||L_STATE.q.trim()!=='';
+
+function renderLearn(){
+  const rail=document.getElementById('lRail'); if(!rail) return;
+  const all=[{id:'all',label:'All'}].concat(L_CATS);
+  rail.innerHTML=all.map(c=>'<div class="lpill'+(L_STATE.cat===c.id?' on':'')+'" onclick="lSetCat(\''+c.id+'\')">'+(c.id==='all'?'':'<i></i>')+c.label+'</div>').join('');
+  const feed=document.getElementById('lFeed'), list=lFiltered(), filt=lFiltering();
+  if(!list.length){ feed.innerHTML='<div class="lempty">Nothing matches that yet.<br>Try a different word, or tap <b>All</b>.</div>'; return; }
+  const showFeat=!filt;
+  const rows=showFeat?list.filter(t=>t!==L_FEAT):list;
+  let h='';
+  if(showFeat){
+    h+='<div class="lfeat" onclick="openArticle(\''+L_FEAT.id+'\')">'+lPh(L_FEAT,860,420)
+      +'<div class="ltx"><div class="lcat" style="color:var(--slate)">'+lCat(L_FEAT.cat)+'</div>'
+      +'<h3>'+L_FEAT.t+'</h3><p>'+L_FEAT.d+'</p>'+lMeta(L_FEAT)+'</div></div>';
+  }
+  h+='<div class="lsechead"><div class="kicker">'+(filt?'Results':'More to read')+'</div>'
+    +'<div class="n">'+rows.length+' article'+(rows.length===1?'':'s')+'</div></div>';
+  h+=rows.map(t=>'<div class="lrow" onclick="openArticle(\''+t.id+'\')">'+lPh(t,220,220)
+    +'<div class="ltx"><div class="lcat" style="color:var(--mut)">'+lCat(t.cat)+'</div>'
+    +'<h4>'+t.t+'</h4><p>'+t.d+'</p>'+lMeta(t)+'</div></div>').join('');
+  feed.innerHTML=h;
+}
+function lSetCat(c){ L_STATE.cat=(L_STATE.cat===c&&c!=='all')?'all':c; renderLearn(); }
+function learnSearch(inp){ L_STATE.q=inp.value; document.getElementById('lSearch').classList.toggle('has',!!inp.value); renderLearn(); }
+function learnClear(){ const i=document.getElementById('lQ'); i.value=''; L_STATE.q=''; document.getElementById('lSearch').classList.remove('has'); renderLearn(); }
+
+/* ---- article ---- */
+const L_LOREM=[
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
+"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident."
+];
+const L_LH=["Quis nostrud exercitation","Voluptatem accusantium","Excepteur sint occaecat","Totam rem aperiam"];
+function lHash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h);}
+function lLorem(t){
+  const h=lHash(t.id);
+  return '<span class="lfill">FILLER COPY — LAYOUT ONLY</span>'
+    +'<p>'+L_LOREM[h%5]+'</p><p>'+L_LOREM[(h+2)%5]+'</p>'
+    +'<h3>'+L_LH[h%4]+'</h3><p>'+L_LOREM[(h+3)%5]+'</p>'
+    +'<div class="lpull">'+L_LOREM[(h+1)%5].split('.')[0]+'.</div>'
+    +'<p>'+L_LOREM[(h+4)%5]+'</p>'
+    +'<h3>'+L_LH[(h+2)%4]+'</h3><p>'+L_LOREM[(h+1)%5]+'</p>';
+}
+const L_WAITS_BODY=''
+ +'<div class="card bh" style="margin-bottom:12px;"><div class="row" style="align-items:center;"><div class="numbadge">1</div><h3>Based on need, not arrival time</h3></div>'
+ +'<p>Patients are seen by how urgent their condition is. Someone who arrives after you may be seen first if they\'re more critical, and the same protects you.</p></div>'
+ +'<div class="card bh" style="margin-bottom:12px;"><div class="row" style="align-items:center;"><div class="numbadge">2</div><h3>Your place can change</h3></div>'
+ +'<p>If your priority is re-assessed, or a space opens, your status here updates automatically.</p></div>'
+ +'<div class="card bh" style="margin-bottom:16px;"><div class="row" style="align-items:center;"><div class="numbadge">3</div><h3>The team is working even when it\'s quiet</h3></div>'
+ +'<p>Behind the doors, clinicians are treating patients, waiting on tests, and freeing up rooms.</p></div>'
+ +'<div style="font-size:13.5px;color:var(--slate);line-height:1.55;padding:0 2px;">Our aim: make the system readable to you, not to overwhelm you with everything at once.</div>';
+
+function openArticle(id){
+  const t=L_TOPICS.find(x=>x.id===id); if(!t) return;
+  const rel=L_TOPICS.filter(x=>x.cat===t.cat&&x!==t).slice(0,3);
+  let h='<div class="lhero">'+lPh(t,900,500).replace('<div class="lph">','<div class="lph" style="height:100%">')+'</div>'
+   +'<div class="lbody">'
+   +'<div class="lcat" style="color:var(--slate)">'+lCat(t.cat)+'</div>'
+   +'<div class="lh1">'+t.t+'</div>'
+   +'<div class="ldek">'+t.d+'</div>'
+   +'<div class="lmeta" style="margin-top:11px"><span>Nav Health</span><i></i><span>'+t.min+' min read</span><i></i><span>Reviewed by clinical staff</span></div>'
+   +'<div class="lrule"></div>'
+   +(t.id==='waits'?L_WAITS_BODY:lLorem(t));
+  if(rel.length){
+    h+='<div class="lmore"><div class="kicker" style="margin-bottom:8px;">More in '+lCat(t.cat)+'</div>'
+      +rel.map(r=>'<div class="lrel" onclick="openArticle(\''+r.id+'\')">'+lPh(r,160,160)
+        +'<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;letter-spacing:-.012em;line-height:1.26;">'+r.t+'</div>'
+        +'<div style="font-size:11.5px;color:var(--mut);margin-top:3px;">'+r.min+' min read</div></div></div>').join('')+'</div>';
+  }
+  h+='<div class="lcredit">Photography via Unsplash. Article text is placeholder copy for this prototype.</div></div>';
+  document.getElementById('lArt').innerHTML=h;
+  go('article');
+  /* keep the Learn tab lit while reading */
+  const lt=document.querySelector('.tab[data-screen="behind"]');
+  if(lt){ lt.classList.add('active'); positionPill(); }
+}
+function closeArticle(){ go('behind'); }
+renderLearn();
 applyPersona('claire');
 updateQCount();
 go('status');
