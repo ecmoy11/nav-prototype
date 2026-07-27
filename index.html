@@ -447,6 +447,30 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .backbtn{width:37px;height:37px;border:none;border-radius:50%;background:#fff;box-shadow:var(--sh-card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);flex:none;}
 .backbtn svg{width:19px;height:19px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .backbtn:active{transform:scale(.94);}
+/* hospital map */
+.floorplan{width:100%;height:auto;display:block;}
+.map-legend{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;font-weight:600;color:var(--sec);}
+.map-legend .lg-you{width:13px;height:13px;border-radius:4px;background:var(--slate);position:relative;flex:none;}
+.map-legend .lg-you:after{content:"";position:absolute;right:-3px;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid #fff;}
+.maprow{display:flex;align-items:flex-start;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line);}
+.maprow:last-child{border-bottom:none;}
+.mp-ic{flex:none;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.mp-ic svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.mp-b{flex:1;min-width:0;}
+.mp-b b{font-size:14.5px;color:var(--ink);}
+.mp-b span{display:block;font-size:12.5px;color:var(--sec);margin-top:2px;line-height:1.42;}
+.mp-dist{flex:none;font-size:12px;font-weight:600;color:var(--mut);padding-top:3px;white-space:nowrap;}
+/* take-a-tour notification (status screen) */
+.tour-note{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line2);border-radius:16px;padding:11px 11px 11px 12px;margin-bottom:15px;box-shadow:var(--sh-card);animation:rise .42s cubic-bezier(.2,.7,.3,1) both;}
+.tour-note .tn-main{display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer;background:none;border:none;font-family:inherit;text-align:left;padding:0;}
+.tour-note .tn-ic{flex:none;width:36px;height:36px;border-radius:11px;background:var(--blue-soft);color:var(--blue);display:flex;align-items:center;justify-content:center;}
+.tour-note .tn-ic svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.tour-note .tn-b{flex:1;min-width:0;}
+.tour-note .tn-b b{display:block;font-size:14px;color:var(--ink);letter-spacing:-.01em;}
+.tour-note .tn-b span{font-size:12px;color:var(--sec);}
+.tour-note .tn-x{flex:none;width:27px;height:27px;border-radius:50%;border:none;background:var(--surface);color:var(--sec);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .14s ease;}
+.tour-note .tn-x:hover{background:var(--line2);}
+.tour-note .tn-x svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .ch{font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
 .body-sm{font-size:13.5px;color:var(--sec);line-height:1.55;margin-top:5px;}
 /* chat */
@@ -720,6 +744,13 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <!-- STATUS (phased: waiting / incare / after) -->
     <section class="screen" id="status">
       <div class="scroll">
+        <div class="tour-note" id="tourNote">
+          <button class="tn-main" onclick="startTour()">
+            <span class="tn-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5"/></svg></span>
+            <span class="tn-b"><b>Take a quick tour</b><span>See what each part of the app does · about a minute</span></span>
+          </button>
+          <button class="tn-x" onclick="dismissTourNote(event)" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
         <div class="headrow">
           <div>
             <h2 class="title" id="stTitle">You're waiting</h2>
@@ -829,6 +860,15 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
                 <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
               </div>
             </div>
+          </div>
+          <div class="gap"></div>
+          <div class="card tappable" onclick="go('hospitalmap')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
+            <span class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
+            <div style="flex:1;min-width:0;">
+              <b style="font-size:14.5px;letter-spacing:-.01em;">Find your way around</b>
+              <div style="font-size:12px;color:var(--sec);margin-top:2px;">Cafe, restrooms, exits — and where you are</div>
+            </div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
           <div class="gap"></div>
           <div class="card">
@@ -1030,6 +1070,83 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         </div>
       </div>
     </section>
+    <!-- HOSPITAL MAP (full screen — opened from the In Care row) -->
+    <section class="screen" id="hospitalmap">
+      <div class="scroll">
+        <div class="headrow" style="justify-content:flex-start;gap:12px;align-items:center;">
+          <button class="backbtn" onclick="go('status')" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div><h2 class="title">Find your way</h2><div class="subt" id="mapWhere">You're in Bay 4</div></div>
+        </div>
+        <div class="gap"></div>
+        <div class="card">
+          <div class="kicker">Where you are</div>
+          <svg class="floorplan" viewBox="0 0 340 288" role="img" aria-label="Emergency department floor plan" style="margin-top:12px;">
+            <rect x="4" y="4" width="332" height="280" rx="20" fill="#EFEAE0" stroke="#DFD9CD" stroke-width="1.5"/>
+            <text x="16" y="22" font-family="Hanken Grotesk, sans-serif" font-size="9.5" font-weight="700" letter-spacing="1" fill="#9CA2AB">CARE BAYS</text>
+            <!-- bays -->
+            <g font-family="Hanken Grotesk, sans-serif" font-weight="700" text-anchor="middle">
+              <rect x="14"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="37"  y="53" font-size="13" fill="#646B76">1</text>
+              <rect x="68"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="91"  y="53" font-size="13" fill="#646B76">2</text>
+              <rect x="122" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="145" y="53" font-size="13" fill="#646B76">3</text>
+              <rect x="176" y="28" width="46" height="40" rx="9" fill="#3E4E5A" stroke="#3E4E5A"/><text x="199" y="52" font-size="11" fill="#fff">You</text>
+              <circle cx="214" cy="35" r="4.5" fill="#1E9E6A" stroke="#fff" stroke-width="1.5"/>
+              <rect x="230" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="253" y="53" font-size="13" fill="#646B76">5</text>
+              <rect x="284" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="307" y="53" font-size="13" fill="#646B76">6</text>
+            </g>
+            <!-- corridor -->
+            <rect x="14" y="76" width="316" height="18" rx="6" fill="#fff" stroke="#DFD9CD"/>
+            <text x="172" y="88.5" font-family="Hanken Grotesk, sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#9CA2AB">CORRIDOR</text>
+            <!-- rooms -->
+            <g font-family="Hanken Grotesk, sans-serif" font-weight="600" text-anchor="middle">
+              <rect x="14"  y="102" width="150" height="42" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="89"  y="127" font-size="11" fill="#191C20">Nurses' station</text>
+              <rect x="180" y="102" width="150" height="42" rx="10" fill="#E9F0FD"/><text x="255" y="127" font-size="11" fill="#191C20">Restrooms</text>
+              <rect x="14"  y="152" width="150" height="48" rx="10" fill="#E5F4ED"/><text x="89"  y="180" font-size="11" fill="#191C20">Family waiting</text>
+              <rect x="180" y="152" width="150" height="48" rx="10" fill="#FAF0D8"/><text x="255" y="180" font-size="11" fill="#191C20">Cafe &amp; vending</text>
+              <rect x="14"  y="208" width="316" height="44" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="172" y="234" font-size="11" fill="#191C20">Main entrance &amp; Exit</text>
+            </g>
+          </svg>
+          <div class="map-legend"><span class="lg-you"></span>You are here — <span id="mapBayLg" style="margin-left:4px;color:var(--ink);">Bay 4</span></div>
+        </div>
+        <div class="gap"></div>
+        <div class="card">
+          <div class="kicker">Getting around</div>
+          <div class="maplist" style="margin-top:4px;">
+            <div class="maprow">
+              <span class="mp-ic" style="background:var(--amber-soft);color:var(--amber);"><svg viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg></span>
+              <div class="mp-b"><b>Cafe &amp; vending</b><span>Main lobby, just past the entrance.</span></div>
+              <span class="mp-dist">~4 min</span>
+            </div>
+            <div class="maprow">
+              <span class="mp-ic" style="background:var(--blue-soft);color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v17h10V4a1 1 0 0 0-1-1z"/><path d="M5 21h14"/><circle cx="12" cy="12.5" r="1"/></svg></span>
+              <div class="mp-b"><b>Restrooms</b><span>Just off the corridor, opposite the nurses' station.</span></div>
+              <span class="mp-dist">~1 min</span>
+            </div>
+            <div class="maprow">
+              <span class="mp-ic" style="background:var(--blue-soft);color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M12 2.7S6 9 6 13.5a6 6 0 0 0 12 0C18 9 12 2.7 12 2.7z"/></svg></span>
+              <div class="mp-b"><b>Water station</b><span>By the nurses' station.</span></div>
+              <span class="mp-dist">~1 min</span>
+            </div>
+            <div class="maprow">
+              <span class="mp-ic" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
+              <div class="mp-b"><b>Family waiting area</b><span>Near the main entrance, to your left.</span></div>
+              <span class="mp-dist">~2 min</span>
+            </div>
+            <div class="maprow">
+              <span class="mp-ic" style="background:var(--surface);color:var(--slate);"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span>
+              <div class="mp-b"><b>Main entrance &amp; Exit</b><span>Straight down the corridor.</span></div>
+              <span class="mp-dist">~2 min</span>
+            </div>
+            <div class="maprow">
+              <span class="mp-ic" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 4.5h14v4.5H5z"/><path d="M12 12.5v5M9.5 15h5"/></svg></span>
+              <div class="mp-b"><b>Pharmacy</b><span>Main lobby, next to the cafe — handy on your way out.</span></div>
+              <span class="mp-dist">~4 min</span>
+            </div>
+          </div>
+        </div>
+        <div class="gap"></div>
+        <p class="body-sm" style="text-align:center;padding:0 8px;">Stepping away for a bit? Let your nurse know first, so they don't call you while you're gone.</p>
+      </div>
+    </section>
     <!-- 3 NAV (AI) -->
     <section class="screen" id="navigator">
       <div class="scroll nav-scroll">
@@ -1080,7 +1197,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
         </div>
-        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won't miss you','Check back in when you return.')">
+        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won\'t miss you','Check back in when you return.')">
           <div class="row">
             <div class="chip amber"><svg viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M14 16l4-4-4-4M18 12H9"/></svg></div>
             <div><div class="ttl">Stepping outside?</div><div class="sub">Let us know so we don't miss you</div></div>
@@ -1532,6 +1649,7 @@ function toggleScrollLock(){
 }
 function ctlHide(){ document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); }
 function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); }
+function dismissTourNote(e){ if(e&&e.stopPropagation) e.stopPropagation(); const n=document.getElementById('tourNote'); if(n) n.style.display='none'; }
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id); el.classList.add('active');
@@ -1931,7 +2049,7 @@ const TOUR=[
   {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav isn’t a substitute for medical advice; in an emergency, tell a staff member.'}
 ];
 let tourIdx=-1;
-function startTour(){ tourIdx=-1; nextTour(); }
+function startTour(){ dismissTourNote(); tourIdx=-1; nextTour(); }
 function nextTour(){
   tourIdx++;
   if(tourIdx>=TOUR.length){ endTour(true); return; }
@@ -2613,6 +2731,7 @@ function applyPersona(key){
   /* in-care phase */
   setTxt('careTtl',p.careTtl);
   document.getElementById('bayPill').innerHTML='<span class="d" style="background:var(--green);"></span>'+p.bay;
+  setTxt('mapWhere',"You're in "+p.bay); setTxt('mapBayLg',p.bay);
   setTxt('careCap',p.careCap); setTxt('nowIncare',p.nowCare);
   /* after phase */
   setTxt('dcTtl',p.dcTtl); setTxt('dcSub','Discharged '+p.dc+' · Today');
