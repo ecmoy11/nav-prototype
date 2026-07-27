@@ -531,24 +531,38 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .symnote:focus{outline:none;border-color:var(--blue);}
 .symnote::placeholder{color:var(--mut);}
 .btn[disabled]{opacity:.35;pointer-events:none;box-shadow:none;}
-/* symptom-change: progressive follow-up questions */
-#worseBackdrop .sheet{max-height:88%;overflow-y:auto;}
-.symq{margin:0 0 16px;animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
-.symq[hidden]{display:none;}
-.symq-k{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
-.symq-a{font-size:12.5px;color:var(--sec);line-height:1.45;margin-bottom:10px;}
+/* symptom-change: full screen, every question visible on arrival.
+   Deliberately NOT progressive disclosure — a sheet that looks like two taps and then
+   unfolds into a form reads as bait. If we are asking four things, show four things. */
+.symcard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--sh-card);margin-bottom:12px;}
+.symcard .kicker{margin-bottom:10px;display:block;}
+.symq-a{font-size:12.5px;color:var(--sec);line-height:1.45;margin-bottom:11px;}
 .symq-a b{color:var(--ink);font-weight:700;}
-.symq .symgrid{margin:0;}
-.symq .painscale{margin-top:0;}
+.symgrid{display:flex;flex-wrap:wrap;gap:8px;}
+.symchip{border:1.5px solid var(--line2);background:#fff;border-radius:20px;padding:9px 14px;font-family:inherit;font-size:13px;font-weight:600;color:var(--sec);cursor:pointer;transition:all .15s ease;}
+.symchip:hover{border-color:var(--slate);color:var(--ink);}
+.symchip.on{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-deep);}
+.symchip.flash{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-deep);}
+.symchip:focus:not(:focus-visible){outline:none;}
+.symnote{width:100%;box-sizing:border-box;border:1.5px solid var(--line2);border-radius:16px;padding:12px 14px;font-family:inherit;font-size:14.5px;line-height:1.5;color:var(--ink);background:#fff;resize:none;min-height:96px;transition:border-color .15s ease;}
+.symnote:focus{outline:none;border-color:var(--blue);}
+.symnote::placeholder{color:var(--mut);}
+.symhint{font-size:12px;color:var(--mut);margin:12px 0 9px;font-weight:600;}
 .symsub{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding-left:12px;border-left:2px solid var(--line2);}
 .symsub[hidden]{display:none;}
-.symprev{background:var(--surface);border-radius:16px;padding:13px 15px;margin:0 0 14px;animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+.painscale{display:flex;gap:5px;}
+.symprev{background:var(--surface);border-radius:20px;padding:15px 16px;margin-bottom:14px;}
 .symprev[hidden]{display:none;}
-.symprev .pk{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
-.symprev .pl{font-size:13px;color:var(--ink);line-height:1.6;}
+.symprev .pl{font-size:13px;color:var(--ink);line-height:1.6;margin-top:8px;}
 .symprev .pl .lk{color:var(--sec);}
-.symflag{display:none;gap:11px;align-items:flex-start;background:var(--amber-soft);border:1px solid rgba(188,132,24,.34);border-radius:16px;padding:13px 14px;margin:0 0 16px;}
-.symflag.show{display:flex;animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+/* The red-flag instruction is the one thing on this page that must never be missed.
+   Home base is the top of the page, but it is sticky: the moment its natural position
+   scrolls out of view it pins under the status bar, so it is on screen wherever you are
+   when it fires. Not dismissible — it clears itself when the triggering words go away. */
+.symflag{display:none;gap:11px;align-items:flex-start;background:var(--amber-soft);border:1px solid rgba(188,132,24,.34);border-radius:20px;padding:14px 15px;margin-bottom:12px;position:sticky;top:58px;z-index:40;box-shadow:0 8px 26px rgba(188,132,24,.22), 0 1px 3px rgba(20,23,28,.08);}
+.symflag.show{display:flex;animation:flagIn .4s cubic-bezier(.2,.7,.3,1) both;}
+@keyframes flagIn{0%{opacity:0;transform:translateY(-12px) scale(.97)}100%{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.symflag.show{animation:none;}}
 .symflag .fi{flex:none;width:28px;height:28px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;}
 .symflag .fi svg{width:16px;height:16px;stroke:var(--amber);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .symflag b{font-size:14px;color:var(--ink);font-weight:700;display:block;}
@@ -1341,7 +1355,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <h2 class="title">Care</h2>
         <div class="subt" id="cfSub">Small things you can do while you wait</div>
         <div class="gap lg"></div>
-        <div class="worse" onclick="openWorse()" style="margin-bottom:11px;">
+        <div class="worse" onclick="openWorse('comfort')" style="margin-bottom:11px;">
           <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
           <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
           <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
@@ -1367,6 +1381,52 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
         </div>
+      </div>
+    </section>
+    <!-- REPORT A SYMPTOM CHANGE (full screen — every question visible on arrival) -->
+    <section class="screen" id="symptomchange">
+      <div class="scroll">
+        <div class="headrow" style="justify-content:flex-start;gap:12px;align-items:center;">
+          <button class="backbtn" onclick="closeWorse()" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div><h2 class="title" id="worseTitle">Report a change</h2><div class="subt" id="worseSheetSub">This goes to the triage nurse and keeps your assessment current.</div></div>
+        </div>
+        <div class="gap"></div>
+        <!-- red-flag interrupt: stops being a form, becomes an instruction -->
+        <div class="symflag" id="symFlag">
+          <div class="fi"><svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+          <div><b id="symFlagT">Don't wait for us to come to you.</b>
+          <div class="fs" id="symFlagS">Go to the triage desk now, or raise your hand and a staff member will come to you. We'll still send this.</div></div>
+        </div>
+        <div class="symcard">
+          <span class="kicker" id="symKWhat">What's changed</span>
+          <textarea class="symnote" id="worseNote" oninput="symRender()" placeholder="In your own words. What is different, and how it feels."></textarea>
+          <div class="symhint" id="symKQuick">Or tap one to add it</div>
+          <div class="symgrid" id="symGrid"></div>
+        </div>
+        <div class="symcard">
+          <span class="kicker" id="symKSev">How bad is it now</span>
+          <div class="symq-a" id="symSevAnchor"></div>
+          <div class="painscale" id="symScale"></div>
+          <div class="symgrid" id="symSevChips" data-single="1"></div>
+        </div>
+        <div class="symcard">
+          <span class="kicker" id="symKWhen">When did this start</span>
+          <div class="symgrid" id="symWhen" data-single="1"></div>
+        </div>
+        <div class="symcard">
+          <span class="kicker" id="symKLoc">Where is it</span>
+          <div class="symgrid" id="symLoc" data-single="1"></div>
+          <div class="symsub" id="symSpread" hidden></div>
+        </div>
+        <!-- transparency: exactly what gets handed to the nurse -->
+        <div class="symprev" id="symPrev" hidden><span class="kicker" id="symKPrev">What your nurse will see</span>
+          <div class="pl" id="symPrevBody"></div>
+        </div>
+        <button class="btn" id="worseSend" disabled onclick="sendWorse()"><span id="worseSendT">Send to the triage nurse</span>
+          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+        <p class="foot-note" style="text-align:center;margin:12px 0 0;">If this feels like an emergency, tell a staff member right away.</p>
+        <div class="gap lg"></div>
       </div>
     </section>
     <!-- 4b JOURNAL -->
@@ -1478,49 +1538,6 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <button class="btn" onclick="confirmAction('Message sent','Your care team will reply when they can.');closeBio();">Message care team
           <svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         </button>
-      </div>
-    </div>
-    <!-- feeling worse / symptom change sheet -->
-    <div class="sheet-backdrop" id="worseBackdrop" onclick="closeWorse()">
-      <div class="sheet" onclick="event.stopPropagation()">
-        <div class="sheet-grip"></div>
-        <button class="sheet-x" onclick="closeWorse()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-        <div class="sh-title" id="worseTitle">What's changed?</div>
-        <div class="sh-sub" id="worseSheetSub">This goes straight to the triage nurse and keeps your assessment current.</div>
-        <!-- red-flag interrupt: stops being a form, becomes an instruction -->
-        <div class="symflag" id="symFlag">
-          <div class="fi"><svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
-          <div><b id="symFlagT">Don't wait for us to come to you.</b>
-          <div class="fs" id="symFlagS">Go to the triage desk now, or raise your hand and a staff member will come to you. We'll still send this.</div></div>
-        </div>
-        <div class="symq"><div class="symq-k" id="symKWhat">What's changed</div>
-          <div class="symgrid" id="symGrid"></div>
-        </div>
-        <!-- severity: anchored to the score recorded at triage -->
-        <div class="symq" id="symQSev" hidden><div class="symq-k" id="symKSev">How bad is it now</div>
-          <div class="symq-a" id="symSevAnchor"></div>
-          <div class="painscale" id="symScale"></div>
-          <div class="symgrid" id="symSevChips" data-single="1"></div>
-        </div>
-        <!-- onset -->
-        <div class="symq" id="symQWhen" hidden><div class="symq-k" id="symKWhen">When did this start</div>
-          <div class="symgrid" id="symWhen" data-single="1"></div>
-        </div>
-        <!-- location / spread -->
-        <div class="symq" id="symQLoc" hidden><div class="symq-k" id="symKLoc">Where is it</div>
-          <div class="symgrid" id="symLoc" data-single="1"></div>
-          <div class="symsub" id="symSpread" hidden></div>
-        </div>
-        <div class="symq"><div class="symq-k" id="symKWords">In your own words (optional)</div>
-        <textarea class="symnote" id="worseNote" oninput="symRender()" placeholder="What's new, when it started, how it feels…" style="margin-bottom:0;"></textarea></div>
-        <!-- transparency: exactly what gets handed to the nurse -->
-        <div class="symprev" id="symPrev" hidden><div class="pk" id="symKPrev">What your nurse will see</div>
-          <div class="pl" id="symPrevBody"></div>
-        </div>
-        <button class="btn" id="worseSend" disabled onclick="sendWorse()"><span id="worseSendT">Send to the triage nurse</span>
-          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-        </button>
-        <p class="foot-note" style="text-align:center;margin-top:12px;">If this feels like an emergency, tell a staff member right away.</p>
       </div>
     </div>
     <!-- menu drawer -->
@@ -2248,23 +2265,35 @@ function notifyWaitIncrease(range){
   showToast('Wait estimate updated','Your estimated wait went up to '+rr+' mins.', true, bellPath);
 }
 function dismissWaitAlert(){ const b=document.getElementById('waitAlert'); if(b) b.classList.remove('show'); }
-/* feeling worse / symptom change
-   Design: this form is a SORTING signal for the triage nurse, not a nursing assessment.
-   Three questions max, each earning its place against one decision: go now, go soon, or add to the round.
-   1. what changed (chips, complaint-aware)  2. how bad NOW vs the score recorded at triage (delta beats absolute)
-   3. when it started (sudden onset is clinically louder than severity)
-   Location is a conditional 4th and only asks what changes the decision: same spot / new spot / spreading. */
-let symSev=null, symReported=null, symFlagged=false;
-const SYM_FLAG_RE=/(can'?t breathe|cannot breathe|can'?t catch my breath|chest pain|crushing|passing out|black(ing)? out|worst pain|won'?t stop bleeding|numb face|slurred|can'?t wake|not breathing)/i;
+/* feeling worse / symptom change — FULL SCREEN, not a sheet.
+   Emma's call: a pop-up that looks like two taps and then unfolds into a form reads as bait.
+   Every question is on the page when you arrive. "What's changed" is a text field first,
+   because assuming the change from a chip list puts our words in the patient's mouth.
+   The chips stay underneath as quick-adds: typing is expensive when you are in pain,
+   and they keep the red-flag net working for someone who taps rather than types. */
+let symSev=null, symReported=null, symFlagged=false, symBack='comfort';
+const SYM_FLAG_RE=/(can'?t breathe|cannot breathe|can'?t catch my breath|trouble breathing|breathing looks hard|息苦し|hard to wake|can'?t wake|chest pain|胸の痛み|crushing|passing out|black(ing)? out|worst pain|won'?t stop bleeding|numb face|slurred|cold or look pale|not breathing)/i;
 
 function nowStamp(){
   const p=PERSONAS[CUR];
   return p.clk+' '+((p.ck&&/PM/.test(p.ck))?'PM':'AM');
 }
-function openWorse(){document.getElementById('worseBackdrop').classList.add('show');symRender();}
-function closeWorse(){document.getElementById('worseBackdrop').classList.remove('show');}
+function openWorse(from){ symBack=from||'comfort'; symRender(); go('symptomchange'); }
+function closeWorse(){ go(symBack); }
 
-/* single-select groups clear their siblings; multi-select groups just toggle */
+/* chips are quick-adds, not state: tapping appends the label to the field, so the
+   text the patient can edit is the single source of truth for what they reported */
+function symAdd(b){
+  const n=document.getElementById('worseNote');
+  const t=b.textContent.trim();
+  const cur=n.value.trim();
+  if(!new RegExp('(^|[.,;·]\\s*)'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i').test(cur)){
+    n.value = cur ? cur.replace(/[.\s]+$/,'')+'. '+t : t;
+  }
+  b.classList.add('flash'); setTimeout(()=>b.classList.remove('flash'),450);
+  symRender();
+}
+/* single-select groups clear their siblings */
 function symToggle(b){
   const grp=b.closest('[data-single]');
   if(grp){const was=b.classList.contains('on');grp.querySelectorAll('.symchip').forEach(x=>x.classList.remove('on'));if(!was)b.classList.add('on');}
@@ -2278,23 +2307,15 @@ function symPain(b,n){
   symRender();
 }
 function symOn(id){return [...document.querySelectorAll('#'+id+' .symchip.on')].map(b=>b.textContent);}
-function symK(){return [...document.querySelectorAll('#symGrid .symchip.on')].map(b=>b.dataset.k||'').join(',');}
 
 function symRender(){
   const p=PERSONAS[CUR], L=p.symL||{};
-  const picked=symOn('symGrid'), kinds=symK();
   const note=document.getElementById('worseNote');
   const txt=note?note.value.trim():'';
-  const any=picked.length>0||txt.length>0;
 
-  /* red-flag interrupt: the form stops being a form and becomes an instruction */
-  symFlagged=/flag/.test(kinds)||SYM_FLAG_RE.test(txt);
+  /* red-flag interrupt reads the field, so it fires whether they typed or tapped */
+  symFlagged=SYM_FLAG_RE.test(txt);
   document.getElementById('symFlag').classList.toggle('show',symFlagged);
-
-  const needSev=/sev/.test(kinds), needLoc=/loc/.test(kinds);
-  document.getElementById('symQSev').hidden=!needSev;
-  document.getElementById('symQWhen').hidden=!any;
-  document.getElementById('symQLoc').hidden=!needLoc;
 
   /* spread sub-chips appear only once they say it moved */
   const loc=symOn('symLoc')[0]||'';
@@ -2305,19 +2326,16 @@ function symRender(){
 
   /* preview: exactly what gets handed over, in plain language */
   const rows=[];
-  if(picked.length) rows.push(['Changed',picked.join(', ')]);
-  if(needSev){
-    if(p.sev.mode==='pain'&&symSev!==null) rows.push(['How bad now',symSev+' out of 10 '+(symSev>p.sev.score?'(up from '+p.sev.score+' at triage)':(symSev<p.sev.score?'(down from '+p.sev.score+' at triage)':'(same as triage)'))]);
-    else{const r=symOn('symSevChips')[0]; if(r) rows.push(['How bad now',r+' than at triage']);}
-  }
+  if(txt) rows.push(['Changed',txt]);
+  if(p.sev.mode==='pain'&&symSev!==null) rows.push(['How bad now',symSev+' out of 10 '+(symSev>p.sev.score?'(up from '+p.sev.score+' at triage)':(symSev<p.sev.score?'(down from '+p.sev.score+' at triage)':'(same as triage)'))]);
+  else{const r=symOn('symSevChips')[0]; if(r) rows.push(['How bad now',r+' than at triage']);}
   const w=symOn('symWhen')[0]; if(w) rows.push(['Started',w]);
-  if(needLoc&&loc){const sps=symOn('symSpread'); rows.push(['Where',loc+(sps.length?' · '+sps.join(', '):'')]);}
-  if(txt) rows.push([(p.user===p.patient?'In your own words':p.user+"'s words"),'“'+txt+'”']);
+  if(loc){const sps=symOn('symSpread'); rows.push(['Where',loc+(sps.length?' · '+sps.join(', '):'')]);}
   const prev=document.getElementById('symPrev');
-  prev.hidden=!any;
+  prev.hidden=!rows.length;
   document.getElementById('symPrevBody').innerHTML=rows.map(r=>'<span class="lk">'+r[0]+':</span> '+r[1]).join('<br>');
 
-  document.getElementById('worseSend').disabled=!any;
+  document.getElementById('worseSend').disabled=!rows.length;
   document.getElementById('worseSendT').textContent =
     symFlagged ? (L.sendFlag||'Send and get someone now')
     : symReported ? (L.sendAdd||'Add to my report')
@@ -2326,21 +2344,15 @@ function symRender(){
 
 function sendWorse(){
   const p=PERSONAS[CUR], L=p.symL||{};
-  const picked=symOn('symGrid');
   const note=document.getElementById('worseNote');
   const txt=note?note.value.trim():'';
   const bits=[];
-  if(picked.length) bits.push(picked.join(', '));
-  if(!document.getElementById('symQSev').hidden){
-    if(p.sev.mode==='pain'&&symSev!==null) bits.push(symSev+'/10 (was '+p.sev.score+' at triage)');
-    else{const r=symOn('symSevChips')[0]; if(r) bits.push(r.toLowerCase()+' than at triage');}
-  }
-  const w=symOn('symWhen')[0]; if(w) bits.push('started '+w.toLowerCase());
-  if(!document.getElementById('symQLoc').hidden){
-    const loc=symOn('symLoc')[0];
-    if(loc){const sps=symOn('symSpread'); bits.push(loc.toLowerCase()+(sps.length?' ('+sps.join(', ').toLowerCase()+')':''));}
-  }
   if(txt) bits.push('“'+txt+'”');
+  if(p.sev.mode==='pain'&&symSev!==null) bits.push(symSev+'/10 (was '+p.sev.score+' at triage)');
+  else{const r=symOn('symSevChips')[0]; if(r) bits.push(r.toLowerCase()+' than at triage');}
+  const w=symOn('symWhen')[0]; if(w) bits.push('started '+w.toLowerCase());
+  const loc=symOn('symLoc')[0];
+  if(loc){const sps=symOn('symSpread'); bits.push(loc.toLowerCase()+(sps.length?' ('+sps.join(', ').toLowerCase()+')':''));}
   const summary=bits.join(' · ');
   const t=nowStamp();
   const first=!symReported;
@@ -2352,19 +2364,20 @@ function sendWorse(){
   document.getElementById('worseStatus').hidden=false;
   document.getElementById('worseSub').textContent='Sent at '+symReported+'. Tap to add to your report.';
 
-  /* clear the form so a follow-up report starts fresh */
+  /* clear the page so a follow-up report starts fresh */
   if(note) note.value='';
-  document.querySelectorAll('#symGrid .symchip, #symWhen .symchip, #symLoc .symchip, #symSpread .symchip, #symSevChips .symchip').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#symWhen .symchip, #symLoc .symchip, #symSpread .symchip, #symSevChips .symchip').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('#symScale .pain').forEach(b=>b.classList.remove('on','lo','mid','hi'));
   symSev=null;
   const flagged=symFlagged; symFlagged=false;
   symRender();
-  document.getElementById('worseTitle').textContent=L.titleAdd||'Add to your report';
-  document.getElementById('worseSheetSub').textContent=(L.subAdd||'You reported at ')+symReported+(L.subAdd2||'. Anything else that has changed goes on the same report.');
+  setTxt('worseTitle',L.titleAdd||'Add to your report');
+  setTxt('worseSheetSub',(L.subAdd||'You reported at ')+symReported+(L.subAdd2||'. Anything else that has changed goes on the same report.'));
   closeWorse();
   if(flagged) showToast(L.toastFlagT||'Sent. Now tell someone.',L.toastFlagS||'Go to the triage desk or raise your hand, do not wait.',true,bellPath);
   else showToast(L.toastT||'Sent to the triage desk',(L.toastS||'Your update is with the triage team · ')+t,false,bellPath);
 }
+
 
 /* navigator suggested questions */
 const answers={
@@ -3273,13 +3286,14 @@ function applyPersona(key){
   /* painHist / qList / noteList / suggestions are rendered by renderJournal() (phase-aware), called via setPhase(0) at the end of this function */
   /* vitals snapshot/history is phase-aware — rendered by renderVitals() via setPhase(); meds on file are static */
   document.getElementById('medList').innerHTML=(p.meds&&p.meds.length)?p.meds.map(m=>'<div class="q-item"><div class="q-text" style="font-weight:600;">'+m[0]+'</div><div class="q-meta">'+m[1]+'</div></div>').join(''):'<div class="q-item med-empty"><div class="q-text" style="font-weight:500;">None on file yet</div><div class="q-meta">Add anything you take using the button below</div></div>';
-  /* symptom-change sheet — chips, follow-up questions and the triage anchor are all persona data */
+  /* symptom-change page — chips, question options and the triage anchor are all persona data */
   document.getElementById('worseStatus').hidden=true;
   document.getElementById('worseSub').textContent='Anything new or different. A nurse will re-check you. Use any time.';
   symSev=null; symReported=null; symFlagged=false;
   const SL=p.symL||{}, SO=p.symOpts;
   const chip=(t)=>'<button class="symchip" onclick="symToggle(this)">'+t+'</button>';
-  document.getElementById('symGrid').innerHTML=p.sym.map(x=>'<button class="symchip" data-k="'+(x.k||'')+'" onclick="symToggle(this)">'+x.t+'</button>').join('');
+  /* the what's-changed chips only ADD text to the field — they never stand in for the patient's words */
+  document.getElementById('symGrid').innerHTML=p.sym.map(x=>'<button class="symchip" onclick="symAdd(this)">'+x.t+'</button>').join('');
   document.getElementById('symWhen').innerHTML=SO.when.map(chip).join('');
   document.getElementById('symLoc').innerHTML=SO.loc.map(chip).join('');
   document.getElementById('symSpread').innerHTML=(p.spread||[]).map(chip).join('');
@@ -3294,13 +3308,13 @@ function applyPersona(key){
     : 'At '+p.sev.at+' the triage nurse recorded <b>“'+p.sev.note+'”</b>. How is it now?';
   setTxt('symKWhat',SL.kWhat||"What's changed"); setTxt('symKSev',SL.kSev||'How bad is it now');
   setTxt('symKWhen',SL.kWhen||'When did this start'); setTxt('symKLoc',SL.kLoc||'Where is it');
-  setTxt('symKWords',SL.kWords||'In your own words (optional)'); setTxt('symKPrev',SL.kPrev||'What your nurse will see');
+  setTxt('symKQuick',SL.kQuick||'Or tap one to add it'); setTxt('symKPrev',SL.kPrev||'What your nurse will see');
   setTxt('symFlagT',SL.flagT||"Don't wait for us to come to you.");
   setTxt('symFlagS',SL.flagS||"Go to the triage desk now, or raise your hand and a staff member will come to you. We'll still send this.");
-  setTxt('worseTitle',SL.title||"What's changed?");
-  setTxt('worseSheetSub',SL.sub||'This goes straight to the triage nurse and keeps your assessment current.');
+  setTxt('worseTitle',SL.title||'Report a change');
+  setTxt('worseSheetSub',SL.sub||'This goes to the triage nurse and keeps your assessment current.');
   const wn=document.getElementById('worseNote'); if(wn) wn.value='';
-  document.querySelectorAll('#symGrid .symchip, #symWhen .symchip, #symLoc .symchip, #symSpread .symchip, #symSevChips .symchip').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#symWhen .symchip, #symLoc .symchip, #symSpread .symchip, #symSevChips .symchip').forEach(b=>b.classList.remove('on'));
   symRender();
   /* sharing & advocate device */
   if(share.f.some(f=>f.on)){
