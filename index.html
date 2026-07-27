@@ -424,10 +424,10 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .step.next .meta{color:var(--mut);}
 .step .lab{flex:1;}
 .step .t{margin-left:auto;flex:none;font-size:13px;font-weight:500;color:var(--sec);padding-top:3px;}
-.substeps{position:relative;margin:0 0 2px 40px;}
-.substep{position:relative;display:flex;align-items:flex-start;gap:11px;padding:5px 0;}
-.substep:before{content:"";position:absolute;left:3px;top:11px;width:9px;height:9px;border-radius:50%;background:var(--slate);}
-.substep .slab{flex:1;padding-left:20px;font-size:13.5px;font-weight:600;color:var(--ink);}
+.substeps{position:relative;margin:0 0 2px 0;}
+.substep{position:relative;padding:4px 0;}
+.substep:before{content:"";position:absolute;left:12px;top:9px;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:var(--slate);z-index:2;}
+.substep .slab{display:block;margin-left:40px;font-size:15px;font-weight:600;color:var(--ink);}
 .substep .smeta{display:block;font-size:11.5px;font-weight:600;color:var(--slate);margin-top:1px;}
 .linkrow{display:flex;align-items:center;justify-content:space-between;}
 .linkrow b{font-size:15px;font-weight:600;color:var(--slate);}
@@ -764,7 +764,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
                 <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
                 <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
                 <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team<span class="meta">Up next</span></div></div>
-                <div class="step future"><div class="dot future"><i></i></div><div class="lab">Diagnosis testing</div></div>
+                <div class="step future"><div class="dot future"><i></i></div><div class="lab">Diagnostic testing</div></div>
                 <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
               </div>
             </div>
@@ -790,7 +790,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
           <div class="rowlist">
             <div class="listrow" onclick="openShare()">
               <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
-              <b id="shareRowLabel">Let someone follow your visit</b>
+              <b id="shareRowLabel" class="js-share-label">Let someone follow your visit</b>
               <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
             </div>
             <div class="listrow" onclick="go('vitals')">
@@ -808,14 +808,27 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 
         <!-- ===== IN CARE ===== -->
         <div class="phase-block" data-phase="incare">
-          <div class="card dark hero">
-            <div class="kicker">Right now</div>
-            <div class="ttl" style="font-size:21px;margin-top:6px;" id="careTtl">You're in a care space</div>
-            <span class="statpill" style="color:var(--green);background:#fff;margin-left:0;margin-top:10px;" id="bayPill"><span class="d" style="background:var(--green);"></span>Bay 4</span>
-            <div class="cap" id="careCap">Dr. Aisha Khan is with you now and will explain the plan and any tests you may need.</div>
-            <div class="care-wait" id="careWait" style="display:none;"><span class="cw-k">Blood results expected in</span><span class="cw-v" id="careWaitV">30–45 mins</span></div>
-            <div class="segs" id="careSegs"><i class="on"></i><i class="on"></i><i class="cur"></i><i></i></div>
-            <div class="upnext"><span class="l">Up next</span><span class="r" id="careUpnext">Diagnosis testing</span></div>
+          <div class="card dark" id="careCard">
+            <div class="wc-head">
+              <span class="kicker">Right now</span>
+              <button class="wc-info" style="margin-left:auto;" onclick="toggleCareExpl()" title="More about this"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
+            </div>
+            <div class="row" style="align-items:flex-start;gap:12px;margin-top:6px;">
+              <div class="ttl" style="font-size:21px;flex:1;line-height:1.2;" id="careTtl">You're in a care space</div>
+              <span class="statpill" style="color:var(--green);background:#fff;margin:2px 0 0;flex:none;" id="bayPill"><span class="d" style="background:var(--green);"></span>Bay 4</span>
+            </div>
+            <div class="wc-expl" id="careExpl" hidden></div>
+            <div class="care-wait" id="careWait" style="display:none;"><span class="cw-k">Results expected in</span><span class="cw-v" id="careWaitV">30–45 mins</span></div>
+            <div class="wc-journey">
+              <div class="kicker">Your journey</div>
+              <div class="steps" id="careSteps">
+                <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
+                <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
+                <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Seen by the care team</div></div>
+                <div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Up next</span></div></div>
+                <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
+              </div>
+            </div>
           </div>
           <div class="gap"></div>
           <div class="card">
@@ -852,20 +865,22 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             </div>
           </div>
           <div class="gap"></div>
-          <div class="card">
-            <div class="kicker">Your journey</div>
-            <div class="steps" id="careSteps">
-              <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
-              <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
-              <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team<span class="meta">You are here</span></div></div>
-              <div class="step next"><div class="dot next"><i></i></div><div class="lab">Diagnosis testing<span class="meta">Up next</span></div></div>
-              <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
+          <div class="rowlist">
+            <div class="listrow" onclick="openShare()">
+              <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
+              <b class="js-share-label">Let someone follow your visit</b>
+              <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
             </div>
-          </div>
-          <div class="gap"></div>
-          <div class="card sm">
-            <div class="ch">What's happening now</div>
-            <p class="body-sm" id="nowIncare">You're being assessed in person. Ask Nav or your nurse if anything is unclear. There's no such thing as a silly question.</p>
+            <div class="listrow" onclick="go('vitals')">
+              <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+              <b>Vitals</b>
+              <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="listrow" onclick="go('medications')">
+              <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 4.5h14v4.5H5z"/><path d="M12 12.5v5M9.5 15h5"/></svg></span>
+              <b>Medications on file</b>
+              <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
           </div>
         </div>
 
@@ -1083,28 +1098,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <section class="screen" id="journal">
       <div class="scroll">
         <h2 class="title">Your journal</h2>
-        <div class="subt" id="jSub">Questions, pain and notes, all in one place</div>
+        <div class="subt" id="jSub">Questions and notes, just for you</div>
         <div class="gap lg"></div>
-
-        <!-- pain check-in -->
-        <div class="card">
-          <div class="kicker" id="ckKicker">Pain check-in</div>
-          <div class="ttl" style="margin-top:9px;" id="ckQ">How's your pain right now?</div>
-          <div class="painslider">
-            <div class="pain-readout" id="painReadout">—</div>
-            <input type="range" id="painRange" class="painrange" min="0" max="10" step="1" value="0" oninput="selectPainSlider(this.value)" aria-label="Pain level 0 to 10">
-            <div class="pain-ticks"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--mut);margin-top:7px;"><span id="ckLo">No pain</span><span id="ckHi">Worst imaginable</span></div>
-          <button class="pain-submit" id="painSubmit" onclick="submitPain()" disabled>Log rating</button>
-          <div class="divider"></div>
-          <div class="kicker" id="ckEarlier">Earlier today</div>
-          <div class="vhist" id="painHist">
-            <div class="vrow"><div class="vtime"><b>11:15 AM</b><span>Nurse check</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Aching, a little better</div><span class="painpill mid">5/10</span></div>
-            <div class="vrow"><div class="vtime"><b>9:39 AM</b><span>Triage</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">Sharp when breathing deeply</div><span class="painpill hi">7/10</span></div>
-          </div>
-        </div>
-        <div class="gap"></div>
 
         <!-- questions for the doctor -->
         <div class="card">
@@ -1136,7 +1131,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <div class="gap"></div>
 
         <div class="card flat" style="background:var(--surface);border-color:transparent;">
-          <p class="body-sm" style="margin-top:0;">Ask your nurse if you'd like anything explained.</p>
+          <p class="body-sm" style="margin-top:0;">Only you can see your journal — the care team doesn't get what you write here. It's a place to gather your thoughts and remember what to ask. If something's worrying you, tap <b>Report a symptom change</b> in Care or tell a nurse.</p>
         </div>
       </div>
     </section>
@@ -1428,7 +1423,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
               <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
               <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
               <div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team</div></div>
-              <div class="step future"><div class="dot future"><i></i></div><div class="lab">Diagnosis testing</div></div>
+              <div class="step future"><div class="dot future"><i></i></div><div class="lab">Diagnostic testing</div></div>
               <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
             </div>
           </div>
@@ -1486,14 +1481,6 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       <button class="tp" data-t="5">5</button>
     </div>
   </div>
-  <div class="pc-sep" id="careStageSep" hidden></div>
-  <div class="pc-group" id="careStageGroup" hidden>
-    <div class="pc-cap">Care stage</div>
-    <div class="pc-cond">
-      <button class="cs on" data-cs="0" onclick="setCareStage(0)">Seeing doctor</button>
-      <button class="cs" data-cs="1" onclick="setCareStage(1)">Testing</button>
-    </div>
-  </div>
   <div class="pc-sep"></div>
   <div class="pc-group">
     <div class="pc-cap">User journey</div>
@@ -1501,14 +1488,16 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
       <div class="pc-rail" id="pcRail">
         <div class="pc-fill" id="pcFill"></div>
         <button class="pc-tick" data-i="0" style="left:0%"></button>
-        <button class="pc-tick" data-i="1" style="left:50%"></button>
-        <button class="pc-tick" data-i="2" style="left:100%"></button>
+        <button class="pc-tick" data-i="1" style="left:33.33%"></button>
+        <button class="pc-tick" data-i="2" style="left:66.67%"></button>
+        <button class="pc-tick" data-i="3" style="left:100%"></button>
         <div class="pc-thumb" id="pcThumb"></div>
       </div>
       <div class="pc-stops">
         <button class="pc-stop" data-i="0" style="left:0%">Waiting</button>
-        <button class="pc-stop" data-i="1" style="left:50%">Care</button>
-        <button class="pc-stop" data-i="2" style="left:100%">After care</button>
+        <button class="pc-stop" data-i="1" style="left:33.33%">Care</button>
+        <button class="pc-stop" data-i="2" style="left:66.67%">Testing</button>
+        <button class="pc-stop" data-i="3" style="left:100%">After care</button>
       </div>
     </div>
   </div>
@@ -1867,43 +1856,39 @@ document.querySelectorAll('.burst-host').forEach(el=>el.innerHTML=burstSVG());
 const PHASES=[
   {key:'waiting',title:"Welcome Claire",sub:"You're checked in"},
   {key:'incare',title:"You're being seen",sub:'In a care space now'},
+  {key:'incare',title:"You're being seen",sub:'Blood test in progress'},
   {key:'after',title:'Your visit summary',sub:'Discharged 1:12 PM · Today'}
 ];
 let phaseIdx=0;
 /* ===== In-care stage: seeing doctor (0) -> testing (1) ===== */
 let careStage=0;
 function csHelp(lab,t,cls){return '<div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">'+lab+'</div><span class="t '+(cls||'')+'">'+t+'</span></div>';}
-function setCareStage(s){
-  careStage=+s;
-  document.querySelectorAll('.cs').forEach(b=>b.classList.toggle('on',+b.dataset.cs===careStage));
-  renderCareStage();
-}
 function renderCareStage(){
   const stepsEl=document.getElementById('careSteps'); if(!stepsEl) return;
   const p=(typeof PERSONAS!=='undefined'&&PERSONAS[CUR])?PERSONAS[CUR]:null;
   const ck=p?p.ck:'9:31 AM', tr=p?p.tr:'9:39 AM';
+  const seen=csHelp('Checked in',ck,'js-ck')+csHelp('Triage assessment',tr,'js-tr')+csHelp('Seen by the care team','');
+  const expl=document.getElementById('careExpl');
+  const cw=document.getElementById('careWait');
   if(careStage===1){
     setTxt('careTtl','Waiting on your test results');
-    setTxt('careCap','Your blood has been taken and sent to the lab. Dr. Khan will review the results with you once they come back.');
-    document.getElementById('careWait').style.display='';
-    document.getElementById('careSegs').innerHTML='<i class="on"></i><i class="on"></i><i class="on"></i><i class="cur"></i>';
-    setTxt('careUpnext','Doctor reviews your results');
-    setTxt('nowIncare','Your blood test helps the team rule out a problem with your heart. Results usually take 30–45 minutes. You can rest here — staff will come to you.');
-    stepsEl.innerHTML=csHelp('Checked in',ck,'js-ck')+csHelp('Triage assessment',tr,'js-tr')+csHelp('Seen by the care team','9:52 AM')+
-      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnosis testing<span class="meta">You are here</span></div></div>'+
+    if(expl){ expl.textContent='Your blood has been taken and sent to the lab. Dr. Khan will review the results with you once they come back — results usually take 30–45 minutes. You can rest here; staff will come to you.'; }
+    if(cw) cw.style.display='';
+    stepsEl.innerHTML=seen+
+      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Up next</span></div></div>'+
       '<div class="substeps"><div class="substep"><span class="slab">Blood test<span class="smeta">Ordered by Dr. Khan · 9:52 AM</span></span></div></div>'+
-      '<div class="step next"><div class="dot next"><i></i></div><div class="lab">Treatment &amp; next steps<span class="meta">Up next</span></div></div>';
+      '<div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>';
   } else {
-    if(p){ setTxt('careTtl',p.careTtl); setTxt('careCap',p.careCap); setTxt('nowIncare',p.nowCare); }
-    document.getElementById('careWait').style.display='none';
-    document.getElementById('careSegs').innerHTML='<i class="on"></i><i class="on"></i><i class="cur"></i><i></i>';
-    setTxt('careUpnext','Diagnosis testing');
-    stepsEl.innerHTML=csHelp('Checked in',ck,'js-ck')+csHelp('Triage assessment',tr,'js-tr')+
-      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Seen by the care team<span class="meta">You are here</span></div></div>'+
-      '<div class="step next"><div class="dot next"><i></i></div><div class="lab">Diagnosis testing<span class="meta">Up next</span></div></div>'+
+    if(p){ setTxt('careTtl',p.careTtl); }
+    if(expl){ expl.textContent=(p&&p.careCap)?p.careCap:'Dr. Aisha Khan is with you now and will explain the plan and any tests you may need.'; }
+    if(cw) cw.style.display='none';
+    stepsEl.innerHTML=seen+
+      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Up next</span></div></div>'+
       '<div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>';
   }
+  if(expl&&!expl.hidden){/* keep open state */}
 }
+function toggleCareExpl(){const e=document.getElementById('careExpl'); if(e) e.hidden=!e.hidden;}
 function setPhase(i){
   phaseIdx=Math.max(0,Math.min(PHASES.length-1,i));
   const p=PHASES[phaseIdx];
@@ -1920,11 +1905,8 @@ function setPhase(i){
   renderJournal();
   renderVitals();
   syncSarah(); laSync();
-  /* care-stage toggle: Claire only, in the Care phase */
-  const csG=document.getElementById('careStageGroup'), csS=document.getElementById('careStageSep');
-  const showCS=(phaseIdx===1)&&(CUR==='claire');
-  if(csG){ csG.hidden=!showCS; if(csS) csS.hidden=!showCS; }
-  if(phaseIdx!==1){ careStage=0; document.querySelectorAll('.cs').forEach(b=>b.classList.toggle('on',+b.dataset.cs===0)); }
+  /* testing is now its own journey step: phase 2 = In Care – Testing */
+  careStage=(phaseIdx===2)?1:0;
   renderCareStage();
 }
 function gotoPhase(i){ setPhase(i); go('status'); }
@@ -2082,18 +2064,19 @@ function stopSharing(){
 function vLabel(){const p=PERSONAS[CUR];return p.user===p.patient?'your visit':p.patient+"'s visit";}
 function updateShareUI(){
   const cc=document.getElementById('ccSub');
-  const row=document.getElementById('shareRowLabel');
+  const rows=document.querySelectorAll('.js-share-label');
+  const setRow=t=>rows.forEach(r=>r.textContent=t);
   const names=shContacts().filter((c,i)=>share.f[i].on).map(c=>c.name);
   if(names.length===0){
     cc.textContent='Not sharing yet · invite someone';
-    if(row) row.textContent='Let someone follow '+vLabel();
+    setRow('Let someone follow '+vLabel());
   }else if(names.length===1){
     const i=share.f.findIndex(f=>f.on);
     cc.innerHTML='<span style="color:var(--green);">●</span> '+names[0]+' is following · '+TIER_NAMES[share.f[i].tier];
-    if(row) row.textContent=names[0]+' is following '+vLabel();
+    setRow(names[0]+' is following '+vLabel());
   }else{
     cc.innerHTML='<span style="color:var(--green);">●</span> '+names.join(' & ')+' are following';
-    if(row) row.textContent=names.join(' & ')+' are following '+vLabel();
+    setRow(names.join(' & ')+' are following '+vLabel());
   }
 }
 function hideAdvPhone(){ document.getElementById('sarahWrap').classList.remove('show'); }
@@ -2102,6 +2085,7 @@ let curCond='steady';
 const S_PHASES=[
   {txt:"She's been seen by a nurse and is safe",sub:'Waiting to see a provider',wait:true,steps:['done','done','now','future','future']},
   {txt:"She's in a care space being seen now",sub:'With the care team · Bay 4',wait:false,steps:['done','done','done','now','future']},
+  {txt:"She's having tests done",sub:'Waiting on results · Bay 4',wait:false,steps:['done','done','done','now','future']},
   {txt:'Her visit is complete',sub:'Discharged 1:12 PM today',wait:false,steps:['done','done','done','done','done']}
 ];
 function syncSarah(){
@@ -2168,8 +2152,6 @@ function updateQCount(){
 function renderJournal(){
   const p=PERSONAS[CUR]; if(!p) return;
   const waiting=(phaseIdx===0);
-  const hist=waiting?p.j.hist.filter(h=>h[1]==='Triage'):p.j.hist;
-  document.getElementById('painHist').innerHTML=hist.map(h=>'<div class="vrow"><div class="vtime"><b>'+h[0]+'</b><span>'+h[1]+'</span></div><div class="vvals" style="font-size:12.5px;color:var(--sec);">'+h[2]+'</div><span class="painpill '+painCls(h[3])+'">'+h[3]+'/10</span></div>').join('');
   const qs=waiting?[]:p.j.qs;
   document.getElementById('qList').innerHTML=qs.map(q=>qRowHTML(q.q, !!q.ans)).join('');
   updateQCount();
@@ -2353,6 +2335,7 @@ function finishMed(){
 const LA_PHASES=[
   {txt:'ED wait', num:()=>H_COND[curCond].range+'<span>min</span>', st:()=>PERSONAS[CUR].laWait, c1:['Est. wait',()=>H_COND[curCond].range+' min'], c2:['Up next','Clinician'], segs:['on','on','cur','']},
   {txt:'In care', num:()=>PERSONAS[CUR].bay, st:()=>PERSONAS[CUR].laCare, c1:['Where',()=>PERSONAS[CUR].bay], c2:['Up next','Treatment'], segs:['on','on','on','cur']},
+  {txt:'In care', num:()=>PERSONAS[CUR].bay, st:()=>'Waiting on your test results — Dr. Khan will review them with you once they’re back.', c1:['Where',()=>PERSONAS[CUR].bay], c2:['Up next','Results'], segs:['on','on','on','cur']},
   {txt:'Visit done', num:()=>'✓', st:()=>'Your visit is complete. Discharged '+PERSONAS[CUR].dc+'.', c1:['Discharged',()=>PERSONAS[CUR].dc], c2:['Summary','Ready'], segs:['on','on','on','on']}
 ];
 function laSync(){
@@ -2398,7 +2381,7 @@ claire:{
   nav:{greet:'Hi Claire, how can I help?',
     chips:["Why isn't it first come, first served?",'Can I leave and come back?','Who is looking after me?'],
     ans:{"Why isn't it first come, first served?":ANS_FIRSTCOME,'Can I leave and come back?':ANS_LEAVE,'Who is looking after me?':ANS_WHO}},
-  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier today',
+  j:{sub:'Questions and notes, just for you',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier today',
     hist:[['11:15 AM','Nurse check','Aching, a little better',5],['9:39 AM','Triage','Sharp when breathing deeply',7]],
     qs:[{q:'Do I need more tests, like a stress test?',meta:'Added 10:02 AM · not asked yet'},{q:'Can I keep taking my blood-pressure pill today?',meta:'Asked at triage',ans:'Yes, take it as usual, with food.',ansMeta:'Answered by Dr. Khan · 11:20 AM'}],
     suggWait:['Will I need more tests?','How will I know when it is my turn?'],
@@ -2435,7 +2418,7 @@ margaret:{
     ans:{"Will someone tell Sarah how I'm doing?":"If you share your visit from the menu (☰ → Shared with), Sarah gets a live link and sees each step as it happens, no calls needed. I can't send it for you, but it takes two taps.",
       'Who is looking after me?':ANS_WHO,
       'Can someone help me move around?':"Yes. Flag James, the care assistant, or ask at the desk. With a hip injury please don't walk unaided; someone will come to you."}},
-  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+  j:{sub:'Questions and notes, just for you',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['9:10 PM','Nurse check','Aching when still',5],['8:04 PM','Triage','Sharp when standing',7]],
     qs:[{q:'Will I need a hip X-ray?',meta:'Added 8:20 PM · not asked yet'},{q:'Can I take my arthritis pill tonight?',meta:'Asked at triage',ans:'Yes, your usual dose, with food.',ansMeta:'Answered by Marcus Lee · 8:10 PM'}],
     suggWait:['Will I need an X-ray?','How long might the wait be?'],
@@ -2472,7 +2455,7 @@ elena:{
     ans:{'Is my heart okay?':"I can't assess your heart. That's for your care team. What I can tell you: your heart rate was measured at 96 bpm at triage and a clinician has reviewed it, and an ECG is planned. If the fluttering changes or gets worse, tap 'Report a symptom change' in Care. It goes straight to the triage nurse. And while you wait, many people find the <a onclick=\"go('comfort');openMed()\">guided breathing in Care</a> helps quiet the loop of fear feeding the racing.",
       'Can I do anything about the anxiety?':"Many people find the <a onclick=\"go('comfort');openMed()\">guided breathing in Care</a> interrupts the loop: fear feeding the racing, racing feeding the fear. It won't cost you your place in the queue, and you'll still get every update.",
       "Why isn't it first come, first served?":ANS_FIRSTCOME}},
-  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+  j:{sub:'Questions and notes, just for you',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['11:40 PM','Self check','Tightness when it races',2],['11:12 PM','Triage','No real pain, some pressure',1]],
     qs:[{q:'Do I need a heart monitor after tonight?',meta:'Added 11:32 PM · not asked yet'},{q:"Is it bad that it's been racing for two hours?",meta:'Asked at triage',ans:'Your rate is elevated but steady. The ECG will tell us more.',ansMeta:'Answered by Marcus Lee · 11:14 PM'}],
     suggWait:['Could this be anxiety, my heart, or both?','What happens while I wait?'],
@@ -2509,7 +2492,7 @@ diana:{
     ans:{'Is this my fault?':"No. Trying a new food is exactly what you're supposed to do at 7 months, and bringing her in tonight was the right call. Reactions like this are common and usually mild.",
       'Can I feed Lily while we wait?':"Check with the triage nurse first. If Lily needs tests, they'll say whether feeding now is okay. Tap 'Chat with a human' and someone will come to you.",
       'What will they do for a crying baby?':"A full head-to-toe exam, and sometimes simple tests. Inconsolable crying in an infant is always taken seriously. It doesn't mean something terrible is happening."}},
-  j:{sub:"Lily's symptoms, your questions and notes, all in one place",kicker:'Lily check-in',q:"How is Lily's crying right now?",lo:'Settled',hi:'Inconsolable',word:"Lily's crying",earlier:'Earlier tonight',
+  j:{sub:"Your questions and notes for Lily, just for you",kicker:'Lily check-in',q:"How is Lily's crying right now?",lo:'Settled',hi:'Inconsolable',word:"Lily's crying",earlier:'Earlier tonight',
     hist:[['3:15 AM','Self check','Settled briefly after rocking',6],['2:40 AM','Triage','Crying in cycles, legs pulled up',8]],
     qs:[{q:'Could the new food (pear) have caused this?',meta:'Added 3:00 AM · not asked yet'},{q:'Should I stop solids for now?',meta:'Asked at triage',ans:'Hold off until the doctor has seen her.',ansMeta:'Answered by Marcus Lee · 2:44 AM'}],
     suggWait:['What might they check tonight?','How long might the wait be?'],
@@ -2546,7 +2529,7 @@ marcus:{
     ans:{'Why do people who came after me go first?':"The ER runs on urgency and resources, not arrival order. Your visit likely needs just one step, an X-ray, so you're queued for a fast track space. Sicker patients and multi-step visits get pulled first, and the same rule protects you if you get worse.",
       'What does "triage" actually mean?':"It's the sorting decision made when you arrived: how urgent you are, and how many steps your care will take. Yours: stable, one step expected.",
       'Do I need to do anything right now?':"No. You're in the queue and the team knows where you are. If your wrist pain gets worse or you feel new numbness, report it in Care right away."}},
-  j:{sub:'Questions, pain and notes, all in one place',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+  j:{sub:'Questions and notes, just for you',kicker:'Pain check-in',q:"How's your pain right now?",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['7:10 PM','Self check','Wrist throbbing and swollen',6],['6:25 PM','Triage','Wrist pain sharp with movement',6]],
     qs:[{q:'Will I need a cast tonight?',meta:'Added 6:40 PM · not asked yet'},{q:'Was the ER the right place to come?',meta:'Asked at triage',ans:'Yes. Your wrist needs an X-ray tonight, and this is the right place for that.',ansMeta:'Answered by Marcus Lee · 6:28 PM'}],
     suggWait:['Will I need an X-ray?','How does the fast track work?'],
@@ -2583,7 +2566,7 @@ yuki:{
     ans:{'通訳はいつ来ますか？ (When will the interpreter come?)':"A Japanese interpreter joins by phone before the doctor speaks with you. For Japanese there can be a wait. Your medications and allergies are already translated for the team. · 医師の診察には必ず通訳が入ります。お薬とアレルギーは翻訳済みです。",
       'Can I show where it hurts without words?':"Yes. The journal check-in and the body map at triage let you point and rate, no translation needed. The nurse sees it in English instantly.",
       "Why isn't it first come, first served?":ANS_FIRSTCOME}},
-  j:{sub:'Questions, pain and notes, all in one place · 記録',kicker:'Pain check-in · 痛みの記録',q:"How's your pain right now? · 今の痛みは？",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
+  j:{sub:'Questions and notes, just for you · 記録',kicker:'Pain check-in · 痛みの記録',q:"How's your pain right now? · 今の痛みは？",lo:'No pain',hi:'Worst imaginable',word:'Pain',earlier:'Earlier tonight',
     hist:[['9:30 PM','Self check','Burning, steady · 灼熱感',7],['8:52 PM','Triage','Upper abdomen, severe · 上腹部',8]],
     qs:[{q:'Could this be my reflux medicine? · 薬と関係がありますか？',meta:'Added 9:05 PM · not asked yet'},{q:'Can I drink water? · 水を飲んでもいいですか？',meta:'Asked at triage',ans:'Small sips only, until the doctor confirms.',ansMeta:'Answered by Marcus Lee · 9:00 PM'}],
     suggWait:['When will the interpreter come?','What tests might I need?'],
@@ -2679,12 +2662,14 @@ function applyPersona(key){
   document.getElementById('sFoot').innerHTML='Access ends when '+p.patient+"'s visit ends.<br>"+p.pn+' can stop sharing at any time.';
   /* phase copy */
   PHASES[0].title='Welcome '+p.user;
-  PHASES[2].sub='Discharged '+p.dc+' · Today';
+  PHASES[3].sub='Discharged '+p.dc+' · Today';
   S_PHASES[0].txt=p.pn+"'s been seen by a nurse and is safe";
   S_PHASES[1].txt=p.pn+"'s in a care space being seen now";
   S_PHASES[1].sub='With the care team · '+p.bay;
-  S_PHASES[2].txt=p.posCap+' visit is complete';
-  S_PHASES[2].sub='Discharged '+p.dc+' today';
+  S_PHASES[2].txt=p.pn+"'s having tests done";
+  S_PHASES[2].sub='Waiting on results · '+p.bay;
+  S_PHASES[3].txt=p.posCap+' visit is complete';
+  S_PHASES[3].sub='Discharged '+p.dc+' today';
   setPhase(0);
 }
 document.querySelectorAll('.pp').forEach(b=>b.addEventListener('click',()=>{
