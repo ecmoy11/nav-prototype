@@ -13,7 +13,6 @@
   --line:#EBE6DC; --line2:#DFD9CD; --surface:#EFEAE0;
   --slate:#3E4E5A; --slate-deep:#33414C; --slate-soft:#E3E8EC;
   --blue:#2563C9; --blue-soft:#E9F0FD; --blue-deep:#1E4FA3;
-  --navy:#173F80; --navy-soft:#DCE5F4;
   --green:#1E9E6A; --green-soft:#E5F4ED;
   --amber:#BC8418; --amber-soft:#FAF0D8;
   --violet:#6B4FD0; --violet-soft:#EDEAFB;
@@ -68,7 +67,6 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .chip.green{background:var(--green-soft);} .chip.green svg{stroke:var(--green);}
 .chip.amber{background:var(--amber-soft);} .chip.amber svg{stroke:var(--amber);}
 .chip.violet{background:var(--violet-soft);} .chip.violet svg{stroke:var(--violet);}
-.chip.navy{background:var(--navy-soft);} .chip.navy svg{stroke:var(--navy);}
 .chip.red{background:var(--red-soft);} .chip.red svg{stroke:var(--red-ink);}
 .ttl{font-size:15.5px;font-weight:600;letter-spacing:-.01em;}
 .sub{font-size:13px;color:var(--sec);margin-top:2px;}
@@ -242,7 +240,6 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .v-ic.blue{background:var(--blue-soft);} .v-ic.blue svg{stroke:var(--blue);}
 .v-ic.amber{background:var(--amber-soft);} .v-ic.amber svg{stroke:var(--amber);}
 .v-ic.green{background:var(--green-soft);} .v-ic.green svg{stroke:var(--green);}
-.v-ic.navy{background:var(--navy-soft);} .v-ic.navy svg{stroke:var(--navy);}
 .v-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
 .v-tag.ok{color:var(--green);background:var(--green-soft);}
 .v-tag.hi{color:var(--amber);background:var(--amber-soft);}
@@ -942,8 +939,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             </div>
           </div>
           <div class="gap"></div>
-          <div class="card tappable" onclick="openMap('status')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
-            <span class="v-ic navy" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
+          <div class="card tappable" onclick="go('hospitalmap')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
+            <span class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
             <div style="flex:1;min-width:0;">
               <b style="font-size:14.5px;letter-spacing:-.01em;">Find your way around</b>
               <div style="font-size:12px;color:var(--sec);margin-top:2px;">Cafe, restrooms, exits — and where you are</div>
@@ -1154,7 +1151,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <section class="screen" id="hospitalmap">
       <div class="scroll">
         <div class="headrow" style="justify-content:flex-start;gap:12px;align-items:center;">
-          <button class="backbtn" onclick="go(mapBack)" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="backbtn" onclick="go('status')" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
           <div><h2 class="title">Find your way</h2><div class="subt" id="mapWhere">You're in Bay 4</div></div>
         </div>
         <div class="gap"></div>
@@ -1168,7 +1165,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
               <rect x="14"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="37"  y="53" font-size="13" fill="#646B76">1</text>
               <rect x="68"  y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="91"  y="53" font-size="13" fill="#646B76">2</text>
               <rect x="122" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="145" y="53" font-size="13" fill="#646B76">3</text>
-              <rect id="fpBay" x="176" y="28" width="46" height="40" rx="9" fill="#3E4E5A" stroke="#3E4E5A"/><text id="fpBayT" x="199" y="52" font-size="11" fill="#fff">You</text>
+              <rect x="176" y="28" width="46" height="40" rx="9" fill="#3E4E5A" stroke="#3E4E5A"/><text x="199" y="52" font-size="11" fill="#fff">You</text>
+              <circle cx="214" cy="35" r="4.5" fill="#1E9E6A" stroke="#fff" stroke-width="1.5"/>
               <rect x="230" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="253" y="53" font-size="13" fill="#646B76">5</text>
               <rect x="284" y="28" width="46" height="40" rx="9" fill="#fff" stroke="#DFD9CD"/><text x="307" y="53" font-size="13" fill="#646B76">6</text>
             </g>
@@ -1179,11 +1177,10 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             <g font-family="Hanken Grotesk, sans-serif" font-weight="600" text-anchor="middle">
               <rect x="14"  y="102" width="150" height="42" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="89"  y="127" font-size="11" fill="#191C20">Nurses' station</text>
               <rect x="180" y="102" width="150" height="42" rx="10" fill="#E9F0FD"/><text x="255" y="127" font-size="11" fill="#191C20">Restrooms</text>
-              <rect id="fpWait" x="14"  y="152" width="150" height="48" rx="10" fill="#E5F4ED"/><text id="fpWaitT" x="89"  y="180" font-size="11" fill="#191C20">Waiting area</text>
+              <rect x="14"  y="152" width="150" height="48" rx="10" fill="#E5F4ED"/><text x="89"  y="180" font-size="11" fill="#191C20">Family waiting</text>
               <rect x="180" y="152" width="150" height="48" rx="10" fill="#FAF0D8"/><text x="255" y="180" font-size="11" fill="#191C20">Cafe &amp; vending</text>
-              <rect id="fpExit" x="14"  y="208" width="316" height="44" rx="10" fill="#fff" stroke="#DFD9CD"/><text id="fpExitT" x="172" y="234" font-size="11" fill="#191C20">Main entrance &amp; Exit</text>
+              <rect x="14"  y="208" width="316" height="44" rx="10" fill="#fff" stroke="#DFD9CD"/><text x="172" y="234" font-size="11" fill="#191C20">Main entrance &amp; Exit</text>
             </g>
-            <circle id="fpDot" cx="214" cy="35" r="4.5" fill="#1E9E6A" stroke="#fff" stroke-width="1.5"/>
           </svg>
           <div class="map-legend"><span class="lg-you"></span>You are here — <span id="mapBayLg" style="margin-left:4px;color:var(--ink);">Bay 4</span></div>
         </div>
@@ -1208,7 +1205,7 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
             </div>
             <div class="maprow">
               <span class="mp-ic" style="background:var(--green-soft);color:var(--green);"><svg viewBox="0 0 24 24"><path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></span>
-              <div class="mp-b"><b>Waiting area</b><span>Near the main entrance, to your left. Family can wait here too.</span></div>
+              <div class="mp-b"><b>Family waiting area</b><span>Near the main entrance, to your left.</span></div>
               <span class="mp-dist">~2 min</span>
             </div>
             <div class="maprow">
@@ -1268,33 +1265,26 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
     <section class="screen" id="comfort">
       <div class="scroll">
         <h2 class="title">Care</h2>
-        <div class="subt" id="cfSub">Small things you can do while you wait</div>
+        <div class="subt">Small things you can do while you wait</div>
         <div class="gap lg"></div>
-        <div class="worse" onclick="openWorse()" style="margin-bottom:11px;">
-          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
-          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
-          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMed()">
+          <div class="row">
+            <div class="chip green"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
+            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
+            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
         </div>
-        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="confirmAction('Got it, we won\'t miss you','Check back in when you return.')">
+        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="confirmAction('Got it, we won\'t miss you','Check back in when you return.')">
           <div class="row">
             <div class="chip amber"><svg viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4M14 16l4-4-4-4M18 12H9"/></svg></div>
             <div><div class="ttl">Stepping outside?</div><div class="sub">Let us know so we don't miss you</div></div>
             <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
           </div>
         </div>
-        <div class="card sm tappable" style="margin-bottom:11px;padding:15px 16px;" onclick="openMap('comfort')">
-          <div class="row">
-            <div class="chip navy"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></div>
-            <div><div class="ttl">Find your way around</div><div class="sub" id="cfMapSub">Cafe, restrooms, exits — and where you are</div></div>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-          </div>
-        </div>
-        <div class="card sm tappable" style="margin-bottom:18px;padding:15px 16px;" onclick="openMed()">
-          <div class="row">
-            <div class="chip green"><svg viewBox="0 0 24 24"><g stroke-width="1.3"><circle cx="12" cy="7.8" r="4.2"/><circle cx="15.64" cy="9.9" r="4.2"/><circle cx="15.64" cy="14.1" r="4.2"/><circle cx="12" cy="16.2" r="4.2"/><circle cx="8.36" cy="14.1" r="4.2"/><circle cx="8.36" cy="9.9" r="4.2"/></g></svg></div>
-            <div><div class="ttl">Take a guided meditation</div><div class="sub">Short sessions made for waiting rooms</div></div>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-          </div>
+        <div class="worse" onclick="openWorse()">
+          <div class="chip blue"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+          <div><h4>Report a symptom change</h4><p id="worseSub">Anything new or different. A nurse will re-check you. Use any time.</p></div>
+          <span class="chev" style="margin-left:auto;"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
         </div>
       </div>
     </section>
@@ -1353,14 +1343,6 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
         <div class="gap"></div>
         <div class="lrailwrap"><div class="lrail" id="lRail"></div></div>
         <div id="lFeed"></div>
-        <div class="card tappable" onclick="startTour()" style="display:flex;align-items:center;gap:13px;padding:15px 16px;margin-top:22px;">
-          <div class="v-ic blue" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5"/></svg></div>
-          <div style="flex:1;min-width:0;">
-            <b style="font-size:14.5px;letter-spacing:-.01em;">Take a quick tour</b>
-            <div style="font-size:12px;color:var(--sec);margin-top:2px;">See what each part of the app does, about a minute.</div>
-          </div>
-          <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-        </div>
       </div>
     </section>
     <!-- 5b ARTICLE (Learn detail) -->
@@ -1755,49 +1737,6 @@ function toggleScrollLock(){
 }
 function ctlHide(){ document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); }
 function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); }
-/* ===== Hospital map: remember where we came from + phase-aware "you are here" ===== */
-let mapBack='status';
-function openMap(from){ mapBack = from || 'status'; renderMap(); go('hospitalmap'); }
-function renderMap(){
-  const bay=document.getElementById('fpBay'), bayT=document.getElementById('fpBayT'),
-        dot=document.getElementById('fpDot'), wait=document.getElementById('fpWait'),
-        waitT=document.getElementById('fpWaitT'), exit=document.getElementById('fpExit'),
-        exitT=document.getElementById('fpExitT');
-  if(!bay) return;
-  const p=(typeof PERSONAS!=='undefined'&&PERSONAS[CUR])?PERSONAS[CUR]:null;
-  const bayName=p?p.bay:'Bay 4';
-  const bayNum=(bayName.match(/\d+/)||['4'])[0];
-  /* reset every room to its resting fill */
-  bay.setAttribute('fill','#fff');      bay.setAttribute('stroke','#DFD9CD');
-  bayT.setAttribute('fill','#646B76');  bayT.setAttribute('font-size','13'); bayT.setAttribute('y','53'); bayT.textContent=bayNum;
-  wait.setAttribute('fill','#E5F4ED');  waitT.setAttribute('fill','#191C20'); waitT.textContent='Waiting area';
-  exit.setAttribute('fill','#fff');     exit.setAttribute('stroke','#DFD9CD'); exitT.setAttribute('fill','#191C20');
-  const here=(typeof phaseIdx!=='undefined'?phaseIdx:0)===0 ? 'wait'
-           : (typeof phaseIdx!=='undefined'&&phaseIdx===3) ? 'exit' : 'bay';
-  if(here==='bay'){
-    bay.setAttribute('fill','#3E4E5A'); bay.setAttribute('stroke','#3E4E5A');
-    bayT.setAttribute('fill','#fff'); bayT.setAttribute('font-size','11'); bayT.setAttribute('y','52'); bayT.textContent='You';
-    dot.setAttribute('cx','214'); dot.setAttribute('cy','35');
-    setTxt('mapWhere',"You're in "+bayName); setTxt('mapBayLg',bayName);
-  } else if(here==='wait'){
-    wait.setAttribute('fill','#3E4E5A'); waitT.setAttribute('fill','#fff'); waitT.textContent='You — waiting area';
-    dot.setAttribute('cx','156'); dot.setAttribute('cy','159');
-    setTxt('mapWhere',"You're in the waiting area"); setTxt('mapBayLg','Waiting area');
-  } else {
-    exit.setAttribute('fill','#3E4E5A'); exit.setAttribute('stroke','#3E4E5A'); exitT.setAttribute('fill','#fff');
-    dot.setAttribute('cx','322'); dot.setAttribute('cy','215');
-    setTxt('mapWhere',"On your way out"); setTxt('mapBayLg','Main entrance');
-  }
-}
-function renderComfort(){
-  const waiting=(typeof phaseIdx==='undefined')||phaseIdx===0;
-  const after=(typeof phaseIdx!=='undefined')&&phaseIdx===3;
-  setTxt('cfSub', waiting ? 'Small things you can do while you wait'
-        : after ? 'Small things you can do before you head out'
-        : 'Small things you can do while you’re here');
-  setTxt('cfMapSub', waiting ? 'Cafe, restrooms, exits — and where you are'
-        : 'Cafe, restrooms, exits — and where your care space is');
-}
 function dismissTourNote(e){ if(e&&e.stopPropagation) e.stopPropagation(); const n=document.getElementById('tourNote'); if(n) n.style.display='none'; }
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -2261,8 +2200,6 @@ function setPhase(i){
   var hc=document.getElementById('humanCard'); if(hc) hc.style.display = (phaseIdx===0 ? 'none' : '');
   renderJournal();
   renderVitals();
-  renderMap();
-  renderComfort();
   syncSarah(); laSync();
   /* testing is now its own journey step: phase 2 = In Care – Testing */
   careStage=(phaseIdx===2)?1:0;
@@ -2284,7 +2221,7 @@ document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('c
 const TOUR=[
   {screen:'status',   sel:'.tab[data-screen="status"]',   title:'Your status, live',      txt:'Where you are in your visit, your current wait estimate, and who’s caring for you, updated as things change.'},
   {screen:'status',   sel:'#status .menubtn',             title:'Menu & sharing',     txt:'Your health profile, settings, and “Share my visit”. Send a loved one a live link, no app needed.'},
-  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Report a symptom change, find your way around the department, or take a guided breathing session — without leaving your seat.'},
+  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Take a guided breathing session or reach out to your care team, without leaving your seat.'},
   {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'Jot down symptoms and questions for the doctor, and see the vitals your care team has recorded.'},
   {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Plain-language explanations of how the ER really works, and why waits happen.'},
   {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav isn’t a substitute for medical advice; in an emergency, tell a staff member.'}
@@ -2996,7 +2933,7 @@ function applyPersona(key){
   /* in-care phase */
   setTxt('careTtl',p.careTtl);
   document.getElementById('bayPill').innerHTML='<span class="d" style="background:var(--green);"></span>'+p.bay;
-  renderMap();
+  setTxt('mapWhere',"You're in "+p.bay); setTxt('mapBayLg',p.bay);
   setTxt('careCap',p.careCap); setTxt('nowIncare',p.nowCare);
   /* after phase */
   setTxt('dcTtl',p.dcTtl); setTxt('dcSub','Discharged '+p.dc+' · Today');
@@ -3148,10 +3085,10 @@ const L_TOPICS=[
   {id:'sleepapnea',cat:'breath',t:'Sleep apnea',d:"Why snoring isn't nothing, and what testing involves.",min:4,ph:'photo-1758524940928-c6ab833ca3c7',by:'Unsplash'},
   {id:'back',cat:'pain',t:'Back pain',d:"What imaging can and can't tell you about a sore back.",min:5,ph:'photo-1618914241652-ff0a094b5a86',by:'Toa Heftiba'},
   {id:'falls',cat:'pain',t:'After a fall',d:'What gets checked, and how to make the next one less likely.',min:5,ph:'photo-1742498481569-1e2a68882d5c',by:'Unsplash'},
-  {id:'head',cat:'pain',t:'Head injuries & concussion',d:'The signs worth coming back for in the next 48 hours.',min:4,ph:'photo-1776047129625-50b8c7299705',by:'Unsplash'},
+  {id:'head',cat:'pain',t:'Head injuries & concussion',d:'The signs worth coming back for in the next 48 hours.',min:4,ph:'photo-1618498390344-445c804f2ac5',by:'Unsplash'},
   {id:'medsafe',cat:'meds',t:'Medication safety',d:'Keeping one accurate list, and why it matters here.',min:4,ph:'photo-1727657409504-e2b82feba141',by:'Unsplash'},
   {id:'painmed',cat:'meds',t:'Pain medicine in the ER',d:'What you can be offered, and what to say about how it feels.',min:4,ph:'photo-1628771065518-0d82f1938462',by:'Unsplash'},
-  {id:'allergy',cat:'meds',t:'Allergies & reactions',d:'Telling a side effect from a true allergy.',min:3,ph:'photo-1541752988809-6073b61ad3db',by:'Unsplash'},
+  {id:'allergy',cat:'meds',t:'Allergies & reactions',d:'Telling a side effect from a true allergy.',min:3,ph:'photo-1745939921744-ba8ef27940bf',by:'Unsplash'},
   {id:'fever',cat:'kids',t:'Fever in children',d:'Numbers matter less than how they look and act.',min:5,ph:'photo-1584650000640-a70adafd062e',by:'Unsplash'},
   {id:'kidser',cat:'kids',t:'Bringing a child to the ER',d:'What to pack, what to expect, and how to keep them calm.',min:5,ph:'photo-1578496781379-7dcfb995293d',by:'Unsplash'},
   {id:'stress',cat:'mind',t:'Waiting is its own stress',d:'A two-minute way to settle while you sit here.',min:2,ph:'photo-1758274529460-455002cfe74c',by:'Unsplash'},
