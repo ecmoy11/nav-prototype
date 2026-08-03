@@ -626,8 +626,8 @@ body.ctl-off{padding-top:82px;}
 .tab-pill{position:absolute;top:50%;left:0;width:0;height:52px;transform:translateY(-50%);background:var(--ink);border-radius:26px;opacity:0;z-index:0;pointer-events:none;}
 .tabbar.ready .tab-pill{transition:left .4s cubic-bezier(.34,.02,.16,1), width .4s cubic-bezier(.34,.02,.16,1), opacity .22s ease;}
 .tab{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:#9CA2AB;font-size:11px;font-weight:500;cursor:pointer;flex:1;transition:color .28s ease;}
-.tab svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s ease;}
-.tab:active svg{transform:scale(.9);}
+.tab>svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s ease;}
+.tab:active>svg{transform:scale(.9);}
 .tab.active{color:#fff;font-weight:600;}
 .companion{flex:none;align-self:center;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:50%;box-shadow:var(--sh-card), 0 14px 30px rgba(20,23,28,.13);cursor:pointer;transition:transform .14s ease, background .22s ease, border-color .22s ease;}
 .companion:active{transform:scale(.95);}
@@ -916,7 +916,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
 <body>
 <div class="intro">
   <h1>Active Autonomy Companion</h1>
-  <p>Clickable prototype — tap buttons and the bottom tabs to navigate. Share the visit (menu ☰ on Status) to reveal the advocate view. On the phone home screen, tap the Dynamic Island for live wait &amp; status.</p>
+  <p>Clickable prototype — tap buttons and the bottom tabs to navigate. Share the visit (menu ☰ on Home) to reveal the advocate view. On the phone home screen, tap the Dynamic Island for live wait &amp; status.</p>
 </div>
 <!-- user journey — lives above the phone so it stays reachable with the controls collapsed -->
 <div class="jbar" id="jbar">
@@ -1650,7 +1650,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
       <nav class="tabbar">
         <div class="tab-pill" id="tabPill" aria-hidden="true"></div>
         <div class="tab" data-screen="status" onclick="go('status')">
-          <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Status</div>
+          <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</div>
         <div class="tab" data-screen="comfort" onclick="go('comfort')">
           <svg viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762"/></svg>Care</div>
         <div class="tab" data-screen="journal" onclick="go('journal')">
@@ -2571,13 +2571,13 @@ function navReply(q){
   const s=q.toLowerCase();
   if(/(heart|chest|cardiac|palpitat|flutter|attack)/.test(s)&&p['Is my heart okay?']) return p['Is my heart okay?'];
   if(/(anxi|scared|afraid|panic|calm|nervous)/.test(s)&&p['Can I do anything about the anxiety?']) return p['Can I do anything about the anxiety?'];
-  if(/(how long|wait|when.*(seen|turn)|eta)/.test(s)) return "Your current estimate is on the Status screen. It's a conservative range based on how busy the ER is right now and your triage priority, and it updates as conditions change.";
+  if(/(how long|wait|when.*(seen|turn)|eta)/.test(s)) return "Your current estimate is on the Home tab. It's a conservative range based on how busy the ER is right now and your triage priority, and it updates as conditions change.";
   if(/(first.?come|before me|skip|queue|line|order)/.test(s)) return answers["Why isn't it first come, first served?"];
   if(/(leave|outside|step out|bathroom|toilet|come back|car)/.test(s)) return answers["Can I leave and come back?"];
   if(/(who|doctor|nurse|looking after|care team|staff)/.test(s)) return answers["Who is looking after me?"];
   if(/(water|blanket|food|eat|drink|hungry|thirsty|cold)/.test(s)) return "You can ask any staff member for water or a blanket. One note: check with your nurse before eating or drinking, since some tests need an empty stomach.";
   if(/(pain|hurt|worse|dizzy|faint|sick)/.test(s)) return "If anything feels new or worse, tap “Report a symptom change” in Care. It goes straight to the triage nurse, and a re-check is never a bother.";
-  if(/(result|test|blood|ecg|x.?ray|scan)/.test(s)) return "Results go to your clinician as they come in, and your Status screen updates the moment something changes. Your care team will explain what results mean.";
+  if(/(result|test|blood|ecg|x.?ray|scan)/.test(s)) return "Results go to your clinician as they come in, and your Home tab updates the moment something changes. Your care team will explain what results mean.";
   return "I can help with questions about this visit: the wait, your status, who's looking after you, and what happens next. For medical questions, your care team is the right place.";
 }
 function navSay(q){
