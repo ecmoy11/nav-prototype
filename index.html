@@ -661,7 +661,7 @@ body.ctl-off{padding-top:82px;}
 .faces i:first-child{margin-left:0;}
 .faces i img{width:100%;height:100%;object-fit:cover;}
 .faces i svg{width:16px;height:16px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
-.nav-cap{font-size:11.5px;color:var(--mut);text-align:center;line-height:1.45;margin-top:14px;padding:0 10px;}
+.nav-cap{font-size:12.5px;color:var(--mut);text-align:center;line-height:1.45;margin-top:14px;padding:0 10px;}
 
 /* ===== stage (two devices) ===== */
 .stage{display:flex;align-items:flex-start;justify-content:center;gap:34px;flex-wrap:wrap;}
@@ -1462,7 +1462,6 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
         </div>
         <div class="nav-hero" id="navHero">
           <h2 class="nav-greet" id="navGreet">Hi Claire, how can I help?</h2>
-          <p class="nav-disclaim">Nav is an AI guide to your visit, not a substitute for medical advice. If you feel severely unwell or your symptoms get worse, tell a staff member or nurse right away.</p>
         </div>
         <div class="chat" id="chat" hidden></div>
         <div class="nav-foot">
@@ -1483,7 +1482,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             <div class="qchip" onclick="ask(this)">Can I leave and come back?</div>
             <div class="qchip" onclick="ask(this)">Who is looking after me?</div>
           </div>
-          <p class="nav-cap">Nav can make mistakes and isn't monitored by staff. If it's an emergency, tell a staff member right away.</p>
+          <p class="nav-cap">Nav can be wrong and isn’t watched by staff. If you feel worse, tell a nurse in person.</p>
         </div>
       </div>
       <div class="inputbar">
@@ -2734,7 +2733,7 @@ const TOUR=[
   {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Report a symptom change, find your way around the department, or take a guided breathing session — without leaving your seat.'},
   {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'Jot down symptoms and questions for the doctor, and see the vitals your care team has recorded.'},
   {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Plain-language explanations of how the ER really works, and why waits happen.'},
-  {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav isn’t a substitute for medical advice; in an emergency, tell a staff member.'}
+  {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav can be wrong and isn’t watched by staff — if you feel worse, tell a nurse in person.'}
 ];
 let tourIdx=-1;
 function startTour(){ dismissTourNote(); tourIdx=-1; nextTour(); }
