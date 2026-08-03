@@ -732,6 +732,13 @@ body.ctl-off{padding-top:82px;}
 .crow .tt{font-size:14px;font-weight:600;}
 .crow .ts{font-size:11.5px;color:var(--mut);margin-top:1px;}
 .shf{display:block;width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff;outline:none;margin-bottom:10px;}
+/* ---- confirm-the-number step (HIPAA friction before a link is texted) ---- */
+.cfbox{border:1px solid var(--line);border-radius:18px;padding:15px 16px 16px;margin-top:14px;background:var(--surface);}
+.cfwho{display:flex;align-items:center;gap:11px;}
+.cfnum{font-size:27px;font-weight:650;letter-spacing:.005em;margin-top:13px;font-variant-numeric:tabular-nums;color:var(--ink);}
+.cfsrc{font-size:11.5px;color:var(--sec);margin-top:6px;line-height:1.45;}
+.cfwarn{display:flex;gap:10px;align-items:flex-start;background:var(--amber-soft);border-radius:14px;padding:12px 13px;margin:12px 0 4px;font-size:12.5px;line-height:1.5;}
+.cfwarn svg{width:17px;height:17px;flex:none;margin-top:1px;stroke:var(--amber);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
 .shf:focus{border-color:var(--slate);}
 .shf::placeholder{color:var(--mut);}
 .seg{display:flex;background:var(--surface);border-radius:13px;padding:3px;margin-bottom:11px;}
@@ -1645,6 +1652,40 @@ body.ctl-off{padding-top:82px;}
             <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
           <div class="sh-note">They only see what you choose on the next step.</div>
+        </div>
+
+        <!-- panel 3: confirm the number (HIPAA friction) -->
+        <div class="shs">
+          <div class="sh-title">Check the number before you send</div>
+          <div class="sh-sub" id="cfSub">This link opens your health information. Make sure it is going to the right phone.</div>
+          <div class="cfbox">
+            <div class="cfwho">
+              <div class="cav" style="background:var(--amber);" id="cfAv">S</div>
+              <div><div class="tt" id="cfName">Sarah Morgan</div><div class="ts" id="cfRel">Daughter</div></div>
+            </div>
+            <div class="cfnum" id="cfPhone">(626) &bull;&bull;&bull;-&bull;&bull;42</div>
+            <div class="cfsrc" id="cfSrc">From your hospital registration record. Only the last two digits are shown.</div>
+          </div>
+          <div class="cfwarn">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 9v4M12 16h.01"/></svg>
+            <div id="cfTier">She will see the full visit, including why you are here.</div>
+          </div>
+          <button class="btn" onclick="shDoSend()"><span id="cfSendLabel">Yes, send to Sarah</span>
+            <svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+          <button class="btn subtle" onclick="shNewPhoneForm()">Use a different number</button>
+          <div class="sh-note">The link is single use and stops working when your visit ends.</div>
+        </div>
+
+        <!-- panel 4: correct the number -->
+        <div class="shs">
+          <div class="sh-title">Send to a different number</div>
+          <div class="sh-sub" id="npSub">We will text the link here instead. This does not change your hospital record.</div>
+          <input class="shf" id="npPhone" type="tel" placeholder="Phone number" autocomplete="off">
+          <button class="btn" onclick="saveNewPhone()">Use this number
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <div class="sh-note">Read it back once before you send. Anyone holding this link sees what you share.</div>
         </div>
       </div>
     </div>
@@ -2667,7 +2708,7 @@ function addContact(){
   const rel=document.getElementById('acRel').value.trim();
   const phone=document.getElementById('acPhone').value.trim();
   if(!name||!phone){ showToast('Almost there','A name and phone number are needed to send the link.', false, bellPath); return; }
-  addedContacts.push({name:name.split(' ')[0], full:name, rel:(rel||'Contact')+' · '+phone, letter:name[0].toUpperCase(), pn:'They', pos:'their'});
+  addedContacts.push({name:name.split(' ')[0], full:name, rel:(rel||'Contact')+' · '+phone, letter:name[0].toUpperCase(), pn:'They', pos:'their', phone:phone, entered:true});
   share.f.push({on:false,tier:1});
   shRows();
   shPick(shContacts().length-1);
@@ -2678,7 +2719,7 @@ function shPick(i){
   setTxt('shSeeTitle','What can '+c.name+' see?');
   setTxt('shSeeSub','Dimmed items stay private.');
   setTxt('pvCap',c.name+"'s screen");
-  setTxt('shSendLabel',(f.on?'Update sharing for ':'Send link to ')+c.name);
+  setTxt('shSendLabel',(f.on?'Update sharing for ':'Review and send to ')+c.name);
   document.getElementById('shStopBtn').hidden=!f.on;
   shTier(f.tier);
   shGo(1);
@@ -2690,7 +2731,46 @@ function shTier(n){
   document.querySelectorAll('#shPreview .pvrow').forEach(r=>r.classList.toggle('off',+r.dataset.tier>n));
   if(share.pending===0&&f.on) syncSarah();
 }
+/* ---- confirm the number before any link is texted (HIPAA friction) ---- */
+const phoneOverrides={}; /* patient-corrected numbers, per persona; never written back to the record */
+function shPhoneOf(i){ return phoneOverrides[CUR+':'+i] || (shContacts()[i].phone||''); }
+function shPhoneEntered(i){ return !!phoneOverrides[CUR+':'+i] || !!shContacts()[i].entered; }
+function maskPhone(p){
+  const d=(p||'').replace(/\D/g,'');
+  if(d.length<6) return p||'';
+  const area=d.length>=10?'('+d.slice(-10,-7)+') ':'';
+  return area+'\u2022\u2022\u2022-\u2022\u2022'+d.slice(-2);
+}
 function shSend(){
+  const f=share.f[share.pending];
+  if(f.on){ shDoSend(); return; }   /* already following: this is a tier change, no new link goes out */
+  shConfirm();
+}
+function shConfirm(){
+  const i=share.pending, c=shContacts()[i], f=share.f[i];
+  const entered=shPhoneEntered(i), phone=shPhoneOf(i);
+  setTxt('cfName', c.full);
+  setTxt('cfAv', c.letter);
+  setTxt('cfRel', (c.rel||'').split(' · ')[0]);
+  setTxt('cfPhone', entered ? phone : maskPhone(phone));
+  setTxt('cfSrc', entered
+    ? 'The number you entered. Nothing is sent until you confirm it.'
+    : 'From your hospital registration record. Only the last two digits are shown.');
+  const tier=f.tier;
+  setTxt('cfTier', c.pn+' will see '+(tier===0?'the basics only: that you are here and where you are in the process.'
+    : tier===1?'your full visit, including why you are here.'
+    : 'everything, including your vitals as they are taken.'));
+  setTxt('cfSendLabel','Yes, send to '+c.name);
+  shGo(3);
+}
+function shNewPhoneForm(){ document.getElementById('npPhone').value=''; shGo(4); setTimeout(()=>document.getElementById('npPhone').focus(),120); }
+function saveNewPhone(){
+  const v=document.getElementById('npPhone').value.trim();
+  if(v.replace(/\D/g,'').length<10){ showToast('Check that number','Enter a full mobile number so the link reaches them.', false, bellPath); return; }
+  phoneOverrides[CUR+':'+share.pending]=v;
+  shConfirm();
+}
+function shDoSend(){
   const i=share.pending, c=shContacts()[i], f=share.f[i];
   const already=f.on;
   f.on=true;
@@ -3056,7 +3136,7 @@ claire:{
   spread:['To my arm','To my jaw or neck','To my back','My upper belly'],
   symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[['Lisinopril 10 mg','Once daily · blood pressure']],
-  adv:{name:'Sarah',full:'Sarah Morgan',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['9:47','9:48'],
+  adv:{name:'Sarah',full:'Sarah Morgan',phone:'(626) 555-0142',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['9:47','9:48'],
     label:"<b>Sarah's phone</b> · daughter &amp; advocate · no app, just a link",
     sms:'Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:'}
 },
@@ -3096,7 +3176,7 @@ margaret:{
   spread:['Down my leg','Into my back','Into my groin'],
   symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[['Meloxicam 7.5 mg','Once daily · arthritis'],['Amlodipine 5 mg','Once daily · blood pressure'],['Vitamin D 1000 IU','Once daily']],
-  adv:{name:'Sarah',full:'Sarah Hale',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['8:12','8:13'],
+  adv:{name:'Sarah',full:'Sarah Hale',phone:'(626) 555-0178',rel:'Daughter · emergency contact',letter:'S',pn:'She',pos:'her',clk:['8:12','8:13'],
     label:"<b>Sarah's phone</b> · daughter · no app, just a link",
     sms:'Huntington Hospital: Margaret Hale is in our ER and being cared for. She invited you to follow her visit live:'}
 },
@@ -3136,7 +3216,7 @@ elena:{
   spread:['To my arm','To my jaw or neck','To my back'],
   symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[],
-  adv:{name:'Daniel',full:'Daniel Vasquez',rel:'Husband · emergency contact',letter:'D',pn:'He',pos:'his',clk:['8:29','8:30'],
+  adv:{name:'Daniel',full:'Daniel Vasquez',phone:'(626) 555-0193',rel:'Husband · emergency contact',letter:'D',pn:'He',pos:'his',clk:['8:29','8:30'],
     label:"<b>Daniel's phone</b> · husband · no app, just a link",
     sms:'Huntington Hospital: Elena Vasquez is in our ER and being cared for. She invited you to follow her visit live:'}
 },
@@ -3176,7 +3256,7 @@ diana:{
   spread:[],
   symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[['Vitamin D drops 400 IU','Once daily · infant supplement']],
-  adv:{name:'Ben',full:'Ben Okafor',rel:"Lily's dad · emergency contact",letter:'B',pn:'He',pos:'his',clk:['3:02','3:03'],
+  adv:{name:'Ben',full:'Ben Okafor',phone:'(626) 555-0126',rel:"Lily's dad · emergency contact",letter:'B',pn:'He',pos:'his',clk:['3:02','3:03'],
     label:"<b>Ben's phone</b> · Lily's dad · no app, just a link",
     sms:'Huntington Hospital: Lily Okafor is in our ER and being cared for. Diana invited you to follow her visit live:'}
 },
@@ -3216,7 +3296,7 @@ marcus:{
   spread:['Up my forearm','Into my hand or fingers'],
   symOpts:{when:['Just now','In the last few minutes','It has been building for a while'],loc:['Same place as before','A new place','It is spreading'],rel:['About the same','Somewhat worse','A lot worse']},
   meds:[],
-  adv:{name:'Angela',full:'Angela Webb',rel:'Mom · emergency contact',letter:'A',pn:'She',pos:'her',clk:['6:58','6:59'],
+  adv:{name:'Angela',full:'Angela Webb',phone:'(626) 555-0165',rel:'Mom · emergency contact',letter:'A',pn:'She',pos:'her',clk:['6:58','6:59'],
     label:"<b>Angela's phone</b> · Marcus's mom · no app, just a link",
     sms:'Huntington Hospital: Marcus Webb is in our ER and being cared for. He invited you to follow his visit live:'}
 },
@@ -3262,7 +3342,7 @@ yuki:{
     toastT:'Sent to the triage desk · 送信しました',toastS:'Your update is with the triage team · ',
     toastFlagT:'Sent. Now tell someone. · 送信しました',toastFlagS:'Go to the triage desk or raise your hand, do not wait.'},
   meds:[['Omeprazole 20 mg · オメプラゾール','Once daily · 1日1回 · translated for the team']],
-  adv:{name:'Kenji',full:'Kenji Tanaka',rel:'Husband · emergency contact',letter:'K',pn:'He',pos:'his',clk:['1:12','1:13'],
+  adv:{name:'Kenji',full:'Kenji Tanaka',phone:'(626) 555-0137',rel:'Husband · emergency contact',letter:'K',pn:'He',pos:'his',clk:['1:12','1:13'],
     label:"<b>Kenji's phone</b> · husband · no app, just a link",
     sms:'Huntington Hospital: Yuki Tanaka is in our ER and being cared for. She invited you to follow her visit live:'}
 }
@@ -3365,7 +3445,7 @@ function applyPersona(key){
     document.getElementById('sSms').hidden=false;
     document.getElementById('sWeb').hidden=true;
   }
-  addedContacts=[]; share.f=[{on:false,tier:1}]; share.pending=0;
+  addedContacts=[]; share.f=[{on:false,tier:1}]; share.pending=0; Object.keys(phoneOverrides).forEach(k=>delete phoneOverrides[k]);
   updateShareUI(); shRows();
   setTxt('shWhoTitle','Who should follow '+vLabel()+'?');
   setTxt('pvYou',(p.user===p.patient?"You're":p.patient+' is')+' at Huntington ER, being cared for');
