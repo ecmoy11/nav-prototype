@@ -1112,15 +1112,6 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             </div>
           </div>
           <div class="gap"></div>
-          <div class="card tappable" onclick="openMap('status')" style="display:flex;align-items:center;gap:13px;padding:15px 16px;">
-            <span class="v-ic navy" style="width:38px;height:38px;border-radius:12px;"><svg viewBox="0 0 24 24"><path d="M9 6 3 9v12l6-3 6 3 6-3V6l-6 3-6-3z"/><path d="M9 6v12M15 9v12"/></svg></span>
-            <div style="flex:1;min-width:0;">
-              <b style="font-size:14.5px;letter-spacing:-.01em;">Find your way around</b>
-              <div style="font-size:12px;color:var(--sec);margin-top:2px;">Cafe, restrooms, exits — and where you are</div>
-            </div>
-            <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-          </div>
-          <div class="gap"></div>
           <div class="card">
             <div class="row" style="align-items:center;">
               <div class="kicker">Your care team</div>
@@ -2022,7 +2013,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') ppMenuClose(); });
 function ctlHide(){ ppMenuClose(); document.getElementById('phaseCtl').classList.add('hidden'); document.getElementById('pcPill').classList.add('show'); document.body.classList.add('ctl-off'); }
 function ctlShow(){ document.getElementById('phaseCtl').classList.remove('hidden'); document.getElementById('pcPill').classList.remove('show'); document.body.classList.remove('ctl-off'); }
 /* ===== Hospital map: floor plan + wayfinding graph + routing ===== */
-let mapBack='status';
+let mapBack='comfort';
 const MAP_M_PER_UNIT=0.18;   /* svg units -> metres */
 
 /* walkable graph: corridor nodes + door nodes */
@@ -2238,7 +2229,7 @@ function clearRoute(){
   setTxt('mapKicker','Where you are');
   document.querySelectorAll('#mapList .maprow').forEach(function(r2){ r2.classList.remove('on'); });
 }
-function openMap(from){ mapBack = from || 'status'; mapRouteKey=null; renderMap(); go('hospitalmap'); }
+function openMap(from){ mapBack = from || 'comfort'; mapRouteKey=null; renderMap(); go('hospitalmap'); }
 function renderComfort(){
   const waiting=(typeof phaseIdx==='undefined')||phaseIdx===0;
   const after=(typeof phaseIdx!=='undefined')&&phaseIdx===3;
