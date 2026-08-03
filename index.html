@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Nav">
+<meta name="theme-color" content="#E7E5E0">
 <title>Active Autonomy Companion — Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -810,6 +815,102 @@ body.ctl-off{padding-top:82px;}
 .lmore .lrel{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line);cursor:pointer;}
 .lmore .lrel .lph{width:56px;height:56px;border-radius:12px;flex:none;}
 .lcredit{font-size:11px;color:var(--mut);margin-top:22px;padding-top:14px;border-top:1px solid var(--line);line-height:1.5;}
+
+/* ═══════════════════════════════════════════════════════════════
+   ON-SCREEN KEYBOARD + keyboard-aware layout
+   One variable, --kbh, is the height the keyboard is eating.
+   Desktop: set to 336 by the drawn keyboard.
+   Real phone: set by visualViewport from the actual iOS keyboard.
+   Everything below reacts to --kbh, so both paths share one layout.
+   ═══════════════════════════════════════════════════════════════ */
+.screen-host{--kbh:0px;}
+
+/* ── the drawn keyboard (desktop demo only) ── */
+.kb{position:absolute;left:0;right:0;bottom:0;height:336px;z-index:200;background:#D1D3D9;
+  display:flex;flex-direction:column;user-select:none;-webkit-user-select:none;
+  font-family:-apple-system,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;
+  transform:translateY(101%);transition:transform .3s cubic-bezier(.19,.91,.38,1);will-change:transform;}
+.screen-host.kb-up .kb{transform:none;}
+body.phonemode .kb{display:none!important;}
+
+.kb-pred{flex:none;height:50px;display:flex;align-items:stretch;}
+.kb-sug{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;position:relative;
+  font-size:15px;color:#000;padding:0 6px;cursor:pointer;white-space:nowrap;overflow:hidden;}
+.kb-sug:active{background:rgba(0,0,0,.07);border-radius:7px;}
+.kb-sug+.kb-sug::before{content:"";position:absolute;left:0;top:50%;margin-top:-11px;width:1px;height:22px;background:rgba(0,0,0,.16);}
+
+.kb-body{flex:1;display:flex;flex-direction:column;min-height:0;}
+.kb-rows{flex:1;display:flex;flex-direction:column;gap:11px;padding:9px 3px 0;}
+.kb-row{flex:none;height:44px;display:flex;gap:6px;}
+.kb-row.ind{padding:0 20px;}
+.kb-key{flex:1 1 0;min-width:0;background:#fff;border-radius:5px;box-shadow:0 1px 0 rgba(0,0,0,.28);
+  display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;color:#000;cursor:pointer;}
+.kb-key:active,.kb-key.hit{background:#E3E4E8;}
+.kb-key.fn{background:#ABB0BA;font-size:15.5px;font-weight:500;}
+.kb-key.fn:active,.kb-key.fn.hit{background:#fff;}
+.kb-key.wide{flex:1.42 1 0;}
+.kb-key.sh{margin-right:9px;}
+.kb-key.del{margin-left:9px;}
+.kb-key.k123{flex:1.35 1 0;}
+.kb-key.space{flex:5 1 0;font-size:15.5px;}
+.kb-key.ret{flex:2.2 1 0;background:#ABB0BA;font-size:15.5px;font-weight:500;}
+.kb-key.on{background:#fff;}
+.kb-key svg{width:21px;height:21px;stroke:#000;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.kb-key.shglyph svg{fill:#000;stroke:none;}
+
+/* phone-number pad (type="tel") */
+.kb.tel .kb-pred{display:none;}
+.kb-tel{flex:1;display:flex;flex-direction:column;justify-content:center;gap:11px;padding:6px 0 0;}
+.kb-telrow{flex:none;display:flex;justify-content:center;gap:30px;}
+.kb-tkey{width:66px;height:66px;flex:none;background:#fff;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:25px;line-height:1;color:#000;cursor:pointer;
+  box-shadow:0 1px 0 rgba(0,0,0,.22);}
+.kb-tkey:active{background:#E3E4E8;}
+.kb-tkey small{font-size:9px;font-weight:600;letter-spacing:.1em;margin-top:2px;}
+.kb-tkey[data-k="+*#"]{font-size:19px;letter-spacing:.06em;}
+.kb-tkey.bare{background:transparent;box-shadow:none;}
+.kb-tkey.bare:active{background:rgba(0,0,0,.05);}
+.kb-tkey svg{width:24px;height:24px;stroke:#000;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+.kb-home{flex:none;height:32px;display:flex;align-items:center;justify-content:center;}
+.kb-home i{width:139px;height:5px;border-radius:3px;background:rgba(0,0,0,.8);}
+
+/* ── everything that has to move out of the keyboard's way ── */
+.navwrap{transition:transform .3s cubic-bezier(.2,.8,.25,1), opacity .2s ease;}
+.screen-host.kb-up .navwrap{transform:translateY(132px);opacity:0;pointer-events:none;}
+
+.inputbar{transition:bottom .3s cubic-bezier(.19,.91,.38,1);}
+.screen-host.kb-up .inputbar{bottom:calc(var(--kbh) + 14px);}
+
+.scroll{transition:padding-bottom .3s cubic-bezier(.19,.91,.38,1);}
+.screen-host.kb-up .scroll{padding-bottom:calc(28px + var(--kbh));}
+
+/* bottom sheets ride up on top of the keyboard */
+.sheet-backdrop{transition:opacity .3s ease, padding-bottom .3s cubic-bezier(.19,.91,.38,1);}
+.screen-host.kb-up .sheet-backdrop{padding-bottom:var(--kbh);}
+.screen-host.kb-up .sheet.kb-sheet{max-height:calc(100% - 8px);overflow-y:auto;padding-bottom:16px;}
+.sheet.kb-sheet::-webkit-scrollbar{display:none;}
+/* primary action stays pinned to the top edge of the keyboard */
+.screen-host.kb-up .btn.kb-pin{position:sticky;bottom:14px;z-index:3;
+  box-shadow:0 -9px 11px 13px #fff, 0 4px 14px rgba(20,23,28,.16);}
+
+/* ═══ PHONE MODE — real device, real keyboard ═══════════════════ */
+body.phonemode{padding:0!important;margin:0;display:block;background:#000;
+  height:100dvh;min-height:100dvh;overflow:hidden;}
+body.phonemode .intro,body.phonemode #jbar,body.phonemode #sarahWrap,
+body.phonemode #scrollLock,body.phonemode .statusbar,body.phonemode .island{display:none!important;}
+body.phonemode .stage{display:block;height:100dvh;gap:0;}
+body.phonemode .device{width:100%;height:100dvh;border-radius:0;padding:0;box-shadow:none;}
+body.phonemode .screen-host{border-radius:0;}
+body.phonemode .scroll{padding-top:max(64px,calc(env(safe-area-inset-top,0px) + 8px));}
+body.phonemode .navwrap{bottom:calc(env(safe-area-inset-bottom,0px) + 16px);}
+body.phonemode .inputbar{bottom:calc(env(safe-area-inset-bottom,0px) + 94px);}
+body.phonemode .protoctl{top:auto;bottom:0;left:0;right:0;width:auto;max-width:none;margin:0;
+  border-radius:22px 22px 0 0;max-height:72dvh;overflow-y:auto;z-index:400;
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 18px);}
+body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;left:auto;
+  transform:none;z-index:400;opacity:.55;padding:6px 11px;}
+
 </style>
 </head>
 <body>
@@ -1519,7 +1620,7 @@ body.ctl-off{padding-top:82px;}
         <div class="gap lg"></div>
         <label class="lsearch" id="lSearch">
           <svg class="mag" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="lQ" placeholder="Search topics…" autocomplete="off" oninput="learnSearch(this)" aria-label="Search topics">
+          <input id="lQ" placeholder="Search topics…" autocomplete="off" enterkeyhint="search" oninput="learnSearch(this)" aria-label="Search topics">
           <span class="lclr" onclick="learnClear()" aria-label="Clear search"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
         </label>
         <div class="gap"></div>
@@ -1746,6 +1847,8 @@ body.ctl-off{padding-top:82px;}
         <button class="tt-next" id="tourNext" onclick="nextTour()">Next</button>
       </div>
     </div>
+  <!-- on-screen keyboard (drawn for the desktop demo; hidden in phone mode) -->
+  <div class="kb" id="kb" aria-hidden="true"></div>
   </div>
 </div>
 
@@ -3655,6 +3758,304 @@ renderLearn();
 applyPersona('claire');
 updateQCount();
 go('status');
+
+/* ═══════════════════════════════════════════════════════════════
+   ON-SCREEN KEYBOARD
+   Desktop: draws a tappable iOS keyboard and sets --kbh to 336.
+   Phone mode: no drawn keyboard — visualViewport reports the real
+   iOS keyboard height into the same --kbh. Layout code is shared.
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  const KBH  = 336;
+  const host = document.getElementById('host');
+  const kb   = document.getElementById('kb');
+  if(!host || !kb) return;
+
+  const SEL = 'input:not([type=button]):not([type=checkbox]):not([type=radio]),textarea,[contenteditable="true"]';
+  let field = null, shift = true, caps = false, lay = 'abc', lastShift = 0;
+
+  const G = {
+    shift:'<svg viewBox="0 0 24 24" class="f"><path d="M12 3.4 3.2 12.2h4.9V19h7.8v-6.8h4.9z"/></svg>',
+    del  :'<svg viewBox="0 0 24 24"><path d="M8.6 5H20a1.7 1.7 0 0 1 1.7 1.7v10.6A1.7 1.7 0 0 1 20 19H8.6L2.3 12z"/><path d="M16.4 9.4 11.8 14M11.8 9.4l4.6 4.6"/></svg>',
+    globe:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2M12 3.4c2.4 2.6 2.4 14.6 0 17.2M12 3.4c-2.4 2.6-2.4 14.6 0 17.2"/></svg>'
+  };
+
+  const LAY = {
+    abc:[['q','w','e','r','t','y','u','i','o','p'],
+         ['a','s','d','f','g','h','j','k','l'],
+         ['SHIFT','z','x','c','v','b','n','m','DEL'],
+         ['123','GLOBE','SPACE','RET']],
+    num:[['1','2','3','4','5','6','7','8','9','0'],
+         ['-','/',':',';','(',')','$','&','@','"'],
+         ['#+=','.',',','?','!',"'",'DEL'],
+         ['ABC','GLOBE','SPACE','RET']],
+    sym:[['[',']','{','}','#','%','^','*','+','='],
+         ['_','\\','|','~','<','>','\u20AC','\u00A3','\u00A5','\u2022'],
+         ['123','.',',','?','!',"'",'DEL'],
+         ['ABC','GLOBE','SPACE','RET']]
+  };
+  const TEL = [['1',''],['2','ABC'],['3','DEF'],['4','GHI'],['5','JKL'],['6','MNO'],
+               ['7','PQRS'],['8','TUV'],['9','WXYZ'],['+*#',''],['0','+'],['DEL','']];
+
+  /* words worth predicting in an ER waiting room */
+  const WORDS = ('pain painful nausea nauseous dizzy dizziness worse worsening chest breathing breathe '
+   +'headache stomach fever chills numb numbness tingling vomiting bleeding pressure tightness sharp '
+   +'burning aching cramping doctor nurse medication medicine allergic scan x-ray bloodwork results '
+   +'discharge when why how what where waiting husband wife daughter son mother father minutes hours '
+   +'the that this they there their them then than these those and are about after again all also always '
+   +'any because been before being between both but can could come did does doing done down during each '
+   +'even every feel feeling felt from get getting give going good got had has have having here home hour '
+   +'into just keep know last leave let like little long look made make many more most much must need '
+   +'never next night not now off once only other our out over own please really right room said same '
+   +'say see seem should since some something start still such take taking tell test than thank think '
+   +'through time told too took under until very want was way well went were what which while will with '
+   +'without would yes yet you your').split(' ');
+
+  const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const phone = () => document.body.classList.contains('phonemode');
+  const val = () => !field ? '' : (field.isContentEditable ? field.textContent : field.value);
+
+  /* ── render ─────────────────────────────────────────── */
+  function keyHTML(k){
+    if(k==='SHIFT') return '<div class="kb-key fn wide sh shglyph'+(shift||caps?' on':'')+'" data-k="SHIFT">'+G.shift+'</div>';
+    if(k==='DEL')   return '<div class="kb-key fn wide del" data-k="DEL">'+G.del+'</div>';
+    if(k==='GLOBE') return '<div class="kb-key fn" data-k="GLOBE">'+G.globe+'</div>';
+    if(k==='SPACE') return '<div class="kb-key space" data-k="SPACE">space</div>';
+    if(k==='RET')   return '<div class="kb-key ret" data-k="RET">'+retLabel()+'</div>';
+    if(k==='123'||k==='ABC'||k==='#+=') return '<div class="kb-key fn k123" data-k="'+k+'">'+k+'</div>';
+    const up = (lay==='abc' && (shift||caps));
+    return '<div class="kb-key ltr" data-k="'+esc(k)+'">'+esc(up?k.toUpperCase():k)+'</div>';
+  }
+  function retLabel(){
+    if(!field) return 'return';
+    const h = field.getAttribute && field.getAttribute('enterkeyhint');
+    if(h) return h;
+    if(field.tagName==='TEXTAREA' || field.isContentEditable) return 'return';
+    return nextField() ? 'next' : 'done';
+  }
+  function render(){
+    let h;
+    if(lay==='tel'){
+      h='<div class="kb-tel">';
+      for(let r=0;r<4;r++){
+        h+='<div class="kb-telrow">';
+        for(let c=0;c<3;c++){
+          const [k,sub]=TEL[r*3+c];
+          if(k==='DEL') h+='<div class="kb-tkey bare" data-k="DEL">'+G.del+'</div>';
+          else h+='<div class="kb-tkey" data-k="'+esc(k)+'">'+esc(k)+(sub?'<small>'+sub+'</small>':'')+'</div>';
+        }
+        h+='</div>';
+      }
+      h+='</div>';
+    } else {
+      h='<div class="kb-rows">';
+      LAY[lay].forEach((row,ri)=>{
+        h+='<div class="kb-row'+(lay==='abc'&&ri===1?' ind':'')+'">';
+        row.forEach(k=>{ h+=keyHTML(k); });
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    kb.querySelector('#kbBody').innerHTML=h;
+  }
+  function syncCase(){
+    const up = shift||caps;
+    kb.querySelectorAll('.kb-key.ltr').forEach(el=>{
+      const k=el.dataset.k; el.textContent = (lay==='abc'&&up)?k.toUpperCase():k;
+    });
+    const sh=kb.querySelector('.sh'); if(sh) sh.classList.toggle('on', up);
+  }
+  function pred(){
+    const el=kb.querySelector('#kbPred'); if(!el) return;
+    if(lay==='tel'){ el.innerHTML=''; return; }
+    const v=val(), tok=(v.split(/[\s]/).pop()||'').toLowerCase();
+    let out;
+    if(!tok) out=['I','The','My'];
+    else{
+      const hits=WORDS.filter(w=>w.startsWith(tok)&&w!==tok).slice(0,2);
+      out=['"'+tok+'"'].concat(hits.length?hits:[tok+'s',tok+'ing'].slice(0,2));
+    }
+    el.innerHTML=out.slice(0,3).map(x=>'<span class="kb-sug" data-sug="'+esc(x.replace(/^"|"$/g,''))+'">'+esc(x)+'</span>').join('');
+  }
+
+  /* ── editing ────────────────────────────────────────── */
+  function fire(){ if(field) field.dispatchEvent(new Event('input',{bubbles:true})); }
+  function insert(t){
+    if(!field) return;
+    if(field.isContentEditable){ field.focus(); document.execCommand('insertText',false,t); }
+    else{
+      const s=field.selectionStart==null?field.value.length:field.selectionStart;
+      const e=field.selectionEnd==null?s:field.selectionEnd;
+      field.value=field.value.slice(0,s)+t+field.value.slice(e);
+      try{ field.selectionStart=field.selectionEnd=s+t.length; }catch(_){}
+    }
+    fire();
+  }
+  function back(){
+    if(!field) return;
+    if(field.isContentEditable){ field.focus(); document.execCommand('delete'); }
+    else{
+      const s=field.selectionStart, e=field.selectionEnd;
+      if(s!==e){ field.value=field.value.slice(0,s)+field.value.slice(e); try{field.selectionStart=field.selectionEnd=s;}catch(_){} }
+      else if(s>0){ field.value=field.value.slice(0,s-1)+field.value.slice(s); try{field.selectionStart=field.selectionEnd=s-1;}catch(_){} }
+    }
+    fire();
+  }
+  function nextField(){
+    if(!field||field.isContentEditable) return null;
+    const box=field.closest('.shs')||field.closest('.sheet')||field.closest('.scroll');
+    if(!box) return null;
+    const all=[].slice.call(box.querySelectorAll('input,textarea')).filter(x=>x.offsetParent);
+    const i=all.indexOf(field);
+    return (i>-1 && all[i+1]) ? all[i+1] : null;
+  }
+  function ret(){
+    if(!field) return;
+    const ev=new KeyboardEvent('keydown',{key:'Enter',code:'Enter',keyCode:13,which:13,bubbles:true,cancelable:true});
+    const ok=field.dispatchEvent(ev);
+    if(!ok) return;
+    if(field.tagName==='TEXTAREA'){ insert('\n'); return; }
+    if(field.isContentEditable){ insert('\n'); return; }
+    if(field.id==='navInput') return;            /* send handler already ran */
+    const n=nextField();
+    if(n) n.focus(); else field.blur();
+  }
+  function autoShift(){
+    if(lay!=='abc'||caps) return;
+    const v=val();
+    shift = (v.length===0) || /[.!?]\s$/.test(v);
+    syncCase();
+  }
+
+  function press(k){
+    if(!field) return;
+    if(k==='DEL'){ back(); autoShift(); pred(); return; }
+    if(k==='RET'){ ret(); pred(); setTimeout(()=>{autoShift();pred();},80); return; }
+    if(k==='GLOBE'){ return; }
+    if(k==='SHIFT'){
+      const now=+new Date();
+      if(now-lastShift<300){ caps=true; shift=true; } else { if(caps){caps=false;shift=false;} else shift=!shift; }
+      lastShift=now; syncCase(); return;
+    }
+    if(k==='123'){ lay='num'; render(); return; }
+    if(k==='ABC'){ lay='abc'; render(); autoShift(); return; }
+    if(k==='#+='){ lay='sym'; render(); return; }
+    if(k==='+*#'){ insert('+'); return; }
+    if(k==='SPACE'){ insert(' '); autoShift(); pred(); return; }
+    insert((lay==='abc'&&(shift||caps))?k.toUpperCase():k);
+    if(!caps && lay==='abc') shift=false;
+    if(lay==='num'||lay==='sym'){ lay = (lay==='num'?'num':'sym'); }
+    syncCase(); pred();
+  }
+
+  /* ── show / hide ────────────────────────────────────── */
+  function ensureVisible(el){
+    const sc = el.closest('.scroll') || el.closest('.sheet');
+    if(!sc) return;
+    const kbh = parseFloat(getComputedStyle(host).getPropertyValue('--kbh'))||0;
+    const lim = host.getBoundingClientRect().bottom - kbh - 16;
+    const over = el.getBoundingClientRect().bottom - lim;
+    if(over > 0) sc.scrollTop += over;
+  }
+  function pinCTA(el){
+    const sheet=el.closest('.sheet'); if(!sheet) return;
+    sheet.classList.add('kb-sheet');
+    /* only pin when the sheet is actually taller than the space left above the keyboard */
+    setTimeout(()=>{
+      if(!field) return;
+      const box=el.closest('.shs')||sheet;
+      const btn=box.querySelector('.btn:not(.subtle)');
+      if(btn && sheet.scrollHeight > sheet.clientHeight + 2) btn.classList.add('kb-pin');
+    },360);
+  }
+  function unpin(){
+    host.querySelectorAll('.kb-sheet').forEach(s=>s.classList.remove('kb-sheet'));
+    host.querySelectorAll('.kb-pin').forEach(b=>b.classList.remove('kb-pin'));
+  }
+  function show(el){
+    field=el;
+    lay = (el.getAttribute && el.getAttribute('type')==='tel') ? 'tel' : 'abc';
+    caps=false; shift = (lay==='abc') && !val();
+    kb.classList.toggle('tel', lay==='tel');
+    render(); pred();
+    if(!phone()){ host.style.setProperty('--kbh', KBH+'px'); host.classList.add('kb-up'); }
+    pinCTA(el);
+    const bottom = (el.id==='navInput');
+    const settle=()=>{
+      if(bottom){ const sc=host.querySelector('#navigator .scroll'); if(sc) sc.scrollTop=sc.scrollHeight; }
+      else ensureVisible(el);
+    };
+    setTimeout(settle,60); setTimeout(settle,340);
+  }
+  function hide(){
+    if(!phone()){ host.classList.remove('kb-up'); host.style.setProperty('--kbh','0px'); }
+    unpin(); field=null;
+  }
+
+  /* keys must never steal focus from the field */
+  kb.addEventListener('mousedown', e=>e.preventDefault());
+  kb.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
+  kb.addEventListener('click', e=>{
+    const s=e.target.closest('.kb-sug');
+    if(s){ replaceToken(s.dataset.sug); return; }
+    const k=e.target.closest('[data-k]');
+    if(k) press(k.dataset.k);
+  });
+  function replaceToken(w){
+    if(!field||field.isContentEditable) return;
+    const v=field.value, m=v.match(/[^\s]*$/), s=v.length-(m?m[0].length:0);
+    field.value=v.slice(0,s)+w+' ';
+    try{ field.selectionStart=field.selectionEnd=field.value.length; }catch(_){}
+    fire(); autoShift(); pred();
+  }
+
+  host.addEventListener('focusin', e=>{
+    const t=e.target;
+    if(t && t.matches && t.matches(SEL)) show(t);
+  });
+  host.addEventListener('focusout', ()=>{
+    setTimeout(()=>{
+      const a=document.activeElement;
+      if(!a || !host.contains(a) || !a.matches || !a.matches(SEL)) hide();
+    },0);
+  });
+  /* tapping anywhere else in the phone dismisses, like iOS */
+  host.addEventListener('pointerdown', e=>{
+    if(!field) return;
+    if(kb.contains(e.target)) return;
+    if(e.target.closest('.inputbar')) return;
+    if(e.target===field) return;
+    field.blur();
+  }, true);
+
+  kb.innerHTML='<div class="kb-pred" id="kbPred"></div><div class="kb-body" id="kbBody"></div><div class="kb-home"><i></i></div>';
+  render();
+
+  /* ── phone mode: real device, real keyboard ─────────── */
+  (function(){
+    const q=new URLSearchParams(location.search).get('phone');
+    const auto = matchMedia('(max-width:560px)').matches && matchMedia('(pointer:coarse)').matches;
+    if(q==='1' || (auto && q!=='0')){
+      document.body.classList.add('phonemode');
+      /* the demo panel starts collapsed on a real phone — tap the dot, top right */
+      setTimeout(()=>{ try{ ctlHide(); }catch(_){} },0);
+    }
+  })();
+  if(window.visualViewport){
+    const vv=window.visualViewport;
+    const sync=()=>{
+      if(!phone()) return;
+      const inset=Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      host.style.setProperty('--kbh', inset+'px');
+      host.classList.toggle('kb-up', inset>90);
+      if(field && inset>90) ensureVisible(field);
+    };
+    vv.addEventListener('resize',sync);
+    vv.addEventListener('scroll',sync);
+  }
+  window.KB={show:show,hide:hide,height:KBH};
+})();
+
 </script>
 </body>
 </html>
