@@ -113,6 +113,29 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .wc-range{font-size:40px;font-weight:700;letter-spacing:-.025em;line-height:1;margin-top:10px;transition:opacity .3s ease;}
 .wc-range span{font-size:16px;font-weight:500;color:rgba(255,255,255,.7);margin-left:7px;letter-spacing:0;}
 .wc-expl{font-size:12px;color:rgba(255,255,255,.88);line-height:1.55;background:rgba(255,255,255,.13);border-radius:12px;padding:11px 13px;margin-top:14px;}
+/* live wait "heartbeat" (Aug 4, 2026): two honest liveness signals on the wait card.
+   The updated line is anchored to a real re-estimate; the sync pill reflects real polling,
+   so it keeps breathing even when the visit timeline is paused. Neither implies progress. */
+.wc-live{display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap;}
+.wc-upd{font-size:12px;color:rgba(255,255,255,.66);font-variant-numeric:tabular-nums;}
+.wc-sync{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:rgba(255,255,255,.82);background:rgba(255,255,255,.14);padding:5px 10px;border-radius:20px;font-variant-numeric:tabular-nums;}
+.wc-sync .d{width:6px;height:6px;border-radius:50%;flex:none;background:#7FE3B4;box-shadow:0 0 0 0 rgba(127,227,180,.5);animation:pulseLive 2.6s ease-out infinite;}
+@keyframes pulseLive{0%{box-shadow:0 0 0 0 rgba(127,227,180,.45)}70%{box-shadow:0 0 0 7px rgba(127,227,180,0)}100%{box-shadow:0 0 0 0 rgba(127,227,180,0)}}
+@media (prefers-reduced-motion:reduce){.wc-sync .d{animation:none!important;}}
+/* visit timeline control (demo only, lives in the prototype control bar) */
+.pc-timeline{display:flex;align-items:center;gap:8px;}
+.tl-play{width:30px;height:30px;flex:none;border-radius:9px;border:1px solid var(--line2);background:#fff;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s ease,background .16s ease,border-color .16s ease;}
+.tl-play:hover{border-color:var(--ink);}
+.tl-play:active{transform:scale(.94);}
+.tl-play.on{background:var(--ink);border-color:var(--ink);}
+.tl-play svg{width:12px;height:12px;fill:currentColor;}
+.tl-play.on svg{fill:#fff;}
+.tl-range{-webkit-appearance:none;appearance:none;width:132px;height:4px;border-radius:3px;background:var(--line2);outline:none;cursor:pointer;}
+.tl-range::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.28);}
+.tl-range::-moz-range-thumb{width:14px;height:14px;border:none;border-radius:50%;background:var(--ink);cursor:pointer;}
+.tl-read{font-size:11.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;min-width:38px;}
+.tl-sp{font-size:10.5px;font-weight:700;padding:5px 7px;border-radius:8px;border:1px solid var(--line2);background:#fff;color:var(--sec);cursor:pointer;font-family:inherit;min-width:30px;}
+.tl-sp:hover{border-color:var(--ink);color:var(--ink);}
 /* triage level (ESI) in the wait card */
 .tri-panel{border-radius:15px;padding:4px 5px 5px;margin-top:15px;background:rgba(255,255,255,.12);}
 .tri-panel .tri-row{display:flex;align-items:center;gap:11px;cursor:pointer;background:none;border:none;width:100%;font-family:inherit;text-align:left;padding:9px 8px;}
@@ -1019,10 +1042,14 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
           </div>
           <div class="card dark v1c c3" id="hcard">
             <div class="wc-head">
-              <span class="kicker">Estimated wait time until seeing a clinician</span>
+              <span class="kicker">Estimated wait time until seen</span>
               <button class="wc-info" onclick="toggleHExpl()" title="How is this estimated?"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
             </div>
             <div class="wc-range" id="waitRange">30-60<span>mins</span></div>
+            <div class="wc-live">
+              <span class="wc-upd" id="waitUpd">Wait estimate set at triage, 2 minutes ago</span>
+              <span class="wc-sync"><span class="d"></span><span id="waitSync">Live &middot; synced 8s ago</span></span>
+            </div>
             <div class="wc-expl" id="hExpl" hidden>This range is a conservative estimate based on how busy the ER is right now and your triage priority.</div>
             <div class="tri-panel">
               <button class="tri-row" id="triRow" onclick="triToggle()">
@@ -1976,6 +2003,16 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
     </div>
   </div>
   <div class="pc-sep"></div>
+  <div class="pc-group">
+    <div class="pc-cap">Visit time</div>
+    <div class="pc-timeline">
+      <button class="tl-play" id="tlPlay" onclick="tlToggle()" title="Play the visit clock" aria-label="Play visit time"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+      <input type="range" class="tl-range" id="tlRange" min="0" max="90" step="1" value="10" aria-label="Minutes since check-in">
+      <span class="tl-read" id="tlRead">+10m</span>
+      <button class="tl-sp" id="tlSpBtn" onclick="tlSpeedCycle()" title="Playback speed">4&times;</button>
+    </div>
+  </div>
+  <div class="pc-sep"></div>
   <button class="pc-home" onclick="showHome()">Phone home screen</button>
   <button class="pc-hide" onclick="ctlHide()" title="Hide controls" aria-label="Hide controls"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 </div>
@@ -2268,17 +2305,171 @@ const H_COND={
   steady:{range:'30-60', expl:'This range is a conservative estimate based on how busy the ER is right now and your triage priority.'},
   busy:{range:'45-90', expl:'This range is a conservative estimate based on how busy the ER is right now and your triage priority. The ER is busier than usual at the moment.'}
 };
+/* ===== visit timeline + live wait heartbeat (Aug 4, 2026) =====
+   Emma picked A1 "Heartbeat" out of live-wait-variations.html. Two rules carried over:
+   (1) liveness must be evidence, not decoration, so every moving number here is anchored
+       to something the hospital would actually know; (2) never animate through a stall,
+       so nothing on this card moves to imply progress that has not happened.
+   simT = minutes since check-in. The timeline is a DEMO control: it drives the visit clock,
+   the heartbeat lines and the re-estimate, but it deliberately does NOT auto-advance the
+   user-journey phase, because that control is Emma's to drive during a walkthrough. */
+const TL_MAX=90;
+const H_STEPS={
+  calm:  ['15-30','10-20','Under 10'],
+  steady:['30-60','20-35','Under 20'],
+  busy:  ['45-90','30-55','Under 25']
+};
+/* minutes at which the ER's model reruns. Set past every persona's default offset (max 35)
+   so no persona loads already-narrowed. */
+const RE_MARKS=[42,66];
+let simT=10, tlPlaying=false, tlSp=4, tlRaf=null, tlLast=0, tlAcc=0, syncSec=8;
+
+function reEstCount(t){ let n=0; for(let i=0;i<RE_MARKS.length;i++){ if(t>=RE_MARKS[i]) n++; } return n; }
+function reEstAt(t){ let last=null; for(let i=0;i<RE_MARKS.length;i++){ if(t>=RE_MARKS[i]) last=RE_MARKS[i]; } return last; }
+function parseClock(str){
+  const m=/(\d+):(\d+)\s*(AM|PM)/i.exec(str||'');
+  if(!m) return 9*60+31;
+  let h=(+m[1])%12; if(/PM/i.test(m[3])) h+=12;
+  return h*60+(+m[2]);
+}
+function fmtClock(mins){
+  const t=((mins%1440)+1440)%1440;
+  let h=Math.floor(t/60); const mm=t%60;
+  h=h%12||12;
+  return h+':'+String(mm).padStart(2,'0');
+}
+function agoPhrase(m){
+  if(m<1) return 'just now';
+  if(m===1) return '1 minute ago';
+  if(m<60) return m+' minutes ago';
+  const h=Math.floor(m/60), r=m%60;
+  return r? h+'h '+r+'m ago' : h+'h ago';
+}
+function triOwnsRange(){
+  /* curTri / TRI_PREVIEW are declared further down the file, so guard the temporal dead zone */
+  try { return (CUR==='claire' && (curTri===1||curTri===2)); }
+  catch(e){ return false; }
+}
+/* single source of truth for the estimate, so the card, the Dynamic Island and the
+   advocate's web view can never drift apart */
+function curRange(){
+  if(triOwnsRange()){
+    const t=TRI_PREVIEW[curTri];
+    if(t && t.range!==undefined) return t.range;
+  }
+  const steps=H_STEPS[curCond]||H_STEPS.steady;
+  return steps[Math.min(steps.length-1, reEstCount(simT))];
+}
+function curRangeUnit(){
+  if(triOwnsRange()){
+    const t=TRI_PREVIEW[curTri];
+    if(t && t.range!==undefined) return (t.unit===undefined?'mins':t.unit);
+  }
+  return 'mins';
+}
+function rangeHTML(u){ return curRange()+(curRangeUnit()?'<span>'+u+'</span>':''); }
+function rangeTxt(u){ return curRange()+(curRangeUnit()?' '+u:''); }
+function applyWaitRange(){
+  if(triOwnsRange()) return;
+  const r=document.getElementById('waitRange');
+  if(r) r.innerHTML=rangeHTML('mins');
+}
+function renderWaitLive(){
+  const p=PERSONAS[CUR]; if(!p) return;
+  const ckM=parseClock(p.ck);
+  setTxt('sbClk', fmtClock(ckM+simT));
+  const upd=document.getElementById('waitUpd');
+  if(upd){
+    const re=reEstAt(simT);
+    if(re===null){
+      let trOff=parseClock(p.tr)-ckM; if(trOff<0) trOff+=1440;
+      if(simT<trOff) upd.textContent='Your estimate is set once triage is done';
+      else upd.textContent='Wait estimate set at triage, '+agoPhrase(simT-trOff);
+    } else {
+      upd.textContent='Wait estimate updated '+agoPhrase(simT-re);
+    }
+  }
+  const sEl=document.getElementById('waitSync');
+  if(sEl) sEl.innerHTML='Live &middot; synced '+syncSec+'s ago';
+}
+function notifyWaitNarrow(range){
+  const rr=range.replace('-','\u2013');
+  /* narrowing is good news: NOT the red alert toast (Emma's rule: red reads as scary) */
+  showToast('Wait estimate updated','A nurse reassessed the waiting room. Your estimate is now '+rr+' mins.', false, bellPath);
+}
+function personaDefaultT(p){
+  const ampm=/PM/i.test(p.ck||'')?'PM':'AM';
+  let d=parseClock(p.clk+' '+ampm)-parseClock(p.ck);
+  if(d<0) d+=1440;
+  return Math.max(0, Math.min(TL_MAX, d));
+}
+function tlSet(t, fromPlay){
+  const before=reEstCount(simT);
+  simT=Math.max(0, Math.min(TL_MAX, Math.round(t)));
+  const after=reEstCount(simT);
+  const rg=document.getElementById('tlRange'); if(rg) rg.value=simT;
+  setTxt('tlRead','+'+simT+'m');
+  if(after!==before) syncSec=0;
+  applyWaitRange();
+  renderWaitLive();
+  syncSarah(); laSync();
+  if(fromPlay && after>before && !triOwnsRange()) notifyWaitNarrow(curRange());
+}
+function tlSetPlaying(v){
+  tlPlaying=v;
+  const b=document.getElementById('tlPlay');
+  if(b){
+    b.innerHTML = v ? '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>'
+                    : '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    b.classList.toggle('on', v);
+    b.setAttribute('aria-label', v?'Pause visit time':'Play visit time');
+    b.title = v?'Pause the visit clock':'Play the visit clock';
+  }
+  tlLast=0;
+  if(v && !tlRaf) tlRaf=requestAnimationFrame(tlLoop);
+}
+function tlToggle(){
+  if(!tlPlaying && simT>=TL_MAX) tlSet(0,false);
+  tlSetPlaying(!tlPlaying);
+}
+function tlSpeedCycle(){
+  tlSp = tlSp===1?4 : tlSp===4?12 : 1;
+  const b=document.getElementById('tlSpBtn'); if(b) b.innerHTML=tlSp+'&times;';
+}
+function tlLoop(ts){
+  if(!tlPlaying){ tlRaf=null; return; }
+  tlRaf=requestAnimationFrame(tlLoop);
+  if(!tlLast) tlLast=ts;
+  let dt=(ts-tlLast)/1000; tlLast=ts;
+  if(dt>0.5) dt=0.5;
+  tlAcc += dt*tlSp/3;                 /* 3 real seconds per simulated minute at 1x */
+  if(tlAcc>=1){
+    const add=Math.floor(tlAcc); tlAcc-=add;
+    tlSet(simT+add, true);
+    if(simT>=TL_MAX) tlSetPlaying(false);
+  }
+}
+/* the sync pill ticks on real time, not simulated time: the app really is polling
+   whether or not the demo clock is running, and a frozen "synced Ns ago" would be a lie */
+setInterval(function(){
+  syncSec=(syncSec+1)%45;
+  const e=document.getElementById('waitSync');
+  if(e) e.innerHTML='Live &middot; synced '+syncSec+'s ago';
+}, 1000);
+
 function setCond(s){
   document.querySelectorAll('[data-cond]').forEach(el=>{el.classList.remove('calm','steady','busy');el.classList.add(s);});
   document.querySelectorAll('.ht').forEach(x=>x.classList.toggle('on',x.dataset.s===s));
   const c=H_COND[s];
-  const r=document.getElementById('waitRange'); if(r) r.innerHTML=c.range+'<span>mins</span>';
-  const e=document.getElementById('hExpl'); if(e) e.textContent=c.expl;
   const ORDER={calm:0,steady:1,busy:2};
-  if(ORDER[s]>ORDER[curCond]) notifyWaitIncrease(c.range); else dismissWaitAlert();
-  curCond=s; syncSarah(); laSync();
+  const up=ORDER[s]>ORDER[curCond];
+  curCond=s;
+  applyWaitRange();
+  const e=document.getElementById('hExpl'); if(e) e.textContent=c.expl;
+  if(up) notifyWaitIncrease(curRange()); else dismissWaitAlert();
+  syncSarah(); laSync();
   /* keep a level 1/2 preview's range override alive across condition changes */
-  if(typeof curTri!=='undefined' && CUR==='claire' && (curTri===1||curTri===2)) setTri(curTri);
+  if(triOwnsRange()) setTri(curTri);
 }
 document.querySelectorAll('.ht').forEach(b=>b.addEventListener('click',()=>setCond(b.dataset.s)));
 function toggleHExpl(){const e=document.getElementById('hExpl'); if(e) e.hidden=!e.hidden;}
@@ -2932,7 +3123,7 @@ function syncSarah(){
   document.getElementById('sPhaseSub').textContent=p.sub;
   const wc=document.getElementById('sWaitCard');
   if(+wc.dataset.stier<=share.f[0].tier) wc.hidden=!p.wait;
-  document.getElementById('sWaitNum').innerHTML=H_COND[curCond].range+'<span>mins</span>';
+  document.getElementById('sWaitNum').innerHTML=rangeHTML('mins');
   document.querySelectorAll('#sSteps .step').forEach((s,si)=>{
     s.className='step '+p.steps[si];
     const d=s.querySelector('.dot'); d.className='dot '+p.steps[si];
@@ -3168,7 +3359,7 @@ function finishMed(){
 
 /* ---- live activity (island) ---- */
 const LA_PHASES=[
-  {txt:'ED wait', num:()=>H_COND[curCond].range+'<span>min</span>', st:()=>PERSONAS[CUR].laWait, c1:['Est. wait',()=>H_COND[curCond].range+' min'], c2:['Up next','Clinician'], segs:['on','on','cur','']},
+  {txt:'ED wait', num:()=>rangeHTML('min'), st:()=>PERSONAS[CUR].laWait, c1:['Est. wait',()=>rangeTxt('min')], c2:['Up next','Clinician'], segs:['on','on','cur','']},
   {txt:'In care', num:()=>PERSONAS[CUR].bay, st:()=>PERSONAS[CUR].laCare, c1:['Where',()=>PERSONAS[CUR].bay], c2:['Up next','Treatment'], segs:['on','on','on','cur']},
   {txt:'In care', num:()=>PERSONAS[CUR].bay, st:()=>'Waiting on your test results — Dr. Khan will review them with you once they’re back.', c1:['Where',()=>PERSONAS[CUR].bay], c2:['Up next','Results'], segs:['on','on','on','cur']},
   {txt:'Visit done', num:()=>'✓', st:()=>'Your visit is complete. Discharged '+PERSONAS[CUR].dc+'.', c1:['Discharged',()=>PERSONAS[CUR].dc], c2:['Summary','Ready'], segs:['on','on','on','on']}
@@ -3465,7 +3656,7 @@ function applyPersona(key){
   const tg=document.getElementById('triCtlGroup'), tgs=document.getElementById('triCtlSep');
   if(tg){const isC=(key==='claire'); tg.hidden=!isC; if(tgs) tgs.hidden=!isC;}
   if(typeof curTri!=='undefined'){curTri=p.tri.n; document.querySelectorAll('.tp').forEach(b=>b.classList.toggle('on',+b.dataset.t===p.tri.n));}
-  const wrEl=document.getElementById('waitRange'); if(wrEl) wrEl.innerHTML=H_COND[curCond].range+'<span>mins</span>';
+  const wrEl=document.getElementById('waitRange'); if(wrEl) wrEl.innerHTML=rangeHTML('mins');
   const heEl=document.getElementById('hExpl'); if(heEl) heEl.textContent=H_COND[curCond].expl;
   document.getElementById('triInner').innerHTML='<b>What it means:</b> '+p.tri.means+'<span class="nm"><b>What it doesn\'t mean:</b> '+p.tri.not+'</span><span class="nm" style="color:rgba(255,255,255,.72);">'+p.tri.set+'</span>';
   const tR=document.getElementById('triRow'), tE=document.getElementById('triExpl');
@@ -3563,6 +3754,10 @@ function applyPersona(key){
   S_PHASES[3].txt=p.posCap+' visit is complete';
   S_PHASES[3].sub='Discharged '+p.dc+' today';
   setPhase(0);
+  /* every persona has their own check-in time, so the visit clock resets with them */
+  tlSetPlaying(false);
+  syncSec=8;
+  tlSet(personaDefaultT(p), false);
 }
 document.querySelectorAll('.pp').forEach(b=>b.addEventListener('click',()=>{
   ppMenuClose();
@@ -3604,9 +3799,10 @@ function setTri(n){
   if(hcEl){['c1','c2','c3','c4','c5'].forEach(c=>hcEl.classList.remove(c)); hcEl.classList.add('c'+t.n);}
   const r=document.getElementById('waitRange'), e=document.getElementById('hExpl');
   if(t.range!==undefined){ if(r) r.innerHTML=t.range+(t.unit?'<span>'+t.unit+'</span>':''); if(e) e.textContent=t.expl; }
-  else { if(r) r.innerHTML=H_COND[curCond].range+'<span>mins</span>'; if(e) e.textContent=H_COND[curCond].expl; }
+  else { if(r) r.innerHTML=rangeHTML('mins'); if(e) e.textContent=H_COND[curCond].expl; }
   const tR=document.getElementById('triRow'), tE=document.getElementById('triExpl');
   if(tR){tR.classList.remove('open'); tE.style.maxHeight='0';}
+  syncSarah(); laSync();
 }
 document.querySelectorAll('.tp').forEach(b=>b.addEventListener('click',()=>setTri(+b.dataset.t)));
 /* ================= LEARN — mini news page (Jul 27, 2026) ================= */
@@ -3745,6 +3941,10 @@ function openArticle(id){
 }
 function closeArticle(){ go('behind'); }
 renderLearn();
+(function(){
+  const rg=document.getElementById('tlRange');
+  if(rg) rg.addEventListener('input', function(e){ tlSetPlaying(false); tlSet(+e.target.value, false); });
+})();
 applyPersona('claire');
 updateQCount();
 go('status');
