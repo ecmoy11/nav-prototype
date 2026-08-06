@@ -113,12 +113,13 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .wc-range{font-size:40px;font-weight:700;letter-spacing:-.025em;line-height:1;margin-top:10px;transition:opacity .3s ease;}
 .wc-range span{font-size:16px;font-weight:500;color:rgba(255,255,255,.7);margin-left:7px;letter-spacing:0;}
 .wc-expl{font-size:12px;color:rgba(255,255,255,.88);line-height:1.55;background:rgba(255,255,255,.13);border-radius:12px;padding:11px 13px;margin-top:14px;}
-/* live wait "heartbeat" (Aug 4, 2026): two honest liveness signals on the wait card.
-   The updated line is anchored to a real re-estimate; the sync pill reflects real polling,
-   so it keeps breathing even when the visit timeline is paused. Neither implies progress. */
-.wc-live{display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap;}
-.wc-upd{font-size:12px;color:rgba(255,255,255,.66);font-variant-numeric:tabular-nums;}
-.wc-sync{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:rgba(255,255,255,.82);background:rgba(255,255,255,.14);padding:5px 10px;border-radius:20px;font-variant-numeric:tabular-nums;}
+/* live wait "heartbeat" (Aug 4, 2026; simplified Aug 6): one row - a Live pill and the
+   updated line. The pill's pulse reflects real polling, so it keeps breathing even when
+   the visit timeline is paused; the line is anchored to a real re-estimate. Neither
+   implies progress. */
+.wc-live{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:nowrap;}
+.wc-upd{font-size:12px;color:rgba(255,255,255,.66);font-variant-numeric:tabular-nums;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc-sync{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:11px;font-weight:600;color:rgba(255,255,255,.82);background:rgba(255,255,255,.14);padding:4px 8px;border-radius:20px;}
 .wc-sync .d{width:6px;height:6px;border-radius:50%;flex:none;background:#7FE3B4;box-shadow:0 0 0 0 rgba(127,227,180,.5);animation:pulseLive 2.6s ease-out infinite;}
 @keyframes pulseLive{0%{box-shadow:0 0 0 0 rgba(127,227,180,.45)}70%{box-shadow:0 0 0 7px rgba(127,227,180,0)}100%{box-shadow:0 0 0 0 rgba(127,227,180,0)}}
 @media (prefers-reduced-motion:reduce){.wc-sync .d{animation:none!important;}}
@@ -1047,8 +1048,8 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             </div>
             <div class="wc-range" id="waitRange">30-60<span>mins</span></div>
             <div class="wc-live">
+              <span class="wc-sync"><span class="d"></span>Live</span>
               <span class="wc-upd" id="waitUpd">Wait estimate set at triage, 2 minutes ago</span>
-              <span class="wc-sync"><span class="d"></span><span id="waitSync">Live &middot; synced 8s ago</span></span>
             </div>
             <div class="wc-expl" id="hExpl" hidden>This range is a conservative estimate based on how busy the ER is right now and your triage priority.</div>
             <div class="tri-panel">
@@ -2389,8 +2390,6 @@ function renderWaitLive(){
       upd.textContent='Wait estimate updated '+agoPhrase(simT-re);
     }
   }
-  const sEl=document.getElementById('waitSync');
-  if(sEl) sEl.innerHTML='Live &middot; synced '+syncSec+'s ago';
 }
 function notifyWaitNarrow(range){
   const rr=range.replace('-','\u2013');
@@ -2449,13 +2448,9 @@ function tlLoop(ts){
     if(simT>=TL_MAX) tlSetPlaying(false);
   }
 }
-/* the sync pill ticks on real time, not simulated time: the app really is polling
-   whether or not the demo clock is running, and a frozen "synced Ns ago" would be a lie */
-setInterval(function(){
-  syncSec=(syncSec+1)%45;
-  const e=document.getElementById('waitSync');
-  if(e) e.innerHTML='Live &middot; synced '+syncSec+'s ago';
-}, 1000);
+/* the pill no longer counts seconds (Emma, Aug 6): the pulsing dot carries the
+   liveness signal, and the updated line carries the actual news. syncSec is kept
+   only so a re-estimate can still reset it if a readout ever comes back. */
 
 function setCond(s){
   document.querySelectorAll('[data-cond]').forEach(el=>{el.classList.remove('calm','steady','busy');el.classList.add(s);});
