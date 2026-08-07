@@ -729,6 +729,33 @@ body.ctl-off{padding-top:82px;}
 .sweb-brand .swb-name{font-size:14.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em;}
 .sweb-brand .swb-live{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--green);background:var(--green-soft);border-radius:20px;padding:4px 10px;}
 .sweb-brand .swb-live .d{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(46,160,110,.5);animation:pulseDot 2.4s ease-out infinite;}
+/* ---- follower link: date-of-birth gate (Aug 7 2026) ---- */
+.gate{margin-top:26px;text-align:center;}
+.gate-lock{width:46px;height:46px;border-radius:50%;background:var(--slate-soft);color:var(--slate);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.gate-lock svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.gate-ttl{font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0;color:var(--ink);}
+.gate-lede{font-size:14px;line-height:1.55;color:var(--sec);margin:8px 0 0;}
+.dobrow{display:flex;gap:8px;margin-top:20px;text-align:left;}
+.dobf{flex:1;}
+.dobf.yr{flex:1.5;}
+.dobf label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin:0 0 5px 2px;}
+.dobf input{display:block;width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:14px;
+  padding:13px 10px;font-family:inherit;font-size:17px;font-weight:700;letter-spacing:.04em;text-align:center;
+  color:var(--ink);background:#fff;outline:none;-webkit-appearance:none;}
+.dobf input::placeholder{color:#C6C6C6;font-weight:600;letter-spacing:.06em;}
+.dobf input:focus{border-color:var(--slate);}
+.gate.bad .dobf input{border-color:var(--red);}
+.gate.bad .dobrow{animation:dobShake .34s cubic-bezier(.36,.07,.19,.97) both;}
+@keyframes dobShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+.dob-err{display:flex;gap:8px;align-items:flex-start;text-align:left;background:var(--red-soft);color:var(--red);
+  border-radius:12px;padding:10px 12px;margin-top:12px;font-size:12.5px;line-height:1.45;font-weight:600;}
+.dob-err svg{width:15px;height:15px;flex:none;margin-top:1px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;}
+.gate .btn{margin-top:16px;}
+.gate-note{font-size:11.5px;color:var(--mut);line-height:1.55;margin-top:14px;text-align:center;}
+.gate-demo{margin-top:22px;border:1px dashed var(--line);border-radius:12px;padding:9px 12px;
+  font-size:11.5px;color:var(--mut);line-height:1.5;}
+.gate-demo b{color:var(--sec);letter-spacing:.03em;}
 
 /* ===== hamburger + menu drawer ===== */
 .headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
@@ -1892,7 +1919,36 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             </div>
             <div class="lp-dom"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>nav.health · secure link</div>
           </div>
+          <div class="sms-bubble" style="margin-top:8px;" id="smsDobTxt">You will be asked for her date of birth to open it.</div>
           <div class="sms-hint">Tap the preview ↑</div>
+        </div>
+      </div>
+
+      <!-- follower must confirm the patient's date of birth before any data loads -->
+      <div class="sview" id="sGate" hidden>
+        <div class="s-statusbar"><span id="aClk3">9:48</span><span class="r">Safari</span></div>
+        <div class="sbrowser"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>nav.health &middot; secure link</div>
+        <div class="sscroll">
+          <div class="sweb-brand">
+            <span class="swb-mark burst-host"></span>
+            <span class="swb-name">Nav Health</span>
+          </div>
+          <div class="gate" id="gateBox">
+            <div class="gate-lock"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M7.7 10.5V7a4.3 4.3 0 0 1 8.6 0v3.5"/><circle cx="12" cy="15.8" r="1.1"/></svg></div>
+            <h2 class="gate-ttl">Confirm it&rsquo;s you</h2>
+            <p class="gate-lede" id="gateLede">This link opens Claire Morgan&rsquo;s health information. Enter her date of birth to continue.</p>
+            <div class="dobrow" id="dobRow">
+              <div class="dobf"><label for="dobM">Month</label><input id="dobM" inputmode="numeric" maxlength="2" placeholder="MM" autocomplete="off" aria-label="Birth month"></div>
+              <div class="dobf"><label for="dobD">Day</label><input id="dobD" inputmode="numeric" maxlength="2" placeholder="DD" autocomplete="off" aria-label="Birth day"></div>
+              <div class="dobf yr"><label for="dobY">Year</label><input id="dobY" inputmode="numeric" maxlength="4" placeholder="YYYY" autocomplete="off" aria-label="Birth year"></div>
+            </div>
+            <div class="dob-err" id="dobErr" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span id="dobErrTxt"></span></div>
+            <button class="btn" id="dobBtn" onclick="dobSubmit()"><span id="dobBtnTxt">See Claire&rsquo;s visit</span>
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <div class="gate-note">Anyone holding this link would otherwise see health information. Nav checks the date of birth once, on this device, and never stores it.</div>
+            <div class="gate-demo" id="gateDemo">Prototype only &mdash; the date of birth on file is <b id="gateDemoDob">03/14/1964</b></div>
+          </div>
         </div>
       </div>
 
@@ -3077,8 +3133,7 @@ function stopSharing(){
   closeShare();
   if(i===0){
     document.getElementById('sarahWrap').classList.remove('show');
-    document.getElementById('sSms').hidden=false;
-    document.getElementById('sWeb').hidden=true;
+    sResetViews();
   }
   confirmAction('Sharing stopped', c.name+' no longer sees '+vLabel()+'.');
 }
@@ -3101,7 +3156,90 @@ function updateShareUI(){
   }
 }
 function hideAdvPhone(){ document.getElementById('sarahWrap').classList.remove('show'); }
-function openSarahWeb(){document.getElementById('sSms').hidden=true;document.getElementById('sWeb').hidden=false;syncSarah();}
+/* ---- follower link: date-of-birth gate ----
+   Possession of the phone alone isn't enough to open health information. The
+   follower must also know the patient's date of birth — a low-entropy secret,
+   but one a stranger who found a forwarded text almost certainly doesn't have.
+   Verification is per-session and lives only in this variable; nothing is stored. */
+let sVerified=false, dobTries=0, dobLocked=false;
+const DOB_MAX_TRIES=3;
+function sResetViews(){
+  sVerified=false; dobTries=0; dobLocked=false;
+  const g=document.getElementById('sGate'), w=document.getElementById('sWeb'), m=document.getElementById('sSms');
+  if(m) m.hidden=false;
+  if(g) g.hidden=true;
+  if(w) w.hidden=true;
+}
+function patientFull(){const p=PERSONAS[CUR]; return (p&&(p.patientFull||p.full))||'the patient';}
+function patientDob(){const p=PERSONAS[CUR]; return (p&&p.dob)||'';}
+function openSarahWeb(){
+  document.getElementById('sSms').hidden=true;
+  if(sVerified){ document.getElementById('sGate').hidden=true; document.getElementById('sWeb').hidden=false; syncSarah(); return; }
+  document.getElementById('sWeb').hidden=true;
+  sGatePrep();
+  document.getElementById('sGate').hidden=false;
+}
+function sGatePrep(){
+  const p=PERSONAS[CUR]||{}, pos=(p.pos||'their');
+  setTxt('gateLede','This link opens '+patientFull()+"’s health information. Enter "+pos+' date of birth to continue.');
+  setTxt('dobBtnTxt','See '+(p.patient||'the')+"’s visit");
+  setTxt('gateDemoDob',patientDob());
+  setTxt('aClk3',(p.adv&&p.adv.clk[1])||'9:48');
+  ['dobM','dobD','dobY'].forEach(id=>{const el=document.getElementById(id); if(el){el.value='';el.disabled=false;}});
+  document.getElementById('dobBtn').disabled=false;
+  dobClearErr();
+}
+function dobClearErr(){
+  document.getElementById('dobErr').hidden=true;
+  document.getElementById('gateBox').classList.remove('bad');
+}
+function dobShowErr(msg){
+  setTxt('dobErrTxt',msg);
+  document.getElementById('dobErr').hidden=false;
+  const b=document.getElementById('gateBox');
+  b.classList.remove('bad'); void b.offsetWidth; b.classList.add('bad');
+}
+function dobSubmit(){
+  if(dobLocked) return;
+  const M=(document.getElementById('dobM').value||'').trim(),
+        D=(document.getElementById('dobD').value||'').trim(),
+        Y=(document.getElementById('dobY').value||'').trim();
+  if(!M||!D||Y.length<4){ dobShowErr('Fill in the month, day and year.'); return; }
+  const entered=M.padStart(2,'0')+'/'+D.padStart(2,'0')+'/'+Y;
+  if(entered===patientDob()){
+    sVerified=true;
+    dobClearErr();
+    document.getElementById('sGate').hidden=true;
+    document.getElementById('sWeb').hidden=false;
+    syncSarah();
+    return;
+  }
+  dobTries++;
+  if(dobTries>=DOB_MAX_TRIES){
+    dobLocked=true;
+    ['dobM','dobD','dobY'].forEach(id=>document.getElementById(id).disabled=true);
+    document.getElementById('dobBtn').disabled=true;
+    dobShowErr('Too many tries. For '+((PERSONAS[CUR]&&PERSONAS[CUR].patient)||'the patient')+"’s safety this link is locked. Ask "+((PERSONAS[CUR]&&PERSONAS[CUR].user)||'them')+' to send you a new one.');
+    return;
+  }
+  dobShowErr("That doesn’t match our records. "+(DOB_MAX_TRIES-dobTries)+(DOB_MAX_TRIES-dobTries===1?' try left.':' tries left.'));
+}
+/* auto-advance and Enter-to-submit across the three fields */
+(function(){
+  const ids=['dobM','dobD','dobY'], lens=[2,2,4];
+  ids.forEach((id,i)=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.addEventListener('input',()=>{
+      el.value=el.value.replace(/\D/g,'').slice(0,lens[i]);
+      dobClearErr();
+      if(el.value.length===lens[i]&&i<2) document.getElementById(ids[i+1]).focus();
+    });
+    el.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){ e.preventDefault(); dobSubmit(); }
+      if(e.key==='Backspace'&&!el.value&&i>0) document.getElementById(ids[i-1]).focus();
+    });
+  });
+})();
 let curCond='steady';
 const S_PHASES=[
   {txt:"She's been seen by a nurse and is safe",sub:'Waiting to see a provider',wait:true,steps:['done','done','now','future','future']},
@@ -3383,7 +3521,7 @@ const NOW_CARE_DEFAULT="You're being assessed in person. Ask Nav or your nurse i
 
 const PERSONAS={
 claire:{
-  chipLabel:'Claire', tag:'Chest discomfort · a daytime visit', user:'Claire', patient:'Claire', full:'Claire Morgan', ini:'CM',
+  dob:'03/14/1964', chipLabel:'Claire', tag:'Chest discomfort · a daytime visit', user:'Claire', patient:'Claire', full:'Claire Morgan', ini:'CM',
   pn:'She', pos:'her', posCap:'Her', clk:'9:41', ck:'9:31 AM', tr:'9:39 AM',
   reason:'Chest discomfort, started this morning',
   rev:['A nurse has reviewed your arrival',"You're safe to wait here."],
@@ -3420,7 +3558,7 @@ claire:{
     sms:'Huntington Hospital: Claire Morgan is in our ER and being cared for. She invited you to follow her visit live:'}
 },
 margaret:{
-  chipLabel:'Margaret', tag:'Margaret, 74 · a fall at home · evening', user:'Margaret', patient:'Margaret', full:'Margaret Hale', ini:'MH',
+  dob:'11/02/1951', chipLabel:'Margaret', tag:'Margaret, 74 · a fall at home · evening', user:'Margaret', patient:'Margaret', full:'Margaret Hale', ini:'MH',
   pn:'She', pos:'her', posCap:'Her', clk:'8:23', ck:'7:52 PM', tr:'8:04 PM',
   reason:'Fell at home, right hip pain',
   rev:['A nurse has reviewed your arrival',"You're safe to wait here. Please don't walk unaided; ask for help moving."],
@@ -3460,7 +3598,7 @@ margaret:{
     sms:'Huntington Hospital: Margaret Hale is in our ER and being cared for. She invited you to follow her visit live:'}
 },
 elena:{
-  chipLabel:'Elena', tag:'Elena, 38 · racing heart · 11 PM on a Thursday', user:'Elena', patient:'Elena', full:'Elena Vasquez', ini:'EV',
+  dob:'06/21/1988', chipLabel:'Elena', tag:'Elena, 38 · racing heart · 11 PM on a Thursday', user:'Elena', patient:'Elena', full:'Elena Vasquez', ini:'EV',
   pn:'She', pos:'her', posCap:'Her', clk:'11:26', ck:'11:04 PM', tr:'11:12 PM',
   reason:'Racing, fluttering heartbeat, started around 9 PM',
   rev:['A nurse has reviewed your arrival',"Your heart rate has been measured and seen by a clinician. You're safe to wait here."],
@@ -3500,7 +3638,7 @@ elena:{
     sms:'Huntington Hospital: Elena Vasquez is in our ER and being cared for. She invited you to follow her visit live:'}
 },
 diana:{
-  chipLabel:'Diana & Lily', tag:'Diana & Lily (7 mo) · crying since 9 PM · 2 AM', user:'Diana', patient:'Lily', full:'Diana Okafor', ini:'DO',
+  dob:'01/05/2026', chipLabel:'Diana & Lily', tag:'Diana & Lily (7 mo) · crying since 9 PM · 2 AM', user:'Diana', patient:'Lily', full:'Diana Okafor', patientFull:'Lily Okafor', ini:'DO',
   pn:'She', pos:'her', posCap:'Her', clk:'2:58', ck:'2:31 AM', tr:'2:40 AM',
   reason:"Lily won't stop crying, pulling her legs up, arching her back",
   rev:['A nurse has reviewed Lily',"Inconsolable crying in an infant is always taken seriously. She'll get a full exam."],
@@ -3540,7 +3678,7 @@ diana:{
     sms:'Huntington Hospital: Lily Okafor is in our ER and being cared for. Diana invited you to follow her visit live:'}
 },
 marcus:{
-  chipLabel:'Marcus', tag:'Marcus, 25 · minor car accident · first ER visit', user:'Marcus', patient:'Marcus', full:'Marcus Webb', ini:'MW',
+  dob:'09/30/2000', chipLabel:'Marcus', tag:'Marcus, 25 · minor car accident · first ER visit', user:'Marcus', patient:'Marcus', full:'Marcus Webb', ini:'MW',
   pn:'He', pos:'his', posCap:'His', clk:'6:47', ck:'6:12 PM', tr:'6:25 PM',
   reason:'Minor car accident: wrist injury and swelling',
   rev:['A nurse has reviewed your arrival',"You're safe to wait here."],
@@ -3580,7 +3718,7 @@ marcus:{
     sms:'Huntington Hospital: Marcus Webb is in our ER and being cared for. He invited you to follow his visit live:'}
 },
 yuki:{
-  chipLabel:'Yuki', tag:'Yuki, 43 · stomach pain · interpreter on the way', user:'Yuki', patient:'Yuki', full:'Yuki Tanaka', ini:'YT',
+  dob:'04/17/1983', chipLabel:'Yuki', tag:'Yuki, 43 · stomach pain · interpreter on the way', user:'Yuki', patient:'Yuki', full:'Yuki Tanaka', ini:'YT',
   pn:'She', pos:'her', posCap:'Her', clk:'9:12', ck:'8:41 PM', tr:'8:52 PM',
   reason:'Severe upper stomach pain · 激しい上腹部の痛み',
   rev:['A nurse has reviewed your arrival · 確認済み',"You're safe to wait here. · ここで安全にお待ちいただけます"],
@@ -3721,8 +3859,7 @@ function applyPersona(key){
   /* sharing & advocate device */
   if(share.f.some(f=>f.on)){
     document.getElementById('sarahWrap').classList.remove('show');
-    document.getElementById('sSms').hidden=false;
-    document.getElementById('sWeb').hidden=true;
+    sResetViews();
   }
   addedContacts=[]; share.f=[{on:false,tier:1}]; share.pending=0; Object.keys(phoneOverrides).forEach(k=>delete phoneOverrides[k]);
   updateShareUI(); shRows();
