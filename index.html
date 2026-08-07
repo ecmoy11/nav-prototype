@@ -753,9 +753,8 @@ body.ctl-off{padding-top:82px;}
 .dob-err svg{width:15px;height:15px;flex:none;margin-top:1px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;}
 .gate .btn{margin-top:16px;}
 .gate-note{font-size:11.5px;color:var(--mut);line-height:1.55;margin-top:14px;text-align:center;}
-.gate-demo{margin-top:22px;border:1px dashed var(--line);border-radius:12px;padding:9px 12px;
-  font-size:11.5px;color:var(--mut);line-height:1.5;}
-.gate-demo b{color:var(--sec);letter-spacing:.03em;}
+.devnote{text-align:center;font-size:11px;color:#9a948a;margin:-6px 0 10px;line-height:1.5;}
+.devnote b{color:#6f6a60;font-weight:700;letter-spacing:.03em;}
 
 /* ===== hamburger + menu drawer ===== */
 .headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
@@ -1901,6 +1900,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
 <div class="sarahwrap" id="sarahWrap">
   <button class="adv-x" onclick="hideAdvPhone()" title="Hide this phone (sharing stays on)" aria-label="Hide phone"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   <div class="devlabel" id="advLabel"><b>Sarah's phone</b> · daughter &amp; advocate · no app, just a link</div>
+  <div class="devnote" id="advDobNote">Prototype only &mdash; date of birth on file <b id="gateDemoDob">03/14/1964</b></div>
   <div class="device sarah">
     <div class="shost">
 
@@ -1919,7 +1919,6 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             </div>
             <div class="lp-dom"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>nav.health · secure link</div>
           </div>
-          <div class="sms-bubble" style="margin-top:8px;" id="smsDobTxt">You will be asked for her date of birth to open it.</div>
           <div class="sms-hint">Tap the preview ↑</div>
         </div>
       </div>
@@ -1946,8 +1945,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             <button class="btn" id="dobBtn" onclick="dobSubmit()"><span id="dobBtnTxt">See Claire&rsquo;s visit</span>
               <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </button>
-            <div class="gate-note">Anyone holding this link would otherwise see health information. Nav checks the date of birth once, on this device, and never stores it.</div>
-            <div class="gate-demo" id="gateDemo">Prototype only &mdash; the date of birth on file is <b id="gateDemoDob">03/14/1964</b></div>
+            <div class="gate-note">Nav checks the date of birth once, on this device, and never stores it.</div>
           </div>
         </div>
       </div>
