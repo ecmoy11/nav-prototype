@@ -424,9 +424,11 @@ body.ctl-off{padding-top:82px;}
 .lax-live{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.09em;color:#3FD18B;}
 .lax-live .d{width:6px;height:6px;border-radius:50%;background:currentColor;}
 .lax-status{font-size:15.5px;font-weight:700;letter-spacing:-.012em;line-height:1.35;margin-top:12px;}
-.lax-row{display:flex;gap:28px;margin-top:12px;}
+.lax-row{display:flex;gap:24px;margin-top:12px;align-items:flex-start;}
+.lax-row>div:first-child{flex:0 0 auto;}
+.lax-row>div:last-child{flex:1 1 auto;min-width:0;}
 .lax-cap{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.5);}
-.lax-num{font-size:19px;font-weight:700;margin-top:3px;letter-spacing:-.01em;}
+.lax-num{font-size:19px;font-weight:700;margin-top:3px;letter-spacing:-.01em;line-height:1.2;}
 .laexp .segs{margin-top:14px;}
 .laexp .segs i{background:rgba(255,255,255,.22);}
 .laexp .segs i.on{background:#fff;}
@@ -1005,10 +1007,10 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
         <span class="lax-app">Nav Health · Huntington ER</span>
         <span class="lax-live"><span class="d"></span>LIVE</span>
       </div>
-      <div class="lax-status" id="laxStatus">You're waiting. A nurse has reviewed you.</div>
+      <div class="lax-status" id="laxStatus" hidden></div>
       <div class="lax-row">
         <div><div class="lax-cap" id="laxC1c">Est. wait</div><div class="lax-num" id="laxC1v">30-60 min</div></div>
-        <div><div class="lax-cap" id="laxC2c">Up next</div><div class="lax-num" id="laxC2v">Clinician</div></div>
+        <div><div class="lax-cap" id="laxC2c">Up next</div><div class="lax-num" id="laxC2v">Seen by the care team</div></div>
       </div>
       <div class="segs" id="laxSegs"><i class="on"></i><i class="on"></i><i class="cur"></i><i></i></div>
       <button class="lax-open" onclick="laCollapse();go('status')">Open Nav Health</button>
@@ -3491,7 +3493,7 @@ function finishMed(){
 
 /* ---- live activity (island) ---- */
 const LA_PHASES=[
-  {txt:'ED wait', num:()=>rangeHTML('min'), st:()=>PERSONAS[CUR].laWait, c1:['Est. wait',()=>rangeTxt('min')], c2:['Up next','Clinician'], segs:['on','on','cur','']},
+  {txt:'ED wait', num:()=>rangeHTML('min'), st:null, c1:['Est. wait',()=>rangeTxt('min')], c2:['Up next','Seen by the care team'], segs:['on','on','cur','']},
   {txt:'In care', num:()=>PERSONAS[CUR].bay, st:()=>PERSONAS[CUR].laCare, c1:['Where',()=>PERSONAS[CUR].bay], c2:['Up next','Treatment'], segs:['on','on','on','cur']},
   {txt:'In care', num:()=>PERSONAS[CUR].bay, st:()=>'Waiting on your test results — Dr. Khan will review them with you once they’re back.', c1:['Where',()=>PERSONAS[CUR].bay], c2:['Up next','Results'], segs:['on','on','on','cur']},
   {txt:'Visit done', num:()=>'✓', st:()=>'Your visit is complete. Discharged '+PERSONAS[CUR].dc+'.', c1:['Discharged',()=>PERSONAS[CUR].dc], c2:['Summary','Ready'], segs:['on','on','on','on']}
@@ -3500,7 +3502,10 @@ function laSync(){
   const p=LA_PHASES[phaseIdx]; if(!p) return;
   document.getElementById('laTxt').textContent=p.txt;
   document.getElementById('laNum').innerHTML=p.num();
-  document.getElementById('laxStatus').textContent=typeof p.st==='function'?p.st():p.st;
+  const stEl=document.getElementById('laxStatus');
+  const stTxt=typeof p.st==='function'?p.st():p.st;
+  stEl.textContent=stTxt||'';
+  stEl.hidden=!stTxt;
   document.getElementById('laxC1c').textContent=p.c1[0];
   document.getElementById('laxC1v').textContent=typeof p.c1[1]==='function'?p.c1[1]():p.c1[1];
   document.getElementById('laxC2c').textContent=p.c2[0];
