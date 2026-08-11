@@ -271,6 +271,16 @@ body.ctl-off{padding-top:82px;}
 .tt-skip:hover{color:var(--sec);}
 .tt-next{border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:#fff;background:var(--ink);border-radius:20px;padding:8px 16px;cursor:pointer;transition:transform .12s ease;}
 .tt-next:active{transform:scale(.96);}
+.tt-nav{display:flex;align-items:center;gap:8px;}
+.tt-arrow{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--line2);background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:-.01em;transition:transform .12s ease, background .14s ease, opacity .14s ease, width .22s cubic-bezier(.2,.8,.25,1), border-radius .22s ease;}
+.tt-arrow svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.tt-arrow:hover{background:var(--surface);}
+.tt-arrow:active{transform:scale(.94);}
+.tt-arrow:disabled{opacity:.32;cursor:default;transform:none;background:#fff;}
+.tt-arrow.next{border-color:var(--ink);background:var(--ink);color:#fff;}
+.tt-arrow.next:hover{background:var(--ink);}
+.tt-arrow.next.done{width:auto;border-radius:20px;padding:0 16px;}
+.tt-arrow.next.done svg{display:none;}
 /* rating */
 .star{font-size:30px;line-height:1;color:var(--line2);cursor:pointer;transition:color .12s ease, transform .12s ease;}
 .star:hover{transform:scale(1.12);}
@@ -1655,7 +1665,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
         <div class="gap"></div>
 
         <div class="card flat" style="background:var(--surface);border-color:transparent;">
-          <p class="body-sm" style="margin-top:0;">Only you can see your journal — the care team doesn't have access to what you write here. It's a place to gather your thoughts and remember what to ask. If something's worrying you, tap <b>Report a symptom change</b> in Care or tell a nurse.</p>
+          <p class="body-sm" style="margin-top:0;">Only you can see your journal. The care team doesn't have access to what you write here. It's a place to gather your thoughts and remember what to ask. If something's worrying you, tap <b>Report a symptom change</b> in Care or tell a nurse.</p>
         </div>
       </div>
     </section>
@@ -1886,12 +1896,15 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
     <!-- app tour (spotlight walkthrough) -->
     <div class="tour-spot" id="tourSpot" hidden></div>
     <div class="tour-tip" id="tourTip" hidden>
-      <div class="tt-k" id="tourStep">Tour · 1 of 5</div>
+      <div class="tt-k" id="tourStep">Tour · 1 of 6</div>
       <h4 id="tourTitle"></h4>
       <p id="tourTxt"></p>
       <div class="tt-row">
         <button class="tt-skip" onclick="endTour()">Skip tour</button>
-        <button class="tt-next" id="tourNext" onclick="nextTour()">Next</button>
+        <div class="tt-nav">
+          <button class="tt-arrow" id="tourBack" onclick="prevTour()" aria-label="Previous step"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="tt-arrow next" id="tourNext" onclick="nextTour()" aria-label="Next step"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg><span id="tourNextLbl" hidden>Done</span></button>
+        </div>
       </div>
     </div>
   <!-- on-screen keyboard (drawn for the desktop demo; hidden in phone mode) -->
@@ -2964,19 +2977,25 @@ document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('c
 const TOUR=[
   {screen:'status',   sel:'.tab[data-screen="status"]',   title:'Your status, live',      txt:'Where you are in your visit, your current wait estimate, and who’s caring for you, updated as things change.'},
   {screen:'status',   sel:'#status .menubtn',             title:'Menu & sharing',     txt:'Your health profile, settings, and “Share my visit”. Send a loved one a live link, no app needed.'},
-  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Report a symptom change, find your way around the department, or take a guided breathing session — without leaving your seat.'},
-  {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'Jot down symptoms and questions for the doctor, and see the vitals your care team has recorded.'},
-  {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Plain-language explanations of how the ER really works, and why waits happen.'},
-  {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav can be wrong and isn’t watched by staff — if you feel worse, tell a nurse in person.'}
+  {screen:'comfort',  sel:'.tab[data-screen="comfort"]',  title:'Care & comfort',         txt:'Report a symptom change, find your way around the department, or take a guided breathing session, without leaving your seat.'},
+  {screen:'journal',  sel:'.tab[data-screen="journal"]',  title:'Your journal',           txt:'A private space to keep track of questions for your doctor and anything you want to remember. Only you can see it, nothing here goes to your care team.'},
+  {screen:'behind',   sel:'.tab[data-screen="behind"]',   title:'Learn',                  txt:'Health reading approved by the hospital. How the ER works, why waits happen, and topics worth knowing about your own health.'},
+  {screen:'navigator',sel:'.tab.companion',               title:'Meet Nav',               txt:'Your AI guide. Ask anything about your visit, anytime. Nav can be wrong and isn’t watched by staff. If you feel worse, tell a nurse in person.'}
 ];
 let tourIdx=-1;
-function startTour(){ dismissTourNote(); tourIdx=-1; nextTour(); }
+let tourFrom='status';
+function startTour(){ dismissTourNote(); tourFrom=(document.querySelector('.screen.active')||{}).id||'status'; tourIdx=-1; nextTour(); }
 function nextTour(){
   tourIdx++;
   if(tourIdx>=TOUR.length){ endTour(true); return; }
   const s=TOUR[tourIdx];
   go(s.screen);
   requestAnimationFrame(()=>requestAnimationFrame(()=>placeTour(s)));
+}
+function prevTour(){
+  if(tourIdx<=0) return;
+  tourIdx-=2;
+  nextTour();
 }
 function placeTour(s){
   const host=document.getElementById('host'), spot=document.getElementById('tourSpot'), tip=document.getElementById('tourTip');
@@ -2991,7 +3010,11 @@ function placeTour(s){
   document.getElementById('tourStep').textContent='Tour · '+(tourIdx+1)+' of '+TOUR.length;
   document.getElementById('tourTitle').textContent=s.title;
   document.getElementById('tourTxt').textContent=s.txt;
-  document.getElementById('tourNext').textContent=tourIdx===TOUR.length-1?'Done':'Next';
+  const last=tourIdx===TOUR.length-1, back=document.getElementById('tourBack'), next=document.getElementById('tourNext');
+  back.disabled=tourIdx===0;
+  next.classList.toggle('done',last);
+  document.getElementById('tourNextLbl').hidden=!last;
+  next.setAttribute('aria-label',last?'Finish tour':'Next step');
   const tw=tip.offsetWidth, th=tip.offsetHeight;
   let left=r.left-hr.left+r.width/2-tw/2;
   left=Math.max(12,Math.min(hr.width-tw-12,left));
@@ -3003,7 +3026,8 @@ function endTour(done){
   document.getElementById('tourSpot').hidden=true;
   document.getElementById('tourTip').hidden=true;
   tourIdx=-1;
-  go('behind');
+  /* finishing the tour lands you on Home; skipping returns you where you started it */
+  go(done ? 'status' : (tourFrom==='home' ? 'status' : tourFrom));
   if(done) showToast('Tour complete','Nav is one tap away whenever you need it.');
 }
 
