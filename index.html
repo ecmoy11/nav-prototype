@@ -124,8 +124,8 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
    updated line. The pill's pulse reflects real polling, so it keeps breathing even when
    the visit timeline is paused; the line is anchored to a real re-estimate. Neither
    implies progress. */
-.wc-live{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:nowrap;}
-.wc-upd{font-size:12px;color:rgba(255,255,255,.66);font-variant-numeric:tabular-nums;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc-live{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap;row-gap:6px;}
+.wc-upd{font-size:12px;color:rgba(255,255,255,.66);font-variant-numeric:tabular-nums;min-width:0;}
 .wc-sync{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:11px;font-weight:600;color:rgba(255,255,255,.82);background:rgba(255,255,255,.14);padding:4px 8px;border-radius:20px;}
 .wc-sync .d{width:6px;height:6px;border-radius:50%;flex:none;background:#7FE3B4;box-shadow:0 0 0 0 rgba(127,227,180,.5);animation:pulseLive 2.6s ease-out infinite;}
 @keyframes pulseLive{0%{box-shadow:0 0 0 0 rgba(127,227,180,.45)}70%{box-shadow:0 0 0 7px rgba(127,227,180,0)}100%{box-shadow:0 0 0 0 rgba(127,227,180,0)}}
@@ -1096,7 +1096,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             <div class="wc-range" id="waitRange">30-60<span>mins</span></div>
             <div class="wc-live">
               <span class="wc-sync"><span class="d"></span>Live</span>
-              <span class="wc-upd" id="waitUpd">Wait estimate set at triage, 2 minutes ago</span>
+              <span class="wc-upd" id="waitUpd">Set at triage, 2 min ago</span>
             </div>
             <div class="wc-expl" id="hExpl" hidden>This range is a conservative estimate based on how busy the ER is right now and your triage priority.</div>
             <div class="tri-panel">
@@ -1181,7 +1181,7 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
                 <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Checked in</div><span class="t js-ck">9:31 AM</span></div>
                 <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Triage assessment</div><span class="t js-tr">9:39 AM</span></div>
                 <div class="step done"><div class="dot done"><i><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="lab">Seen by the care team</div></div>
-                <div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Up next</span></div></div>
+                <div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Now</span></div></div>
                 <div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>
               </div>
             </div>
@@ -2418,9 +2418,10 @@ function fmtClock(mins){
   return h+':'+String(mm).padStart(2,'0');
 }
 function agoPhrase(m){
+  /* short form: this line sits beside the Live pill and has to survive small render sizes */
   if(m<1) return 'just now';
-  if(m===1) return '1 minute ago';
-  if(m<60) return m+' minutes ago';
+  if(m===1) return '1 min ago';
+  if(m<60) return m+' min ago';
   const h=Math.floor(m/60), r=m%60;
   return r? h+'h '+r+'m ago' : h+'h ago';
 }
@@ -2463,9 +2464,9 @@ function renderWaitLive(){
     if(re===null){
       let trOff=parseClock(p.tr)-ckM; if(trOff<0) trOff+=1440;
       if(simT<trOff) upd.textContent='Your estimate is set once triage is done';
-      else upd.textContent='Wait estimate set at triage, '+agoPhrase(simT-trOff);
+      else upd.textContent='Set at triage, '+agoPhrase(simT-trOff);
     } else {
-      upd.textContent='Wait estimate updated '+agoPhrase(simT-re);
+      upd.textContent='Updated '+agoPhrase(simT-re);
     }
   }
 }
@@ -2933,7 +2934,7 @@ function renderCareStage(){
     if(expl){ expl.textContent='Your blood has been taken and sent to the lab. Dr. Khan will review the results with you once they come back — results usually take 30–45 minutes. You can rest here; staff will come to you.'; }
     if(cw) cw.style.display='';
     stepsEl.innerHTML=seen+
-      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Up next</span></div></div>'+
+      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Now</span></div></div>'+
       '<div class="substeps"><div class="substep"><span class="slab">Blood test<span class="smeta">Ordered by Dr. Khan · 9:52 AM</span></span></div></div>'+
       '<div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>';
   } else {
@@ -2941,7 +2942,7 @@ function renderCareStage(){
     if(expl){ expl.textContent=(p&&p.careCap)?p.careCap:'Dr. Aisha Khan is with you now and will explain the plan and any tests you may need.'; }
     if(cw) cw.style.display='none';
     stepsEl.innerHTML=seen+
-      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Up next</span></div></div>'+
+      '<div class="step now"><div class="dot now"><i></i></div><div class="lab">Diagnostic testing<span class="meta">Now</span></div></div>'+
       '<div class="step future"><div class="dot future"><i></i></div><div class="lab">Treatment &amp; next steps</div></div>';
   }
   if(expl&&!expl.hidden){/* keep open state */}
