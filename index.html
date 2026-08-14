@@ -211,7 +211,6 @@ body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;fl
 .m-photo{position:relative;width:62px;height:62px;border-radius:50%;margin:0 auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:17px;box-shadow:0 2px 8px rgba(20,23,28,.14);transition:transform .16s ease;}
 .member:active .m-photo{transform:scale(.95);}
 .m-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.m-photo .on{position:absolute;right:2px;bottom:2px;width:13px;height:13px;border-radius:50%;background:var(--green);border:2.5px solid #fff;z-index:2;}
 .m-name{font-size:12.5px;font-weight:600;line-height:1.2;letter-spacing:-.01em;}
 .m-role{font-size:10.5px;color:var(--sec);margin-top:2px;line-height:1.25;}
 /* bio sheet */
@@ -982,6 +981,16 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
   transform:none;z-index:400;opacity:.55;padding:6px 11px;}
 
 </style>
+<script>
+/* Care-team avatars: try .jpeg if .jpg is missing, then give up and let the
+   coloured initial show. Kept as a function because these img tags also live
+   inside single-quoted JS strings, where an inline handler with quotes breaks
+   the parse. */
+function teamImgFail(el){
+  if(!el.dataset.r){ el.dataset.r=1; el.src=el.src.replace(/\.jpg$/,'.jpeg'); }
+  else { el.style.display='none'; }
+}
+</script>
 </head>
 <body>
 <div class="intro">
@@ -1190,31 +1199,30 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
           <div class="card">
             <div class="row" style="align-items:center;">
               <div class="kicker">Your care team</div>
-              <span class="sub" style="margin:0 0 0 auto;">4 on shift</span>
             </div>
             <div class="team">
               <div class="member" onclick="openBio(this)" data-bio="Aisha leads emergency assessments and decides the order of care by how urgent each case is. She's been an ED physician for 12 years and is overseeing your treatment today.">
-                <div class="m-photo" style="background:#5B7FE0"><span class="ini">AK</span><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-photo" style="background:#5B7FE0"><span class="ini">AK</span><img src="ICONS/team/aisha-khan.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">Dr. Aisha Khan</div>
                 <div class="m-role">Emergency physician</div>
               </div>
               <div class="member" onclick="openBio(this)" data-bio="Marcus did your initial assessment and set your priority level. He keeps watch over everyone in the waiting area and re-checks patients whose symptoms change.">
-                <div class="m-photo" style="background:#E0915B"><span class="ini">M</span><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-photo" style="background:#E0915B"><span class="ini">M</span><img src="ICONS/team/marcus.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">Marcus</div>
                 <div class="m-role">Triage nurse</div>
               </div>
               <div class="member" onclick="openBio(this)" data-bio="Sofia runs the floor, coordinating beds, staff and timing. When a care space opens or your status changes, it usually comes through her.">
-                <div class="m-photo" style="background:#5BB98C"><span class="ini">S</span><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-photo" style="background:#5BB98C"><span class="ini">S</span><img src="ICONS/team/sofia.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">Sofia</div>
                 <div class="m-role">Charge nurse</div>
               </div>
               <div class="member" onclick="openBio(this)" data-bio="James helps with comfort and practical needs while you wait, like water and getting you settled. Flag him for anything that isn't urgent.">
-                <div class="m-photo" style="background:#9B7FE0"><span class="ini">J</span><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces" alt=""><span class="on"></span></div>
+                <div class="m-photo" style="background:#9B7FE0"><span class="ini">J</span><img src="ICONS/team/james.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">James</div>
                 <div class="m-role">Care assistant</div>
               </div>
               <div class="member" onclick="openBio(this)" data-bio="Priya is a resident physician working alongside Dr. Khan. She may review your case and talk through next steps once you're seen.">
-                <div class="m-photo" style="background:#E07B9B"><span class="ini">PN</span><img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-photo" style="background:#E07B9B"><span class="ini">PN</span><img src="ICONS/team/priya-nair.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">Dr. Priya Nair</div>
                 <div class="m-role">Resident</div>
               </div>
@@ -1280,17 +1288,17 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
             <div class="kicker">Who looked after you</div>
             <div class="team">
               <div class="member" onclick="openBio(this)" data-bio="Aisha led your assessment and decided your care today. She's been an ED physician for 12 years.">
-                <div class="m-photo" style="background:#5B7FE0"><span class="ini">AK</span><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-photo" style="background:#5B7FE0"><span class="ini">AK</span><img src="ICONS/team/aisha-khan.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">Dr. Aisha Khan</div>
                 <div class="m-role">Emergency physician</div>
               </div>
               <div class="member" onclick="openBio(this)" data-bio="Marcus did your triage and kept watch over you in the waiting area.">
-                <div class="m-photo" style="background:#E0915B"><span class="ini">M</span><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-photo" style="background:#E0915B"><span class="ini">M</span><img src="ICONS/team/marcus.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">Marcus</div>
                 <div class="m-role">Triage nurse</div>
               </div>
               <div class="member" onclick="openBio(this)" data-bio="Priya reviewed your case alongside Dr. Khan and talked through your next steps.">
-                <div class="m-photo" style="background:#E07B9B"><span class="ini">PN</span><img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=faces" alt=""></div>
+                <div class="m-photo" style="background:#E07B9B"><span class="ini">PN</span><img src="ICONS/team/priya-nair.jpg" alt="" onerror="teamImgFail(this)"></div>
                 <div class="m-name">Dr. Priya Nair</div>
                 <div class="m-role">Resident</div>
               </div>
@@ -1537,9 +1545,9 @@ body.phonemode .pc-pill{top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;l
               <div class="sub" id="humanCardSub">Message your care team</div>
             </div>
             <div class="faces">
-              <i style="background:#E0915B"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
-              <i style="background:#5BB98C"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=faces" alt=""></i>
-              <i style="background:#9B7FE0"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces" alt=""></i>
+              <i style="background:#E0915B"><img src="ICONS/team/marcus.jpg" alt="" onerror="teamImgFail(this)"></i>
+              <i style="background:#5BB98C"><img src="ICONS/team/sofia.jpg" alt="" onerror="teamImgFail(this)"></i>
+              <i style="background:#9B7FE0"><img src="ICONS/team/james.jpg" alt="" onerror="teamImgFail(this)"></i>
             </div>
           </div>
           <div class="kicker" style="margin-top:16px;">Suggested</div>
@@ -2863,9 +2871,9 @@ function sendNav(){
 /* chat with a human */
 const HUMAN_FOLLOWUP_MS = 25*1000; /* demo pacing — real app: ~5 minutes */
 const CARE_FACES = '<span class="care-faces">'
-  +'<i style="background:#E0915B"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=100&h=100&fit=crop&crop=faces" alt=""></i>'
-  +'<i style="background:#5BB98C"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop&crop=faces" alt=""></i>'
-  +'<i style="background:#9B7FE0"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop&crop=faces" alt=""></i>'
+  +'<i style="background:#E0915B"><img src="ICONS/team/marcus.jpg" alt="" onerror="teamImgFail(this)"></i>'
+  +'<i style="background:#5BB98C"><img src="ICONS/team/sofia.jpg" alt="" onerror="teamImgFail(this)"></i>'
+  +'<i style="background:#9B7FE0"><img src="ICONS/team/james.jpg" alt="" onerror="teamImgFail(this)"></i>'
   +'</span>';
 let humanNotified=false;
 function careMsg(txt){
