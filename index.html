@@ -503,6 +503,8 @@ body.ctl-off{padding-top:82px;}
 .listrow{display:flex;align-items:center;gap:13px;padding:16px 20px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .14s ease;}
 .rowlist .listrow:last-child{border-bottom:none;}
 .listrow:hover{background:rgba(20,23,28,.02);}
+/* rows shown on Home for completeness but not wired to a screen (Emma) */
+.listrow.inert{cursor:default;pointer-events:none;}
 .listrow:active{background:rgba(20,23,28,.045);}
 .listrow .nr-ic{flex:none;width:24px;height:24px;color:var(--slate);display:flex;align-items:center;justify-content:center;}
 .listrow .nr-ic svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
@@ -1158,12 +1160,12 @@ function teamImgFail(el){
               <b id="shareRowLabel" class="js-share-label">Let someone follow your visit</b>
               <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
             </div>
-            <div class="listrow" onclick="go('vitals')">
+            <div class="listrow inert">
               <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
               <b>Vitals</b>
               <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
             </div>
-            <div class="listrow" onclick="go('medications')">
+            <div class="listrow inert">
               <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 4.5h14v4.5H5z"/><path d="M12 12.5v5M9.5 15h5"/></svg></span>
               <b>Medications on file</b>
               <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
@@ -1235,12 +1237,12 @@ function teamImgFail(el){
               <b class="js-share-label">Let someone follow your visit</b>
               <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
             </div>
-            <div class="listrow" onclick="go('vitals')">
+            <div class="listrow inert">
               <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
               <b>Vitals</b>
               <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
             </div>
-            <div class="listrow" onclick="go('medications')">
+            <div class="listrow inert">
               <span class="nr-ic"><svg viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 4.5h14v4.5H5z"/><path d="M12 12.5v5M9.5 15h5"/></svg></span>
               <b>Medications on file</b>
               <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
