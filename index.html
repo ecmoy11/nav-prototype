@@ -35,17 +35,19 @@ html{height:100%;}
 body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;flex-direction:column;align-items:center;min-height:100%;padding:170px 16px 256px;transition:padding-top .28s cubic-bezier(.2,.8,.25,1);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 .intro{max-width:393px;width:100%;margin-bottom:18px;}
 /* ---- highlight (museum) mode: no text, no chrome, just the phone on a lit wall ---- */
-html.museum-bg{background:#d9d5ce;}
+html{background:#cdc8bf;}html:has(body.phonemode){background:#000;}
 body{transition:padding-top .28s cubic-bezier(.2,.8,.25,1), background .5s ease;}
-html body.museum{background:radial-gradient(ellipse 55% 62% at 50% 42%,#f6f4f0 0%,#e6e2db 48%,#cdc8bf 100%) fixed;padding-top:max(36px,calc(50vh - 426px));padding-bottom:120px;}
+/* gallery wall + realistic phone are the default look; highlight mode only strips the chrome */
+html body:not(.phonemode){background:radial-gradient(ellipse 55% 62% at 50% 42%,#f6f4f0 0%,#e6e2db 48%,#cdc8bf 100%) fixed;}
+html body.museum{padding-top:max(36px,calc(50vh - 426px));padding-bottom:120px;}
 body.museum .protoctl,body.museum .pc-pill,body.museum .scroll-lock{opacity:0;pointer-events:none;visibility:hidden;}
 body.museum .intro,body.museum #jbar{display:none;}
-body.museum .device{box-shadow:inset 0 0 0 2px #2a2a2e,0 1px 2px rgba(0,0,0,.25),0 24px 36px -12px rgba(40,32,24,.42),26px 64px 90px -18px rgba(40,32,24,.40),50px 110px 160px -30px rgba(40,32,24,.30);transition:box-shadow .5s ease;}
+body:not(.phonemode) .device{box-shadow:inset 0 0 0 2px #2a2a2e,0 1px 2px rgba(0,0,0,.25),0 24px 36px -12px rgba(40,32,24,.42),26px 64px 90px -18px rgba(40,32,24,.40),50px 110px 160px -30px rgba(40,32,24,.30);transition:box-shadow .5s ease;}
 .device::after{content:"";position:absolute;left:12%;right:12%;bottom:-50px;height:50px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(35,28,20,.5) 0%,rgba(35,28,20,.18) 45%,transparent 72%);filter:blur(7px);opacity:0;transition:opacity .5s ease;pointer-events:none;z-index:-1;}
-body.museum .device::after{opacity:1;}
+body:not(.phonemode) .device::after{opacity:1;}
 /* real-iPhone treatment in highlight mode: titanium rail + side buttons (screen size unchanged) */
-body.museum .device{isolation:isolate;width:400px;height:859px;border:3.5px solid transparent;border-radius:60px;background:linear-gradient(#0b0b0d,#0b0b0d) padding-box,linear-gradient(140deg,#d9d5cd 0%,#8f8b84 18%,#5f5c57 34%,#c9c5bd 50%,#6c6963 68%,#a7a39b 84%,#e4e0d8 100%) border-box;}
-body.museum .device::before{content:"";position:absolute;top:0;bottom:0;left:-7.5px;right:-7.5px;z-index:-1;pointer-events:none;
+body:not(.phonemode) .device{isolation:isolate;width:400px;height:859px;border:3.5px solid transparent;border-radius:60px;background:linear-gradient(#0b0b0d,#0b0b0d) padding-box,linear-gradient(140deg,#d9d5cd 0%,#8f8b84 18%,#5f5c57 34%,#c9c5bd 50%,#6c6963 68%,#a7a39b 84%,#e4e0d8 100%) border-box;}
+body:not(.phonemode) .device::before{content:"";position:absolute;top:0;bottom:0;left:-7.5px;right:-7.5px;z-index:-1;pointer-events:none;
   background:
    linear-gradient(90deg,#6a6761,#cfcbc3 55%,#8a867f) left 0 top 168px/5px 30px no-repeat,
    linear-gradient(90deg,#6a6761,#cfcbc3 55%,#8a867f) left 0 top 226px/5px 62px no-repeat,
@@ -2172,8 +2174,8 @@ document.addEventListener('click',e=>{ const w=document.getElementById('ppMoreWr
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') ppMenuClose(); });
 /* highlight mode */
 let museumT=0;
-function museumOn(){ ppMenuClose(); document.body.classList.add('museum'); document.documentElement.classList.add('museum-bg'); window.scrollTo({top:0,behavior:'smooth'}); }
-function museumOff(){ document.body.classList.remove('museum','museum-awake'); document.documentElement.classList.remove('museum-bg'); }
+function museumOn(){ ppMenuClose(); document.body.classList.add('museum'); window.scrollTo({top:0,behavior:'smooth'}); }
+function museumOff(){ document.body.classList.remove('museum','museum-awake'); }
 document.addEventListener('keydown',e=>{
   const t=e.target, typing=t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
   if(e.key==='Escape'&&document.body.classList.contains('museum')){ museumOff(); return; }
