@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Nav">
 <meta name="theme-color" content="#E7E5E0">
-<title>Active Autonomy Companion — Prototype</title>
+<title>Nav Health, the ER Companion | Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -34,6 +34,7 @@
 html{height:100%;}
 body{font-family:var(--sans);background:#E7E5E0;color:var(--ink);display:flex;flex-direction:column;align-items:center;min-height:100%;padding:170px 16px 256px;transition:padding-top .28s cubic-bezier(.2,.8,.25,1);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 .intro{max-width:393px;width:100%;margin-bottom:18px;}
+@media (min-width:1100px){.intro{position:absolute;top:170px;right:28px;width:280px;max-width:280px;margin:0;transition:top .28s cubic-bezier(.2,.8,.25,1);}body.ctl-off .intro{top:82px;}}
 .intro h1{font-size:16px;font-weight:600;letter-spacing:-.01em;}
 .intro p{font-size:13px;color:#6f6a60;margin-top:3px;line-height:1.45;}
 .device{width:393px;height:852px;border-radius:56px;background:#0b0b0d;padding:10px;box-shadow:var(--sh-lg), inset 0 0 0 2px #2a2a2e;position:relative;flex:none;}
@@ -255,6 +256,13 @@ body.ctl-off{padding-top:82px;}
 /* journey bar — sits directly above the phone, independent of the controls panel */
 .jbar{width:100%;max-width:393px;box-sizing:border-box;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 26px rgba(20,23,28,.11);padding:12px 44px 15px;margin-bottom:20px;display:flex;flex-direction:column;gap:9px;}
 .jbar .pc-journey{width:100%;margin:0;}
+.jbar{position:relative;z-index:150;touch-action:none;}
+.jbar.moved{box-shadow:0 14px 38px rgba(20,23,28,.18);}
+.jbar.dragging{box-shadow:0 18px 46px rgba(20,23,28,.24);transition:none;}
+.jbar .pc-cap{cursor:grab;user-select:none;-webkit-user-select:none;}
+.jb-grip{position:absolute;top:8px;left:10px;width:24px;height:24px;border:0;padding:0;background:none;border-radius:7px;cursor:grab;display:grid;place-items:center;color:var(--mut);touch-action:none;}
+.jb-grip:hover{background:var(--line2);color:var(--ink);}
+.jbar.dragging .jb-grip,.jbar.dragging .pc-cap{cursor:grabbing;}
 .pc-rail{position:relative;height:6px;border-radius:6px;background:var(--line2);}
 .pc-fill{position:absolute;top:0;bottom:0;left:0;width:0;border-radius:6px;background:var(--ink);transition:width .32s cubic-bezier(.2,.8,.25,1);}
 .pc-tick{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--line2);padding:0;cursor:pointer;z-index:1;}
@@ -996,11 +1004,12 @@ function teamImgFail(el){
 </head>
 <body>
 <div class="intro">
-  <h1>Active Autonomy Companion</h1>
+  <h1>Nav Health, the ER Companion</h1>
   <p>Clickable prototype — tap buttons and the bottom tabs to navigate. Share the visit (menu ☰ on Home) to reveal the advocate view. On the phone home screen, tap the Dynamic Island for live wait &amp; status.</p>
 </div>
 <!-- user journey — lives above the phone so it stays reachable with the controls collapsed -->
 <div class="jbar" id="jbar">
+  <button class="jb-grip" id="jbGrip" title="Drag to move · double-click to reset" aria-label="Move user journey"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2" cy="2" r="1.4"/><circle cx="8" cy="2" r="1.4"/><circle cx="2" cy="7" r="1.4"/><circle cx="8" cy="7" r="1.4"/><circle cx="2" cy="12" r="1.4"/><circle cx="8" cy="12" r="1.4"/></svg></button>
   <div class="pc-cap">User journey</div>
   <div class="pc-journey">
     <div class="pc-rail" id="pcRail">
@@ -2990,6 +2999,27 @@ document.querySelectorAll('.pc-tick, .pc-stop').forEach(b=>b.addEventListener('c
   thumb.addEventListener('pointermove',e=>{if(drag)fromX(e.clientX);});
   window.addEventListener('pointerup',()=>drag=false);
   rail.addEventListener('click',e=>{if(e.target!==thumb){const r=rail.getBoundingClientRect();let f=(e.clientX-r.left)/r.width;gotoPhase(Math.round(Math.max(0,Math.min(1,f))*(PHASES.length-1)));}});
+})();
+
+/* ---- movable user journey: drag by the grip or caption, remembered per browser ---- */
+(function(){
+  const bar=document.getElementById('jbar'), grip=document.getElementById('jbGrip'), cap=bar.querySelector('.pc-cap');
+  const KEY='nav.jbarPos';
+  let dx=0, dy=0, sx=0, sy=0, ox=0, oy=0, on=false;
+  function apply(){ bar.style.transform=(dx||dy)?`translate(${dx}px,${dy}px)`:''; bar.classList.toggle('moved',!!(dx||dy)); }
+  function clamp(){ // keep at least 60px of the card on screen
+    bar.style.transform=''; const r=bar.getBoundingClientRect(), m=60;
+    dx=Math.max(m-r.right, Math.min(innerWidth-m-r.left, dx));
+    dy=Math.max(-r.top, Math.min(innerHeight-m-r.top, dy));
+    apply();
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify({dx,dy})); }catch(e){} }
+  try{ const v=JSON.parse(localStorage.getItem(KEY)||'null'); if(v){dx=+v.dx||0; dy=+v.dy||0; apply(); requestAnimationFrame(clamp);} }catch(e){}
+  function down(e){ if(document.body.classList.contains('phonemode')) return; on=true; sx=e.clientX; sy=e.clientY; ox=dx; oy=dy; bar.classList.add('dragging'); e.currentTarget.setPointerCapture(e.pointerId); e.preventDefault(); }
+  function move(e){ if(!on) return; dx=ox+e.clientX-sx; dy=oy+e.clientY-sy; apply(); }
+  function up(){ if(!on) return; on=false; bar.classList.remove('dragging'); clamp(); save(); }
+  [grip,cap].forEach(h=>{ h.addEventListener('pointerdown',down); h.addEventListener('pointermove',move); h.addEventListener('pointerup',up); h.addEventListener('pointercancel',up); h.addEventListener('dblclick',()=>{dx=0;dy=0;apply();save();}); });
+  window.addEventListener('resize',()=>{ if(dx||dy) clamp(); });
 })();
 
 /* ---- app tour (spotlight walkthrough, launched from Learn) ---- */
